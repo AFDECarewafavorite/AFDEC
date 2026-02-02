@@ -22,6 +22,7 @@ import {
 import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
 import { collection, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
+import { useSearchParams } from 'next/navigation';
 
 const TOTAL_STEPS = 4;
 
@@ -41,10 +42,18 @@ export default function BookingPage() {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [bookingId, setBookingId] = useState('');
   const { toast } = useToast();
+  const searchParams = useSearchParams();
 
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
   const firestore = useFirestore();
+
+  useEffect(() => {
+    const refCode = searchParams.get('ref');
+    if (refCode) {
+      updateData({ referralCode: refCode });
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     // If user is not logged in and we are done checking, sign them in anonymously.
@@ -101,7 +110,7 @@ export default function BookingPage() {
       birdType: bookingData.birdType,
       quantity: bookingData.quantity,
       bookingFee: selectedBird.bookingFeePerUnit * bookingData.quantity,
-      agentId: bookingData.referralCode || '',
+      agentId: bookingData.referralCode || null,
       status: 'pending' as const,
       createdAt: serverTimestamp(),
       customerAvatar:

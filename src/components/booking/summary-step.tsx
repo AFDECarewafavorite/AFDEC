@@ -33,7 +33,7 @@ export default function SummaryStep({ bookingData, bird }: SummaryStepProps) {
         Step 4: Booking Summary
       </h2>
       <p className="mt-2 text-lg text-foreground/80">
-        Please review your booking details before proceeding to payment.
+        Review your details. Paying the booking fee secures your place in the queue.
       </p>
       <Card className="mt-8 text-left">
         <CardHeader>
@@ -83,11 +83,11 @@ export default function SummaryStep({ bookingData, bird }: SummaryStepProps) {
           </div>
           <Alert className="bg-primary/10 border-primary/20">
             <Info className="h-4 w-4 text-primary" />
-            <AlertTitle className="font-bold text-primary">Please Note!</AlertTitle>
+            <AlertTitle className="font-bold text-primary">Important: How It Works</AlertTitle>
             <AlertDescription>
-              Booking does not mean instant delivery. A manager will call you on{' '}
+              Paying the booking fee secures your spot in the queue for the next available batch. A manager will call you on{' '}
               <span className="font-bold">{bookingData.phone}</span> to confirm
-              your collection date and the balance to be paid.
+              your collection date and the final balance, which is payable on collection.
             </AlertDescription>
           </Alert>
         </CardContent>

@@ -60,6 +60,13 @@ service cloud.firestore {
     }
 
     /**
+      * Checks if the user is a registered agent.
+      */
+    function isAgent() {
+      return isSignedIn() && exists(/databases/$(database)/documents/agents/$(request.auth.uid));
+    }
+
+    /**
      * Verifies that a document already exists. Used for safe updates and deletes.
      */
     function isExistingDoc() {
@@ -115,15 +122,21 @@ service cloud.firestore {
      * @principle Restricts access to a user's own data tree and allows admins to manage bookings.
      */
     match /users/{userId}/bookings/{bookingId} {
-      allow get: if isOwner(userId) || isAdmin();
+      allow get: if isOwner(userId) || isAdmin() || (isAgent() && resource.data.agentId == request.auth.uid);
       allow list: if isOwner(userId) || isAdmin();
-      allow create: if isOwner(userId) && request.resource.data.customerId == userId;
+      allow create: if isOwner(userId);
       allow update: if isExistingOwner(userId) || (isAdmin() && isExistingDoc());
       allow delete: if isExistingOwner(userId);
     }
     
+    /**
+     * @description Rules for collection group queries on 'bookings'.
+     * @path /{path=**}/bookings/{bookingId}
+     * @allow (get, list) Admins can query all bookings. Agents can query bookings assigned to them.
+     * @principle Enables admin overview and agent-specific views while maintaining data separation.
+     */
     match /{path=**}/bookings/{bookingId} {
-      allow get, list: if isAdmin();
+      allow get, list: if isAdmin() || (isAgent() && resource.data.agentId == request.auth.uid);
     }
 
     /**

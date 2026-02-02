@@ -9,6 +9,7 @@ import {
   Shield,
   Award,
   ShoppingBag,
+  ListOrdered,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -157,19 +158,18 @@ export default function Home() {
               How It Works
             </h2>
             <p className="mt-4 text-center text-lg text-foreground/80 max-w-2xl mx-auto">
-              A simple 3-step process to secure your booking.
+             Secure your chickens in 3 simple steps.
             </p>
             <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
               <div className="flex flex-col items-center">
                 <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary text-primary-foreground">
-                  <span className="font-bold text-2xl font-headline">1</span>
+                  <ListOrdered />
                 </div>
                 <h3 className="mt-4 text-xl font-semibold font-headline">
-                  Book Online
+                  1. Book & Join Queue
                 </h3>
                 <p className="mt-2 text-foreground/70">
-                  Use our simple form to choose your bird type, quantity, and
-                  pay a small booking fee.
+                  Select your birds, quantity, and pay a small booking fee to get your place in line.
                 </p>
               </div>
               <div className="flex flex-col items-center">
@@ -177,11 +177,10 @@ export default function Home() {
                   <Phone />
                 </div>
                 <h3 className="mt-4 text-xl font-semibold font-headline">
-                  Get a Call
+                  2. Get a Call
                 </h3>
                 <p className="mt-2 text-foreground/70">
-                  Our manager will call you to confirm details like collection
-                  date, location, and balance payment.
+                  Our manager will call to confirm your allocation, collection date, and the final balance payment.
                 </p>
               </div>
               <div className="flex flex-col items-center">
@@ -189,7 +188,7 @@ export default function Home() {
                   <ShoppingBag />
                 </div>
                 <h3 className="mt-4 text-xl font-semibold font-headline">
-                  Collect Your Birds
+                  3. Collect Your Birds
                 </h3>
                 <p className="mt-2 text-foreground/70">
                   Visit the collection point on the agreed date, pay the
@@ -270,9 +269,8 @@ export default function Home() {
             </div>
           <p className="font-bold text-primary mt-6">Important Business Notice</p>
           <p className="text-sm text-foreground/70 max-w-3xl mx-auto mt-2">
-            Booking does not guarantee immediate delivery. Allocation details,
-            final balance, and collection date will be communicated by the
-            manager via the phone number you provide.
+            Paying the booking fee secures your place in the queue for the next available batch of chickens.
+            Our manager will call you to confirm allocation, final balance, and your collection date.
           </p>
           <p className="text-sm text-foreground/50 mt-4">
             © {new Date().getFullYear()} AFDEC Online. All Rights Reserved.

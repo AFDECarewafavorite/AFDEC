@@ -11,7 +11,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import type { Booking, BookingStatus } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { format, parseISO } from 'date-fns';
+import { Timestamp } from 'firebase/firestore';
+import { format } from 'date-fns';
 
 interface AgentDashboardLayoutProps {
   bookings: Booking[];
@@ -25,21 +26,32 @@ const statusStyles: { [key in BookingStatus]: string } = {
 };
 
 const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-NG', {
-      style: 'currency',
-      currency: 'NGN',
-      minimumFractionDigits: 0,
-    }).format(amount);
-  };
+  return new Intl.NumberFormat('en-NG', {
+    style: 'currency',
+    currency: 'NGN',
+    minimumFractionDigits: 0,
+  }).format(amount);
+};
 
 // Commission logic based on proposal
 const calculateCommission = (bookingFee: number) => {
-    if (bookingFee <= 500) return 200;
-    if (bookingFee > 500 && bookingFee <= 1000) return 350;
-    return bookingFee * 0.1; // 10% for higher value bookings as an example
+  if (bookingFee <= 500) return 200;
+  if (bookingFee > 500 && bookingFee <= 1000) return 350;
+  return bookingFee * 0.1; // 10% for higher value bookings as an example
 };
 
-export default function AgentDashboardLayout({ bookings }: AgentDashboardLayoutProps) {
+const formatDate = (date: any) => {
+    if (!date) return '';
+    if (date instanceof Timestamp) {
+        return format(date.toDate(), 'dd MMM yyyy');
+    }
+    // Fallback for string dates from mock data, if any
+    return format(new Date(date), 'dd MMM yyyy');
+}
+
+export default function AgentDashboardLayout({
+  bookings,
+}: AgentDashboardLayoutProps) {
   return (
     <Table>
       <TableHeader>
@@ -55,7 +67,7 @@ export default function AgentDashboardLayout({ bookings }: AgentDashboardLayoutP
           <TableRow key={booking.id}>
             <TableCell className="font-medium">{booking.fullName}</TableCell>
             <TableCell className="text-muted-foreground">
-                {format(parseISO(booking.createdAt), 'dd MMM yyyy')}
+              {formatDate(booking.createdAt)}
             </TableCell>
             <TableCell>
               <Badge className={cn('capitalize', statusStyles[booking.status])}>

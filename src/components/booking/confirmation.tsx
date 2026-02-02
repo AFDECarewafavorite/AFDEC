@@ -36,7 +36,7 @@ export default function Confirmation({ bookingId, phone }: ConfirmationProps) {
         <CardContent className="p-8 md:p-12 text-center">
           <CheckCircle className="h-20 w-20 text-accent mx-auto" />
           <h1 className="mt-6 text-3xl md:text-4xl font-bold font-headline text-primary">
-            Booking Confirmed!
+            You're in the Queue!
           </h1>
           <p className="mt-4 text-lg text-foreground/80">
             Thank you for your booking. Your booking ID is:
@@ -48,8 +48,7 @@ export default function Confirmation({ bookingId, phone }: ConfirmationProps) {
           </div>
           <p className="text-foreground/70">
             A manager will call you soon on{' '}
-            <span className="font-bold text-foreground">{phone}</span> to finalize the details of your
-            collection date and balance payment.
+            <span className="font-bold text-foreground">{phone}</span> to confirm your allocation, collection date, and the final balance to be paid on collection day.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-green-600 hover:bg-green-700 text-white">
