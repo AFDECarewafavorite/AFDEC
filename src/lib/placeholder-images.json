@@ -9,13 +9,13 @@
     {
       "id": "grower",
       "description": "Young grower chickens in a coop.",
-      "imageUrl": "https://images.unsplash.com/photo-1719665974894-53bc0fc83488?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8eW91bmclMjBjaGlja2VufGVufDB8fHx8MTc2OTk5NzEwOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1719665974894-53bc0fc83488?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8eW91bmclMjBjaGlja2VufGVufDB8fHx8fDE3Njk5OTcxMDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "young chicken"
     },
     {
       "id": "mature",
       "description": "A mature chicken, ready for market.",
-      "imageUrl": "https://images.unsplash.com/photo-1672620003939-f82a45cb5adc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxyb29zdGVyfGVufDB8fHx8MTc2OTkxMDY2Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1672620003939-f82a45cb5adc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxyb29zdGVyfGVufDB8fHx8fDE3Njk5MTA2NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "rooster"
     },
     {
@@ -39,8 +39,14 @@
     {
       "id": "avatar3",
       "description": "Avatar for a third customer.",
-      "imageUrl": "https://images.unsplash.com/photo-1581403341630-a6e0b9d2d257?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2OTkyNjkzMHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1581403341630-a6e0b9d2d257?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8fDE3Njk5MjY5MzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "woman portrait"
+    },
+    {
+      "id": "logo",
+      "description": "AFDEC Logo",
+      "imageUrl": "https://placehold.co/100x100/000000/DAA520/png?text=LOGO",
+      "imageHint": "company logo"
     }
   ]
 }
