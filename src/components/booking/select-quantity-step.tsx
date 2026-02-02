@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Minus, Plus } from 'lucide-react';
 import type { BookingData } from '@/lib/types';
 import ChickenIcon from './chicken-icon';
+import { BIRD_TYPES } from '@/lib/placeholder-data';
+import { Card } from '@/components/ui/card';
 
 interface SelectQuantityStepProps {
   bookingData: BookingData;
@@ -12,17 +14,31 @@ interface SelectQuantityStepProps {
 const MAX_QUANTITY = 200;
 const MIN_QUANTITY = 10;
 
+const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-NG', {
+      style: 'currency',
+      currency: 'NGN',
+      minimumFractionDigits: 0,
+    }).format(amount);
+};
+
 export default function SelectQuantityStep({
   bookingData,
   onUpdateData,
 }: SelectQuantityStepProps) {
-  const { quantity } = bookingData;
+  const { quantity, birdType } = bookingData;
 
   const handleQuantityChange = (newQuantity: number) => {
     if (newQuantity >= MIN_QUANTITY && newQuantity <= MAX_QUANTITY) {
       onUpdateData({ quantity: newQuantity });
     }
   };
+  
+  const selectedBird = BIRD_TYPES.find(b => b.id === birdType);
+
+  const bookingFee = selectedBird ? selectedBird.bookingFeePerUnit * quantity : 0;
+  const totalPrice = selectedBird ? selectedBird.pricePerUnit * quantity : 0;
+
 
   return (
     <div className="text-center">
@@ -58,6 +74,19 @@ export default function SelectQuantityStep({
             <Plus className="h-6 w-6" />
           </Button>
         </div>
+
+        {selectedBird && (
+            <Card className="w-full bg-transparent p-4 rounded-lg border border-border text-left">
+                <div className="flex justify-between items-center mb-2">
+                    <p className="text-muted-foreground">Booking Fee (Payable now)</p>
+                    <p className="font-bold text-lg text-primary">{formatCurrency(bookingFee)}</p>
+                </div>
+                <div className="flex justify-between items-center">
+                    <p className="text-muted-foreground">Estimated Total Price</p>
+                    <p className="font-bold text-lg">{formatCurrency(totalPrice)}</p>
+                </div>
+            </Card>
+        )}
         
         <div className="w-full bg-card p-4 rounded-lg border border-border">
           <p className="text-sm font-medium text-foreground/70 mb-4">Live Preview</p>
