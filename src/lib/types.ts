@@ -1,4 +1,4 @@
-export type BirdId = 'chicks' | 'grower' | 'mature';
+export type BirdId = string;
 
 export type BirdType = {
   id: BirdId;
@@ -12,6 +12,7 @@ export type BirdType = {
     hint: string;
   };
   bookingFeePerUnit: number;
+  maturity?: string;
 };
 
 export interface BookingData {
@@ -28,7 +29,7 @@ export type BookingStatus = 'pending' | 'called' | 'allocated' | 'completed';
 export interface Booking {
   id: string;
   customerId: string;
-  fullName: string;
+  fullName:string;
   phone: string;
   location: string;
   birdType: BirdId;

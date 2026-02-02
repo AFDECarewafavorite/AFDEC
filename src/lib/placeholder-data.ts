@@ -10,9 +10,9 @@ const avatar3 = PlaceHolderImages.find((img) => img.id === 'avatar3');
 
 export const BIRD_TYPES: BirdType[] = [
   {
-    id: 'chicks',
-    name: 'Day-Old Chicks',
-    description: 'Top broiler breeds like Ross 308 & Cobb 500 from brands like Agrited and Zartech. Matures in 5-6 weeks.',
+    id: 'agrited-chicks',
+    name: 'Agrited Day-Old Chicks',
+    description: 'Ross 308 broiler breed, known for very fast growth and high meat yield.',
     image: {
       id: 'chick',
       src: chickImage?.imageUrl || 'https://picsum.photos/seed/chick/600/400',
@@ -20,7 +20,22 @@ export const BIRD_TYPES: BirdType[] = [
       height: 400,
       hint: 'chick',
     },
-    bookingFeePerUnit: 150,
+    bookingFeePerUnit: 155,
+    maturity: '5-6 weeks',
+  },
+  {
+    id: 'zartech-chicks',
+    name: 'Zartech Day-Old Chicks',
+    description: 'Cobb 500 broiler breed, a robust and efficient bird with great performance.',
+    image: {
+      id: 'chick',
+      src: chickImage?.imageUrl || 'https://picsum.photos/seed/chick2/600/400',
+      width: 600,
+      height: 400,
+      hint: 'chick',
+    },
+    bookingFeePerUnit: 145,
+    maturity: '6 weeks',
   },
   {
     id: 'grower',
@@ -34,6 +49,7 @@ export const BIRD_TYPES: BirdType[] = [
       hint: 'young chicken',
     },
     bookingFeePerUnit: 400,
+    maturity: 'Ready in 2-3 weeks',
   },
   {
     id: 'mature',
@@ -47,6 +63,7 @@ export const BIRD_TYPES: BirdType[] = [
       hint: 'rooster',
     },
     bookingFeePerUnit: 750,
+    maturity: 'Ready for market',
   },
 ];
 
@@ -57,7 +74,7 @@ export const mockBookings: Booking[] = [
     fullName: 'Adekunle Gold',
     phone: '08012345678',
     location: 'Lagos, Ikeja',
-    birdType: 'chicks',
+    birdType: 'agrited-chicks',
     quantity: 50,
     bookingFee: 7500,
     status: 'pending',
@@ -101,7 +118,7 @@ export const mockBookings: Booking[] = [
     fullName: 'Funke Akindele',
     phone: '08122334455',
     location: 'Ogun, Abeokuta',
-    birdType: 'chicks',
+    birdType: 'zartech-chicks',
     quantity: 100,
     bookingFee: 15000,
     status: 'completed',

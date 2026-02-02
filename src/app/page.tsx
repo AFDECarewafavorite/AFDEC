@@ -64,11 +64,11 @@ export default function Home() {
               Select from our range of high-quality birds to meet your poultry
               needs.
             </p>
-            <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
               {BIRD_TYPES.map((bird) => (
                 <Card
                   key={bird.id}
-                  className="overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out"
+                  className="overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out flex flex-col"
                 >
                   <CardHeader className="p-0">
                     <Image
@@ -80,13 +80,23 @@ export default function Home() {
                       data-ai-hint={bird.image.hint}
                     />
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-6 flex-1 flex flex-col">
                     <CardTitle className="font-headline text-xl">
                       {bird.name}
                     </CardTitle>
-                    <p className="mt-2 text-foreground/70">
+                    <p className="mt-2 text-foreground/70 flex-1">
                       {bird.description}
                     </p>
+                    {bird.maturity && (
+                      <div className="mt-4">
+                        <Badge
+                          variant="outline"
+                          className="border-primary/50 text-primary"
+                        >
+                          Maturity: {bird.maturity}
+                        </Badge>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               ))}
