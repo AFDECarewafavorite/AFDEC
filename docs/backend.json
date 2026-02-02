@@ -1,0 +1,331 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the AFDEC Online Chicken Booking System.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user entity."
+        },
+        "role": {
+          "type": "string",
+          "description": "Role of the user (Customer, Agent, Admin)."
+        },
+        "phone": {
+          "type": "string",
+          "description": "User's phone number."
+        },
+        "language": {
+          "type": "string",
+          "description": "Preferred language of the user."
+        },
+        "referralCode": {
+          "type": "string",
+          "description": "Referral code of the user, if they are an agent."
+        }
+      },
+      "required": [
+        "id",
+        "role",
+        "phone",
+        "language"
+      ]
+    },
+    "Booking": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Booking",
+      "type": "object",
+      "description": "Represents a chicken booking made by a customer.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the booking entity."
+        },
+        "customerId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Booking) The ID of the customer who made the booking."
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Full name of the customer."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number of the customer."
+        },
+        "location": {
+          "type": "string",
+          "description": "Location (State/Town) of the customer."
+        },
+        "birdType": {
+          "type": "string",
+          "description": "Type of bird booked (Day-old chicks, Grower chickens, Mature chickens)."
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Quantity of birds booked."
+        },
+        "bookingFee": {
+          "type": "number",
+          "description": "Booking fee amount."
+        },
+        "agentId": {
+          "type": "string",
+          "description": "Reference to Agent. (Relationship: Agent 1:N Booking) The ID of the agent who referred the booking (optional)."
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the booking (pending, called, allocated, completed)."
+        },
+        "managerNote": {
+          "type": "string",
+          "description": "Notes added by the manager regarding the booking."
+        },
+        "expectedDate": {
+          "type": "string",
+          "description": "Expected delivery/collection date communicated to the customer.",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp of when the booking was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "customerId",
+        "fullName",
+        "phone",
+        "location",
+        "birdType",
+        "quantity",
+        "bookingFee",
+        "status",
+        "createdAt"
+      ]
+    },
+    "Agent": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Agent",
+      "type": "object",
+      "description": "Represents an agent in the referral system.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the agent entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:1 Agent) The ID of the user who is an agent."
+        },
+        "referralCode": {
+          "type": "string",
+          "description": "Unique referral code for the agent."
+        },
+        "totalCommission": {
+          "type": "number",
+          "description": "Total commission earned by the agent."
+        },
+        "availableBalance": {
+          "type": "number",
+          "description": "Withdrawable balance for the agent."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "referralCode",
+        "totalCommission",
+        "availableBalance"
+      ]
+    },
+    "Commission": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Commission",
+      "type": "object",
+      "description": "Represents a commission earned by an agent for a booking.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the commission entity."
+        },
+        "agentId": {
+          "type": "string",
+          "description": "Reference to Agent. (Relationship: Agent 1:N Commission) The ID of the agent who earned the commission."
+        },
+        "bookingId": {
+          "type": "string",
+          "description": "Reference to Booking. (Relationship: Booking 1:N Commission) The ID of the booking for which the commission was earned."
+        },
+        "amount": {
+          "type": "number",
+          "description": "Amount of the commission."
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the commission (e.g., pending, paid)."
+        }
+      },
+      "required": [
+        "id",
+        "agentId",
+        "bookingId",
+        "amount",
+        "status"
+      ]
+    },
+    "Withdrawal": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Withdrawal",
+      "type": "object",
+      "description": "Represents a withdrawal request made by an agent.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the withdrawal entity."
+        },
+        "agentId": {
+          "type": "string",
+          "description": "Reference to Agent. (Relationship: Agent 1:N Withdrawal) The ID of the agent who made the withdrawal request."
+        },
+        "amount": {
+          "type": "number",
+          "description": "Amount of the withdrawal."
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the withdrawal (e.g., pending, approved, rejected)."
+        }
+      },
+      "required": [
+        "id",
+        "agentId",
+        "amount",
+        "status"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user information. Path-based ownership ensures users can only access their own data.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/bookings/{bookingId}",
+        "definition": {
+          "entityName": "Booking",
+          "schema": {
+            "$ref": "#/backend/entities/Booking"
+          },
+          "description": "Stores bookings made by a user. Path-based ownership ensures users can only access their own bookings.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user (customer)."
+            },
+            {
+              "name": "bookingId",
+              "description": "The unique identifier of the booking."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/agents/{agentId}",
+        "definition": {
+          "entityName": "Agent",
+          "schema": {
+            "$ref": "#/backend/entities/Agent"
+          },
+          "description": "Stores agent information.  This collection is separate to provide specific agent-related information and facilitate management.",
+          "params": [
+            {
+              "name": "agentId",
+              "description": "The unique identifier of the agent."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/agents/{agentId}/commissions/{commissionId}",
+        "definition": {
+          "entityName": "Commission",
+          "schema": {
+            "$ref": "#/backend/entities/Commission"
+          },
+          "description": "Stores commissions earned by an agent. Path-based ownership ensures agents can only access their own commissions.",
+          "params": [
+            {
+              "name": "agentId",
+              "description": "The unique identifier of the agent."
+            },
+            {
+              "name": "commissionId",
+              "description": "The unique identifier of the commission."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/agents/{agentId}/withdrawals/{withdrawalId}",
+        "definition": {
+          "entityName": "Withdrawal",
+          "schema": {
+            "$ref": "#/backend/entities/Withdrawal"
+          },
+          "description": "Stores withdrawal requests made by an agent. Path-based ownership ensures agents can only access their own withdrawals.",
+          "params": [
+            {
+              "name": "agentId",
+              "description": "The unique identifier of the agent."
+            },
+            {
+              "name": "withdrawalId",
+              "description": "The unique identifier of the withdrawal."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_admin/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Marks a user as an admin. Existence of a document with the user's ID grants admin privileges.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure is designed to support the AFDEC Online Chicken Booking System, focusing on authorization independence, clarity, and scalability. User roles (Customer, Agent, Admin) are central to the security model. Bookings are structured to link customers and agents, with commissions and withdrawals managed accordingly.\n\n**Authorization Independence:**\n\n*   The structure uses path-based ownership for user-related data (e.g., `/users/{userId}/bookings/{bookingId}`).\n*   For collaborative data or scenarios requiring more complex access control, consider denormalizing roles or memberships directly into documents. However, given the current entities and requirements, path-based ownership is sufficient.\n\n**QAPs (Rules are not Filters):**\n\n*   The segregation of user data using path-based ownership allows for efficient and secure `list` operations. For instance, a customer can only `list` bookings under their `/users/{userId}/bookings` path.\n*   Admin access can be granted at the top level of collections (e.g., `/bookings`) via a separate `/roles_admin/{uid}` collection. The existence of a document in this collection grants admin privileges.\n\n**Data Integrity:**\n\n*   Timestamps (`createdAt`) are included in bookings to maintain data integrity and support chronological ordering.\n*   The explicit `status` field in the `Booking`, `Commission`, and `Withdrawal` entities ensures a clear and predictable state management, making it easier to implement business logic and security rules based on document state."
+  }
+}

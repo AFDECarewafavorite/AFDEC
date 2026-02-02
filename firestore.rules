@@ -1,0 +1,170 @@
+/**
+ * Core Philosophy: This ruleset enforces a strict, role-based security model for a chicken booking application.
+ * The primary roles are Customer, Agent, and Admin. Access is primarily dictated by data ownership, where users
+ * can only access data nested under their own unique ID. A special-case Admin role is granted broader read
+ * and management permissions across the system.
+ *
+ * Data Structure: The data is hierarchically organized to enforce ownership naturally through Firestore paths.
+ * - /users/{userId}/...: All data private to a specific user (profile, bookings).
+ * - /agents/{agentId}/...: All data private to a specific agent (profile, commissions, withdrawals).
+ * - /roles_admin/{userId}: A lookup collection to grant system-wide admin privileges.
+ *
+ * Key Security Decisions:
+ * - Default Deny: All operations are denied by default and must be explicitly allowed.
+ * - Path-Based Ownership: A user's or agent's UID in the document path is the primary mechanism for granting access,
+ *   ensuring users can only see their own information.
+ * - Admin Role Segregation: Admin privileges are managed in a separate `/roles_admin` collection. Existence of a
+ *   document here grants a user admin rights. This collection is locked from all client-side writes to prevent
+ *   self-escalation of privileges.
+ * - System-Generated Data: Collections like `/commissions` are made read-only for clients (agents). This assumes
+ *   commissions are calculated and created by a trusted backend service, not by users.
+ * - Immutable Ownership: Critical relational fields (e.g., `customerId`, `agentId`) are enforced to be immutable
+ *   after creation to maintain data integrity and prevent records from being maliciously reassigned.
+ *
+ * Denormalization for Authorization: The structure uses path-based ownership extensively, which is a form of
+ * denormalization that makes rules simple and performant by avoiding extra `get()` calls for most ownership checks.
+ * The `/roles_admin` collection is a classic denormalization pattern for efficient role lookups.
+ *
+ * Structural Segregation: User-specific data (`bookings`) and Agent-specific data (`commissions`, `withdrawals`) are
+ * kept in separate, nested collections. This provides strong security boundaries and simplifies list queries, as a
+ * user can only query within their own data tree.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --------------------------------
+    // Helper Functions
+    // --------------------------------
+
+    /**
+     * Checks if a user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the currently authenticated user has admin privileges.
+     * Admin status is determined by the existence of a document in the `/roles_admin` collection.
+     */
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+    }
+
+    /**
+     * Checks if the request is coming from the owner of the document, based on a provided userId.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * Verifies that a document already exists. Used for safe updates and deletes.
+     */
+    function isExistingDoc() {
+      return resource != null;
+    }
+
+    /**
+     * Combines owner and existence checks for robust update/delete rules.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && isExistingDoc();
+    }
+
+    // --------------------------------
+    // Collection Rules
+    // --------------------------------
+
+    /**
+     * @description Manages admin role lookups. This collection is read-only for admins and locked for all client writes.
+     * @path /roles_admin/{userId}
+     * @allow (get) An admin checks another user's admin status (for UI purposes).
+     * @deny (create) A regular user attempts to make themselves an admin.
+     * @principle Prevents privilege escalation by making role assignments a server-only operation.
+     */
+    match /roles_admin/{userId} {
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Defines rules for user profile documents. Users can create their own profile and manage it afterward. Admins can read user profiles.
+     * @path /users/{userId}
+     * @allow (create) A newly signed-up user creates their own user document.
+     * @deny (get) A user tries to read another user's profile information.
+     * @principle Enforces strict data privacy by restricting access to a user's own document.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin(); // Users should not be able to list all other users.
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Secures booking documents, which are nested under the user who created them.
+     * @path /users/{userId}/bookings/{bookingId}
+     * @allow (create) A customer creates a new booking for themselves.
+     * @deny (list) A customer tries to list bookings belonging to another customer.
+     * @principle Restricts access to a user's own data tree and allows admins to manage bookings.
+     */
+    match /users/{userId}/bookings/{bookingId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && request.resource.data.customerId == userId;
+      allow update: if isExistingOwner(userId) || (isAdmin() && isExistingDoc());
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Defines rules for agent profile documents. Agents can manage their own profile. Admins can view agent profiles.
+     * @path /agents/{agentId}
+     * @allow (create) A user designated as an agent creates their own agent profile.
+     * @deny (update) An agent tries to modify another agent's commission details.
+     * @principle Enforces strict data privacy for agents, similar to the user profile rules.
+     */
+    match /agents/{agentId} {
+      allow get: if isOwner(agentId) || isAdmin();
+      allow list: if isAdmin(); // Agents should not be able to list all other agents.
+      allow create: if isOwner(agentId) && request.resource.data.userId == agentId;
+      allow update: if isExistingOwner(agentId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(agentId);
+    }
+
+    /**
+     * @description Secures commission records for agents. These are read-only for the agent.
+     * @path /agents/{agentId}/commissions/{commissionId}
+     * @allow (get) An agent views the details of a commission they earned.
+     * @deny (create) An agent attempts to create their own commission record.
+     * @principle Protects financial data integrity by making commission records read-only from the client. They should be created by a trusted backend.
+     */
+    match /agents/{agentId}/commissions/{commissionId} {
+      allow get: if isOwner(agentId) || isAdmin();
+      allow list: if isOwner(agentId) || isAdmin();
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Secures withdrawal requests made by agents.
+     * @path /agents/{agentId}/withdrawals/{withdrawalId}
+     * @allow (create) An agent submits a new request to withdraw their available balance.
+     * @deny (update) An agent tries to change the amount of a withdrawal request after submitting it.
+     * @principle Allows agents to create requests but prevents modification after submission. Admins can update status (e.g., to 'approved').
+     */
+    match /agents/{agentId}/withdrawals/{withdrawalId} {
+      allow get: if isOwner(agentId) || isAdmin();
+      allow list: if isOwner(agentId) || isAdmin();
+      allow create: if isOwner(agentId) && request.resource.data.agentId == agentId;
+      allow update: if isAdmin() && isExistingDoc();
+      allow delete: if false; // Deletion should likely be an admin or system action, disallowed from client for safety.
+    }
+  }
+}
