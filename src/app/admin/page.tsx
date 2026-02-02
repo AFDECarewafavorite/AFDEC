@@ -3,8 +3,8 @@
 import BookingsTable from './components/bookings-table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign, ShoppingBag, Users, ShieldAlert } from 'lucide-react';
-import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
-import { collectionGroup, query, orderBy } from 'firebase/firestore';
+import { useCollection, useFirestore, useMemoFirebase, useUser, useDoc } from '@/firebase';
+import { collectionGroup, query, orderBy, doc } from 'firebase/firestore';
 import type { Booking } from '@/lib/types';
 import { BookingsTableSkeleton } from './components/bookings-table-skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -15,28 +15,39 @@ import { Button } from '@/components/ui/button';
 
 export default function AdminDashboard() {
   const firestore = useFirestore();
-  const { user, isUserLoading } = useUser();
+  const { user, isUserLoading: isAuthLoading } = useUser();
   const router = useRouter();
+
+  // Check if the user has an admin role document.
+  const adminRoleRef = useMemoFirebase(
+    () => (firestore && user ? doc(firestore, 'roles_admin', user.uid) : null),
+    [firestore, user]
+  );
+  const { data: adminRole, isLoading: isAdminRoleLoading } = useDoc(adminRoleRef);
+
+  const isUserAdmin = !!adminRole;
+  const isAuthorizing = isAuthLoading || (user && isAdminRoleLoading);
 
   // Redirect non-logged-in users.
   useEffect(() => {
-    if (!isUserLoading && !user) {
+    if (!isAuthLoading && !user) {
       router.push('/login');
     }
-  }, [user, isUserLoading, router]);
+  }, [user, isAuthLoading, router]);
 
   const bookingsQuery = useMemoFirebase(
     () =>
-      // Only build query if user is logged in
-      (firestore && user)
+      // Only build query if user is a confirmed admin
+      (firestore && isUserAdmin)
         ? query(collectionGroup(firestore, 'bookings'), orderBy('createdAt', 'desc'))
         : null,
-    [firestore, user]
+    [firestore, isUserAdmin]
   );
 
-  const { data: bookings, isLoading, error } = useCollection<Booking>(bookingsQuery);
+  const { data: bookings, isLoading: areBookingsLoading, error: bookingsError } = useCollection<Booking>(bookingsQuery);
 
-  if (error) {
+  // Show Access Denied for non-admins
+  if (!isAuthorizing && user && !isUserAdmin) {
     return (
         <div className="container mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
             <ShieldAlert className="h-16 w-16 text-destructive" />
@@ -45,7 +56,26 @@ export default function AdminDashboard() {
                 You do not have the necessary permissions to view this page.
             </p>
             <p className="text-sm text-muted-foreground">
-                Please contact an administrator if you believe this is an error.
+                Please sign in as an administrator.
+            </p>
+            <Button asChild variant="outline" className="mt-8">
+                <Link href="/login">Go to Login</Link>
+            </Button>
+        </div>
+    )
+  }
+
+  if (bookingsError) {
+    // This will now only trigger for actual errors during the bookings fetch for an admin.
+    return (
+        <div className="container mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+            <ShieldAlert className="h-16 w-16 text-destructive" />
+            <h1 className="mt-6 text-3xl font-bold font-headline">Error Fetching Data</h1>
+            <p className="mt-2 text-lg text-muted-foreground">
+                Could not load bookings. There might be a network issue or a problem with the query.
+            </p>
+             <p className="text-sm text-muted-foreground max-w-md">
+                <code>{bookingsError.message}</code>
             </p>
             <Button asChild variant="outline" className="mt-8">
                 <Link href="/">Return to Homepage</Link>
@@ -54,8 +84,8 @@ export default function AdminDashboard() {
     )
   }
 
-  // Show loading skeleton if user is loading OR bookings are loading for an authenticated user
-  const showLoading = isUserLoading || (user && isLoading);
+  // Show loading skeleton if authorizing OR if we are an admin and bookings are loading
+  const showLoading = isAuthorizing || (isUserAdmin && areBookingsLoading);
 
   const totalRevenue = bookings
     ?.reduce((acc, b) => acc + b.bookingFee, 0)

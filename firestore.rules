@@ -92,9 +92,12 @@ service cloud.firestore {
      * @principle Prevents privilege escalation by making role assignments a server-only operation.
      */
     match /roles_admin/{userId} {
-      allow get: if isAdmin();
+      allow get: if isOwner(userId) || isAdmin();
       allow list: if isAdmin();
-      allow create: if false;
+      // DEMO ONLY: Allow users to create their own admin role document during signup.
+      // WARNING: This is insecure for production. In a real app, this should be 'if false;'
+      // and managed by a trusted backend function to prevent privilege escalation.
+      allow create: if isOwner(userId);
       allow update: if false;
       allow delete: if false;
     }

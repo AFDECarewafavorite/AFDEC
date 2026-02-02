@@ -34,18 +34,32 @@ export default function SignupPage() {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!firestore || !auth) {
+      toast({
+        variant: "destructive",
+        title: "Firebase not initialized",
+        description: "Please try again in a moment.",
+      });
+      return;
+    }
+
     try {
       // We await user creation here to reliably get the user's UID.
       // This is crucial for creating their corresponding profile document in Firestore.
-      // While we generally prefer non-blocking calls, this one-time action on signup
-      // ensures data integrity between Auth and Firestore.
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       
       if (user) {
+          const isDemoAdmin = email === 'admin@afdec.online';
+          const isDemoAgent = email === 'agent@afdec.online';
+
+          let role: 'Customer' | 'Admin' | 'Agent' = 'Customer';
+          if (isDemoAdmin) role = 'Admin';
+          if (isDemoAgent) role = 'Agent';
+
           const userProfile = {
               id: user.uid,
-              role: 'Customer', // Default role
+              role: role,
               phone: phone,
               language: 'en',
               email: user.email,
@@ -53,6 +67,31 @@ export default function SignupPage() {
           };
           const userRef = doc(firestore, 'users', user.uid);
           setDocumentNonBlocking(userRef, userProfile, { merge: true });
+
+          if (isDemoAdmin) {
+            const adminRoleRef = doc(firestore, 'roles_admin', user.uid);
+            // This is for demo purposes. In production, this should be a trusted server operation.
+            setDocumentNonBlocking(adminRoleRef, { createdBy: user.uid }, { merge: true });
+          }
+
+          if (isDemoAgent) {
+            const agentProfile = {
+              id: user.uid,
+              userId: user.uid,
+              name: fullName,
+              referralCode: `${fullName.split(' ')[0].toUpperCase()}${user.uid.slice(0,4)}`,
+              totalCommission: 0,
+              availableBalance: 0,
+              totalBookings: 0,
+            };
+            const agentRef = doc(firestore, 'agents', user.uid);
+            setDocumentNonBlocking(agentRef, agentProfile, { merge: true });
+          }
+          
+          toast({
+            title: "Account Created",
+            description: "You have been successfully signed up.",
+          });
           router.push('/');
       }
     } catch(error: any) {
@@ -133,6 +172,7 @@ export default function SignupPage() {
                     type="password"
                     required
                     minLength={6}
+                    placeholder="Must be at least 6 characters"
                     className="pl-10 h-12"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}

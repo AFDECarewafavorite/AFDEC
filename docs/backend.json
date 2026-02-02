@@ -22,16 +22,22 @@
           "type": "string",
           "description": "Preferred language of the user."
         },
-        "referralCode": {
+        "email": {
           "type": "string",
-          "description": "Referral code of the user, if they are an agent."
+          "description": "User's email address."
+        },
+        "fullName": {
+          "type": "string",
+          "description": "User's full name."
         }
       },
       "required": [
         "id",
         "role",
         "phone",
-        "language"
+        "language",
+        "email",
+        "fullName"
       ]
     },
     "Booking": {
@@ -122,6 +128,10 @@
           "type": "string",
           "description": "Reference to User. (Relationship: User 1:1 Agent) The ID of the user who is an agent."
         },
+        "name": {
+          "type": "string",
+          "description": "Full name of the agent."
+        },
         "referralCode": {
           "type": "string",
           "description": "Unique referral code for the agent."
@@ -133,14 +143,20 @@
         "availableBalance": {
           "type": "number",
           "description": "Withdrawable balance for the agent."
+        },
+        "totalBookings": {
+            "type": "number",
+            "description": "Total number of bookings referred by the agent."
         }
       },
       "required": [
         "id",
         "userId",
+        "name",
         "referralCode",
         "totalCommission",
-        "availableBalance"
+        "availableBalance",
+        "totalBookings"
       ]
     },
     "Commission": {
