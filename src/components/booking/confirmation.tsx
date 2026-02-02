@@ -26,7 +26,7 @@ const WhatsAppIcon = () => (
   );
 
 export default function Confirmation({ bookingId, phone }: ConfirmationProps) {
-  const businessPhoneNumber = '2348000000000'; // Replace with actual business WhatsApp number
+  const businessPhoneNumber = '2341234567890'; // Replace with actual business WhatsApp number
   const message = `Hello AFDEC, I have just completed a booking with ID: ${bookingId}. My phone number is ${phone}.`;
   const whatsappUrl = `https://wa.me/${businessPhoneNumber}?text=${encodeURIComponent(message)}`;
 

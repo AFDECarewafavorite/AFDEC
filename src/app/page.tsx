@@ -242,7 +242,7 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6 text-center">
             <p className="font-bold text-primary">Contact Us</p>
             <div className="flex justify-center items-center gap-6 my-4">
-                <a href="https://wa.me/2348000000000" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                <a href="https://wa.me/2341234567890" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                     <WhatsAppIcon className="w-6 h-6"/>
                     <span className="sr-only">WhatsApp</span>
                 </a>
@@ -250,7 +250,7 @@ export default function Home() {
                     <FacebookIcon className="w-6 h-6"/>
                     <span className="sr-only">Facebook</span>
                 </a>
-                <a href="tel:+2348000000000" className="text-muted-foreground hover:text-primary transition-colors">
+                <a href="tel:+2341234567890" className="text-muted-foreground hover:text-primary transition-colors">
                     <Phone className="w-6 h-6"/>
                     <span className="sr-only">Call Us</span>
                 </a>
