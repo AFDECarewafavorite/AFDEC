@@ -42,29 +42,50 @@ export default function AgentDashboard() {
     [firestore, user]
   );
   const { data: agent, isLoading: isAgentLoading, error: agentError } = useDoc<Agent>(agentRef);
+  
+  const isUserAgent = !!agent;
 
   const referredBookingsQuery = useMemoFirebase(
     () =>
-      firestore && user
+      (firestore && user && isUserAgent)
         ? query(collectionGroup(firestore, 'bookings'), where('agentId', '==', user.uid))
         : null,
-    [firestore, user]
+    [firestore, user, isUserAgent]
   );
   const { data: bookings, isLoading: areBookingsLoading, error: bookingsError } = useCollection<Booking>(referredBookingsQuery);
 
-  const isLoading = isUserLoading || isAgentLoading || areBookingsLoading;
+  const isLoading = isUserLoading || isAgentLoading || (isUserAgent && areBookingsLoading);
+  const isAuthorizing = isUserLoading || (user && isAgentLoading);
   const hasError = agentError || bookingsError;
 
-  if (hasError) {
+  if (!isAuthorizing && user && !agent) {
     return (
         <div className="container mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
             <ShieldAlert className="h-16 w-16 text-destructive" />
             <h1 className="mt-6 text-3xl font-bold font-headline">Access Denied</h1>
             <p className="mt-2 text-lg text-muted-foreground">
-                You do not have permission to view this page or an error occurred.
+                You do not have permission to view this page.
             </p>
             <p className="text-sm text-muted-foreground">
-                Ensure you are signed in as an agent. Contact an administrator if you believe this is an error.
+                Ensure you are signed in as an agent.
+            </p>
+            <Button asChild variant="outline" className="mt-8">
+                <Link href="/">Return to Homepage</Link>
+            </Button>
+        </div>
+    )
+  }
+
+  if (hasError) {
+    return (
+        <div className="container mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+            <ShieldAlert className="h-16 w-16 text-destructive" />
+            <h1 className="mt-6 text-3xl font-bold font-headline">Error Loading Data</h1>
+            <p className="mt-2 text-lg text-muted-foreground">
+                Could not load your agent information.
+            </p>
+             <p className="text-sm text-muted-foreground max-w-md">
+                <code>{hasError.message}</code>
             </p>
             <Button asChild variant="outline" className="mt-8">
                 <Link href="/">Return to Homepage</Link>
