@@ -29,6 +29,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
+import { useFirestore, updateDocumentNonBlocking } from '@/firebase';
+import { doc } from 'firebase/firestore';
 
 interface BookingsTableProps {
   bookings: Booking[];
@@ -42,9 +44,12 @@ const statusStyles: { [key in BookingStatus]: string } = {
 };
 
 export default function BookingsTable({ bookings }: BookingsTableProps) {
-  const handleStatusChange = (bookingId: string, newStatus: BookingStatus) => {
-    // Here you would typically call an API to update the status
-    console.log(`Updating booking ${bookingId} to ${newStatus}`);
+  const firestore = useFirestore();
+  const handleStatusChange = (bookingId: string, customerId: string, newStatus: BookingStatus) => {
+    if (!firestore || !customerId || !bookingId) return;
+
+    const bookingRef = doc(firestore, 'users', customerId, 'bookings', bookingId);
+    updateDocumentNonBlocking(bookingRef, { status: newStatus });
   };
 
   return (
@@ -105,7 +110,7 @@ export default function BookingsTable({ bookings }: BookingsTableProps) {
                 <Select
                   defaultValue={booking.status}
                   onValueChange={(value) =>
-                    handleStatusChange(booking.id, value as BookingStatus)
+                    handleStatusChange(booking.id, booking.customerId, value as BookingStatus)
                   }
                 >
                   <SelectTrigger

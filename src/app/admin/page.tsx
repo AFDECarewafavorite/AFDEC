@@ -1,9 +1,32 @@
+'use client';
+
 import BookingsTable from './components/bookings-table';
-import { mockBookings } from '@/lib/placeholder-data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign, ShoppingBag, Users } from 'lucide-react';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collectionGroup, query, orderBy } from 'firebase/firestore';
+import type { Booking } from '@/lib/types';
+import { BookingsTableSkeleton } from './components/bookings-table-skeleton';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AdminDashboard() {
+  const firestore = useFirestore();
+
+  const bookingsQuery = useMemoFirebase(
+    () =>
+      firestore
+        ? query(collectionGroup(firestore, 'bookings'), orderBy('createdAt', 'desc'))
+        : null,
+    [firestore]
+  );
+
+  const { data: bookings, isLoading } = useCollection<Booking>(bookingsQuery);
+
+  const totalRevenue = bookings
+    ?.reduce((acc, b) => acc + b.bookingFee, 0)
+    .toLocaleString('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 });
+  const totalBookings = bookings?.length ?? 0;
+
   return (
     <div className="container mx-auto py-8 px-4">
       <header className="mb-8">
@@ -22,7 +45,7 @@ export default function AdminDashboard() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₦12,500</div>
+            <div className="text-2xl font-bold">{isLoading ? <Skeleton className="h-8 w-32" /> : totalRevenue}</div>
             <p className="text-xs text-muted-foreground">
               From booking fees
             </p>
@@ -34,7 +57,7 @@ export default function AdminDashboard() {
             <ShoppingBag className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+4</div>
+            <div className="text-2xl font-bold">{isLoading ? <Skeleton className="h-8 w-12" /> : `+${totalBookings}`}</div>
             <p className="text-xs text-muted-foreground">
               Across all statuses
             </p>
@@ -59,7 +82,14 @@ export default function AdminDashboard() {
             <CardTitle>All Bookings</CardTitle>
         </CardHeader>
         <CardContent>
-            <BookingsTable bookings={mockBookings} />
+            {isLoading && <BookingsTableSkeleton />}
+            {!isLoading && bookings && <BookingsTable bookings={bookings} />}
+            {!isLoading && !bookings?.length && (
+              <div className="text-center py-12 text-muted-foreground">
+                <ShoppingBag className="mx-auto h-12 w-12" />
+                <p className="mt-4">No bookings found.</p>
+              </div>
+            )}
         </CardContent>
       </Card>
     </div>

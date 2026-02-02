@@ -1,3 +1,5 @@
+import type { Timestamp, FieldValue } from 'firebase/firestore';
+
 export type BirdId = string;
 
 export type BirdType = {
@@ -40,7 +42,7 @@ export interface Booking {
   status: BookingStatus;
   managerNote?: string;
   expectedDate?: string;
-  createdAt: string;
+  createdAt: Timestamp | FieldValue | string;
   customerAvatar?: string;
 }
 
