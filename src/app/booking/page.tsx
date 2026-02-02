@@ -18,7 +18,7 @@ const TOTAL_STEPS = 4;
 
 const initialBookingData: BookingData = {
   birdType: null,
-  quantity: 10,
+  quantity: 1,
   fullName: '',
   phone: '',
   location: '',
