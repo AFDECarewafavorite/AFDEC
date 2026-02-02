@@ -1,24 +1,14 @@
-import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-
-const logoImage = PlaceHolderImages.find((img) => img.id === 'logo');
+import { Bird } from 'lucide-react';
 
 export default function Logo() {
   return (
     <div className="flex items-center gap-2">
-      {logoImage ? (
-        <Image
-          src={logoImage.imageUrl}
-          alt="AFDEC Logo"
-          width={32}
-          height={32}
-          className="object-cover"
-          data-ai-hint={logoImage.imageHint}
-        />
-      ) : (
-        <div className="w-8 h-8 bg-muted rounded-full" />
-      )}
-      <span className="font-bold text-lg font-headline">AFDEC</span>
+      <div className="p-2 bg-primary/20 rounded-lg">
+        <Bird className="w-5 h-5 text-primary" />
+      </div>
+      <span className="font-bold text-2xl font-headline text-primary">
+        AFDEC
+      </span>
     </div>
   );
 }
