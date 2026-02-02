@@ -7,6 +7,10 @@ import Header from '@/components/layout/header';
 export const metadata: Metadata = {
   title: 'AFDEC Online',
   description: 'AFDEC Online Chicken Booking System',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+  },
 };
 
 export default function RootLayout({
