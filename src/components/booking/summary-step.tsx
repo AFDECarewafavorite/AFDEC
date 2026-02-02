@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import type { BookingData, BirdType } from '@/lib/types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
 
@@ -15,6 +15,9 @@ export default function SummaryStep({ bookingData, bird }: SummaryStepProps) {
   }
 
   const bookingFee = bird.bookingFeePerUnit * bookingData.quantity;
+  const totalPrice = bird.pricePerUnit * bookingData.quantity;
+  const balanceDue = totalPrice - bookingFee;
+
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-NG', {
@@ -50,7 +53,7 @@ export default function SummaryStep({ bookingData, bird }: SummaryStepProps) {
               </div>
             </div>
             <div className="text-right w-full md:w-auto">
-              <p className="text-muted-foreground">Booking Fee</p>
+              <p className="text-muted-foreground">Booking Fee (Payable Now)</p>
               <p className="text-3xl font-bold text-primary">
                 {formatCurrency(bookingFee)}
               </p>
@@ -88,6 +91,16 @@ export default function SummaryStep({ bookingData, bird }: SummaryStepProps) {
             </AlertDescription>
           </Alert>
         </CardContent>
+        <CardFooter className="bg-card-foreground/5 dark:bg-black/20 p-6 flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <p className="text-muted-foreground text-sm">Total Estimated Price</p>
+                <p className="font-semibold text-lg">{formatCurrency(totalPrice)}</p>
+            </div>
+            <div className="text-left sm:text-right">
+                <p className="text-muted-foreground text-sm">Balance due on collection</p>
+                <p className="font-semibold text-lg">{formatCurrency(balanceDue)}</p>
+            </div>
+        </CardFooter>
       </Card>
     </div>
   );

@@ -10,7 +10,7 @@ interface SelectQuantityStepProps {
 }
 
 const MAX_QUANTITY = 200;
-const MIN_QUANTITY = 1;
+const MIN_QUANTITY = 10;
 
 export default function SelectQuantityStep({
   bookingData,
@@ -30,7 +30,7 @@ export default function SelectQuantityStep({
         Step 2: Select Quantity
       </h2>
       <p className="mt-2 text-lg text-foreground/80">
-        How many chickens would you like to book?
+        How many chickens would you like to book? (Minimum 10)
       </p>
       <div className="mt-8 flex flex-col items-center gap-8">
         <div className="flex items-center gap-4">

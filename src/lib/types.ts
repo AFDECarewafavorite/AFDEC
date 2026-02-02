@@ -12,6 +12,7 @@ export type BirdType = {
     hint: string;
   };
   bookingFeePerUnit: number;
+  pricePerUnit: number;
   maturity?: string;
 };
 

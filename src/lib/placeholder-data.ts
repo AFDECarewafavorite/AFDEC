@@ -11,8 +11,8 @@ const avatar3 = PlaceHolderImages.find((img) => img.id === 'avatar3');
 export const BIRD_TYPES: BirdType[] = [
   {
     id: 'agrited-chicks',
-    name: 'Agrited Day-Old Chicks',
-    description: 'Ross 308 broiler breed, known for very fast growth and high meat yield.',
+    name: 'Agrited (Ross 308)',
+    description: 'Known for very fast growth and high meat yield. A premium choice for many farmers.',
     image: {
       id: 'chick',
       src: chickImage?.imageUrl || 'https://picsum.photos/seed/chick/600/400',
@@ -21,12 +21,13 @@ export const BIRD_TYPES: BirdType[] = [
       hint: 'chick',
     },
     bookingFeePerUnit: 155,
+    pricePerUnit: 1460,
     maturity: '5-6 weeks',
   },
   {
     id: 'zartech-chicks',
-    name: 'Zartech Day-Old Chicks',
-    description: 'Cobb 500 broiler breed, a robust and efficient bird with great performance.',
+    name: 'Zartech (Cobb 500)',
+    description: 'A robust and efficient bird with great performance and feed conversion.',
     image: {
       id: 'chick',
       src: chickImage?.imageUrl || 'https://picsum.photos/seed/chick2/600/400',
@@ -35,6 +36,7 @@ export const BIRD_TYPES: BirdType[] = [
       hint: 'chick',
     },
     bookingFeePerUnit: 145,
+    pricePerUnit: 1415,
     maturity: '6 weeks',
   },
   {
@@ -49,6 +51,7 @@ export const BIRD_TYPES: BirdType[] = [
       hint: 'young chicken',
     },
     bookingFeePerUnit: 400,
+    pricePerUnit: 2500,
     maturity: 'Ready in 2-3 weeks',
   },
   {
@@ -63,6 +66,7 @@ export const BIRD_TYPES: BirdType[] = [
       hint: 'rooster',
     },
     bookingFeePerUnit: 750,
+    pricePerUnit: 4500,
     maturity: 'Ready for market',
   },
 ];
