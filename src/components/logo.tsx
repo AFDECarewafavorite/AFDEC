@@ -12,7 +12,7 @@ export default function Logo() {
           alt="AFDEC Logo"
           width={32}
           height={32}
-          className="rounded-full object-cover"
+          className="object-cover"
           data-ai-hint={logoImage.imageHint}
         />
       ) : (
