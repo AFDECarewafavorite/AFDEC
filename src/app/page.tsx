@@ -1,6 +1,15 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, CheckCircle, Phone, Mail, Clock, Shield, Award } from 'lucide-react';
+import {
+  ArrowRight,
+  CheckCircle,
+  Phone,
+  Mail,
+  Clock,
+  Shield,
+  Award,
+  ShoppingBag,
+} from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -177,7 +186,7 @@ export default function Home() {
               </div>
               <div className="flex flex-col items-center">
                 <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary text-primary-foreground">
-                  <CheckCircle />
+                  <ShoppingBag />
                 </div>
                 <h3 className="mt-4 text-xl font-semibold font-headline">
                   Collect Your Birds

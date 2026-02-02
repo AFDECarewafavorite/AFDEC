@@ -1,8 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Minus, Plus } from 'lucide-react';
+import { Minus, Plus, Bird } from 'lucide-react';
 import type { BookingData } from '@/lib/types';
-import ChickenIcon from './chicken-icon';
 import { BIRD_TYPES } from '@/lib/placeholder-data';
 import { Card } from '@/components/ui/card';
 
@@ -92,7 +91,7 @@ export default function SelectQuantityStep({
           <p className="text-sm font-medium text-foreground/70 mb-4">Live Preview</p>
           <div className="flex flex-wrap gap-2 justify-center max-h-48 overflow-y-auto p-2 rounded-md bg-background">
             {Array.from({ length: quantity > 50 ? 50 : quantity }).map((_, i) => (
-              <ChickenIcon key={i} className="w-6 h-6 text-primary/70" />
+              <Bird key={i} className="w-6 h-6 text-primary/70" />
             ))}
              {quantity > 50 && <span className="self-center text-primary font-bold">& more...</span>}
           </div>
