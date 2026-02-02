@@ -121,6 +121,10 @@ service cloud.firestore {
       allow update: if isExistingOwner(userId) || (isAdmin() && isExistingDoc());
       allow delete: if isExistingOwner(userId);
     }
+    
+    match /{path=**}/bookings/{bookingId} {
+      allow get, list: if isAdmin();
+    }
 
     /**
      * @description Defines rules for agent profile documents. Agents can manage their own profile. Admins can view agent profiles.

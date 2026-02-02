@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import type { BookingData } from '@/lib/types';
@@ -13,6 +13,15 @@ import SummaryStep from '@/components/booking/summary-step';
 import Confirmation from '@/components/booking/confirmation';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import {
+  useUser,
+  useAuth,
+  useFirestore,
+  addDocumentNonBlocking,
+} from '@/firebase';
+import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
+import { collection, serverTimestamp } from 'firebase/firestore';
+import { useToast } from '@/hooks/use-toast';
 
 const TOTAL_STEPS = 4;
 
@@ -27,9 +36,22 @@ const initialBookingData: BookingData = {
 
 export default function BookingPage() {
   const [step, setStep] = useState(1);
-  const [bookingData, setBookingData] = useState<BookingData>(initialBookingData);
+  const [bookingData, setBookingData] =
+    useState<BookingData>(initialBookingData);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [bookingId, setBookingId] = useState('');
+  const { toast } = useToast();
+
+  const { user, isUserLoading } = useUser();
+  const auth = useAuth();
+  const firestore = useFirestore();
+
+  useEffect(() => {
+    // If user is not logged in and we are done checking, sign them in anonymously.
+    if (!user && !isUserLoading) {
+      initiateAnonymousSignIn(auth);
+    }
+  }, [user, isUserLoading, auth]);
 
   const selectedBird = useMemo(
     () => BIRD_TYPES.find((b) => b.id === bookingData.birdType),
@@ -53,13 +75,52 @@ export default function BookingPage() {
   };
 
   const handleConfirm = () => {
-    // Simulate payment and booking creation
-    console.log('Final Booking Data:', bookingData);
-    const newBookingId = `AFDEC-${Date.now().toString().slice(-6)}`;
-    setBookingId(newBookingId);
+    if (!user) {
+      toast({
+        variant: 'destructive',
+        title: 'Authentication Error',
+        description: 'You must be signed in to create a booking.',
+      });
+      return;
+    }
+
+    if (!selectedBird) {
+      toast({
+        variant: 'destructive',
+        title: 'Validation Error',
+        description: 'Please select a bird type.',
+      });
+      return;
+    }
+
+    const bookingPayload = {
+      customerId: user.uid,
+      fullName: bookingData.fullName,
+      phone: bookingData.phone,
+      location: bookingData.location,
+      birdType: bookingData.birdType,
+      quantity: bookingData.quantity,
+      bookingFee: selectedBird.bookingFeePerUnit * bookingData.quantity,
+      agentId: bookingData.referralCode || '',
+      status: 'pending' as const,
+      createdAt: serverTimestamp(),
+      customerAvatar:
+        user.photoURL || `https://i.pravatar.cc/150?u=${user.uid}`,
+    };
+
+    const bookingsRef = collection(firestore, 'users', user.uid, 'bookings');
+    addDocumentNonBlocking(bookingsRef, bookingPayload).then((docRef) => {
+      if (docRef) {
+        setBookingId(docRef.id);
+      } else {
+        // Fallback for optimistic UI
+        setBookingId(`AFDEC-${Date.now().toString().slice(-6)}`);
+      }
+    });
+
     setIsConfirmed(true);
   };
-  
+
   if (isConfirmed) {
     return <Confirmation bookingId={bookingId} phone={bookingData.phone} />;
   }
@@ -129,14 +190,21 @@ export default function BookingPage() {
                 size="lg"
                 disabled={
                   (step === 1 && !bookingData.birdType) ||
-                  (step === 3 && (!bookingData.fullName || !bookingData.phone || !bookingData.location))
+                  (step === 3 &&
+                    (!bookingData.fullName ||
+                      !bookingData.phone ||
+                      !bookingData.location))
                 }
               >
                 Next
               </Button>
             )}
             {step === TOTAL_STEPS && (
-              <Button onClick={handleConfirm} size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
+              <Button
+                onClick={handleConfirm}
+                size="lg"
+                className="bg-accent hover:bg-accent/90 text-accent-foreground"
+              >
                 Confirm & Pay Booking Fee
               </Button>
             )}

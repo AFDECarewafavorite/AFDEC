@@ -41,7 +41,7 @@ export interface Booking {
   managerNote?: string;
   expectedDate?: string;
   createdAt: string;
-  customerAvatar: string;
+  customerAvatar?: string;
 }
 
 export interface Agent {
