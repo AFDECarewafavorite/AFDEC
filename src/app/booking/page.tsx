@@ -23,6 +23,7 @@ import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
 import { collection, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { useSearchParams } from 'next/navigation';
+import { calculateBookingFee } from '@/lib/utils';
 
 const TOTAL_STEPS = 4;
 
@@ -109,7 +110,7 @@ export default function BookingPage() {
       location: bookingData.location,
       birdType: bookingData.birdType,
       quantity: bookingData.quantity,
-      bookingFee: selectedBird.bookingFeePerUnit * bookingData.quantity,
+      bookingFee: calculateBookingFee(selectedBird, bookingData.quantity),
       agentId: bookingData.referralCode || null,
       status: 'pending' as const,
       createdAt: serverTimestamp(),

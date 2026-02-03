@@ -4,6 +4,7 @@ import { Minus, Plus, Bird } from 'lucide-react';
 import type { BookingData } from '@/lib/types';
 import { BIRD_TYPES } from '@/lib/placeholder-data';
 import { Card } from '@/components/ui/card';
+import { calculateBookingFee } from '@/lib/utils';
 
 interface SelectQuantityStepProps {
   bookingData: BookingData;
@@ -35,7 +36,7 @@ export default function SelectQuantityStep({
   
   const selectedBird = BIRD_TYPES.find(b => b.id === birdType);
 
-  const bookingFee = selectedBird ? selectedBird.bookingFeePerUnit * quantity : 0;
+  const bookingFee = calculateBookingFee(selectedBird, quantity);
   const totalPrice = selectedBird ? selectedBird.pricePerUnit * quantity : 0;
 
 

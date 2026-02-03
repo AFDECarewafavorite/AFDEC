@@ -3,6 +3,7 @@ import type { BookingData, BirdType } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
+import { calculateBookingFee } from '@/lib/utils';
 
 interface SummaryStepProps {
   bookingData: BookingData;
@@ -14,7 +15,7 @@ export default function SummaryStep({ bookingData, bird }: SummaryStepProps) {
     return <div>Error: Bird type not selected.</div>;
   }
 
-  const bookingFee = bird.bookingFeePerUnit * bookingData.quantity;
+  const bookingFee = calculateBookingFee(bird, bookingData.quantity);
   const totalPrice = bird.pricePerUnit * bookingData.quantity;
   const balanceDue = totalPrice - bookingFee;
 
