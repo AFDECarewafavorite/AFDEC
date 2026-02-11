@@ -18,10 +18,9 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import type { Booking, BookingStatus } from '@/lib/types';
-import { BIRD_TYPES } from '@/lib/placeholder-data';
+import type { Booking, BookingStatus, Product } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { Phone, MoreVertical } from 'lucide-react';
+import { Phone, MoreVertical, Bird } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
     DropdownMenu,
@@ -29,8 +28,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
-import { useFirestore, updateDocumentNonBlocking } from '@/firebase';
-import { doc } from 'firebase/firestore';
+import { useFirestore, updateDocumentNonBlocking, useCollection, useMemoFirebase } from '@/firebase';
+import { doc, collection } from 'firebase/firestore';
 
 interface BookingsTableProps {
   bookings: Booking[];
@@ -45,6 +44,13 @@ const statusStyles: { [key in BookingStatus]: string } = {
 
 export default function BookingsTable({ bookings }: BookingsTableProps) {
   const firestore = useFirestore();
+
+  const productsQuery = useMemoFirebase(
+    () => (firestore ? collection(firestore, 'products') : null),
+    [firestore]
+  );
+  const { data: products } = useCollection<Product>(productsQuery);
+
   const handleStatusChange = (bookingId: string, customerId: string, newStatus: BookingStatus) => {
     if (!firestore || !customerId || !bookingId) return;
 
@@ -57,7 +63,7 @@ export default function BookingsTable({ bookings }: BookingsTableProps) {
       <TableHeader>
         <TableRow>
           <TableHead>Customer</TableHead>
-          <TableHead>Bird Type</TableHead>
+          <TableHead>Product</TableHead>
           <TableHead className="text-center">Quantity</TableHead>
           <TableHead>Status</TableHead>
           <TableHead className="text-right">Actions</TableHead>
@@ -65,7 +71,7 @@ export default function BookingsTable({ bookings }: BookingsTableProps) {
       </TableHeader>
       <TableBody>
         {bookings.map((booking) => {
-          const birdType = BIRD_TYPES.find((b) => b.id === booking.birdType);
+          const product = products?.find((p) => p.id === booking.birdType);
           const customerInitials = booking.fullName.split(' ').map(s => s[0]).join('');
 
           return (
@@ -90,17 +96,21 @@ export default function BookingsTable({ bookings }: BookingsTableProps) {
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-3">
-                  {birdType && (
+                  {product ? (
                     <Image
-                      src={birdType.image.src}
-                      alt={birdType.name}
+                      src={product.imageUrl}
+                      alt={product.name}
                       width={40}
                       height={40}
                       className="rounded-md object-cover"
-                      data-ai-hint={birdType.image.hint}
+                      data-ai-hint={product.imageHint}
                     />
+                  ) : (
+                    <div className='w-10 h-10 rounded-md bg-muted flex items-center justify-center'>
+                      <Bird className='w-5 h-5 text-muted-foreground' />
+                    </div>
                   )}
-                  <span>{birdType?.name}</span>
+                  <span>{product?.name || 'Unknown Product'}</span>
                 </div>
               </TableCell>
               <TableCell className="text-center font-medium">
@@ -160,3 +170,4 @@ export default function BookingsTable({ bookings }: BookingsTableProps) {
     </Table>
   );
 }
+

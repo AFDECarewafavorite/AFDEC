@@ -8,6 +8,7 @@
  * - /users/{userId}/...: All data private to a specific user (profile, bookings).
  * - /agents/{agentId}/...: All data private to a specific agent (profile, commissions, withdrawals).
  * - /roles_admin/{userId}: A lookup collection to grant system-wide admin privileges.
+ * - /products/{productId}: A global collection of available products, manageable only by admins.
  *
  * Key Security Decisions:
  * - Default Deny: All operations are denied by default and must be explicitly allowed.
@@ -103,6 +104,19 @@ service cloud.firestore {
     }
 
     /**
+     * @description Manages available products. Admins have full control, while all users can read them.
+     * @path /products/{productId}
+     * @allow (read) Any user can view the list of available products for booking.
+     * @deny (write) A regular user tries to change product prices or details.
+     * @principle Separates product management (admin-only) from product viewing (public).
+     */
+    match /products/{productId} {
+      allow get: if true;
+      allow list: if true;
+      allow write: if isAdmin();
+    }
+
+    /**
      * @description Defines rules for user profile documents. Users can create their own profile and manage it afterward. Admins can read user profiles.
      * @path /users/{userId}
      * @allow (create) A newly signed-up user creates their own user document.
@@ -188,3 +202,4 @@ service cloud.firestore {
     }
   }
 }
+

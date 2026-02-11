@@ -1,14 +1,14 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Minus, Plus, Bird } from 'lucide-react';
-import type { BookingData } from '@/lib/types';
-import { BIRD_TYPES } from '@/lib/placeholder-data';
+import type { BookingData, Product } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { calculateBookingFee } from '@/lib/utils';
 
 interface SelectQuantityStepProps {
   bookingData: BookingData;
   onUpdateData: (data: Partial<BookingData>) => void;
+  product: Product | undefined;
 }
 
 const MAX_QUANTITY = 200;
@@ -25,20 +25,18 @@ const formatCurrency = (amount: number) => {
 export default function SelectQuantityStep({
   bookingData,
   onUpdateData,
+  product,
 }: SelectQuantityStepProps) {
-  const { quantity, birdType } = bookingData;
+  const { quantity } = bookingData;
 
   const handleQuantityChange = (newQuantity: number) => {
     if (newQuantity >= MIN_QUANTITY && newQuantity <= MAX_QUANTITY) {
       onUpdateData({ quantity: newQuantity });
     }
   };
-  
-  const selectedBird = BIRD_TYPES.find(b => b.id === birdType);
 
-  const bookingFee = calculateBookingFee(selectedBird, quantity);
-  const totalPrice = selectedBird ? selectedBird.pricePerUnit * quantity : 0;
-
+  const bookingFee = calculateBookingFee(product, quantity);
+  const totalPrice = product ? product.pricePerUnit * quantity : 0;
 
   return (
     <div className="text-center">
@@ -75,7 +73,7 @@ export default function SelectQuantityStep({
           </Button>
         </div>
 
-        {selectedBird && (
+        {product && (
             <Card className="w-full bg-transparent p-4 rounded-lg border border-border text-left">
                 <div className="flex justify-between items-center mb-2">
                     <p className="text-muted-foreground">Booking Fee (Payable now)</p>
@@ -101,3 +99,4 @@ export default function SelectQuantityStep({
     </div>
   );
 }
+

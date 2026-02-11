@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import type { BookingData, BirdType } from '@/lib/types';
+import type { BookingData, Product } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
@@ -7,16 +7,16 @@ import { calculateBookingFee } from '@/lib/utils';
 
 interface SummaryStepProps {
   bookingData: BookingData;
-  bird: BirdType | undefined;
+  product: Product | undefined;
 }
 
-export default function SummaryStep({ bookingData, bird }: SummaryStepProps) {
-  if (!bird) {
-    return <div>Error: Bird type not selected.</div>;
+export default function SummaryStep({ bookingData, product }: SummaryStepProps) {
+  if (!product) {
+    return <div>Error: Product not selected. Go back and select a product.</div>;
   }
 
-  const bookingFee = calculateBookingFee(bird, bookingData.quantity);
-  const totalPrice = bird.pricePerUnit * bookingData.quantity;
+  const bookingFee = calculateBookingFee(product, bookingData.quantity);
+  const totalPrice = product.pricePerUnit * bookingData.quantity;
   const balanceDue = totalPrice - bookingFee;
 
 
@@ -40,15 +40,15 @@ export default function SummaryStep({ bookingData, bird }: SummaryStepProps) {
         <CardHeader>
           <div className="flex flex-col md:flex-row items-start gap-6">
             <Image
-              src={bird.image.src}
-              alt={bird.name}
+              src={product.imageUrl}
+              alt={product.name}
               width={150}
               height={100}
               className="rounded-lg object-cover w-full md:w-[150px]"
-              data-ai-hint={bird.image.hint}
+              data-ai-hint={product.imageHint}
             />
             <div className="flex-1">
-              <CardTitle className="font-headline text-2xl">{bird.name}</CardTitle>
+              <CardTitle className="font-headline text-2xl">{product.name}</CardTitle>
               <div className="text-4xl font-bold mt-2">
                 x {bookingData.quantity}
               </div>
@@ -106,3 +106,4 @@ export default function SummaryStep({ bookingData, bird }: SummaryStepProps) {
     </div>
   );
 }
+

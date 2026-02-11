@@ -3,8 +3,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import type { BookingData } from '@/lib/types';
-import { BIRD_TYPES } from '@/lib/placeholder-data';
+import type { BookingData, Product } from '@/lib/types';
 import StepIndicator from '@/components/booking/step-indicator';
 import SelectBirdStep from '@/components/booking/select-bird-step';
 import SelectQuantityStep from '@/components/booking/select-quantity-step';
@@ -12,18 +11,21 @@ import CustomerDetailsStep from '@/components/booking/customer-details-step';
 import SummaryStep from '@/components/booking/summary-step';
 import Confirmation from '@/components/booking/confirmation';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader } from 'lucide-react';
 import {
   useUser,
   useAuth,
   useFirestore,
   addDocumentNonBlocking,
+  useCollection,
+  useMemoFirebase,
 } from '@/firebase';
 import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
-import { collection, serverTimestamp } from 'firebase/firestore';
+import { collection, serverTimestamp, query, where } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { useSearchParams } from 'next/navigation';
 import { calculateBookingFee } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const TOTAL_STEPS = 4;
 
@@ -49,6 +51,13 @@ export default function BookingPage() {
   const auth = useAuth();
   const firestore = useFirestore();
 
+  const productsQuery = useMemoFirebase(
+    () => (firestore ? query(collection(firestore, 'products'), where('isActive', '==', true)) : null),
+    [firestore]
+  );
+  const { data: products, isLoading: areProductsLoading } = useCollection<Product>(productsQuery);
+
+
   useEffect(() => {
     const refCode = searchParams.get('ref');
     if (refCode) {
@@ -63,9 +72,9 @@ export default function BookingPage() {
     }
   }, [user, isUserLoading, auth]);
 
-  const selectedBird = useMemo(
-    () => BIRD_TYPES.find((b) => b.id === bookingData.birdType),
-    [bookingData.birdType]
+  const selectedProduct = useMemo(
+    () => products?.find((b) => b.id === bookingData.birdType),
+    [products, bookingData.birdType]
   );
 
   const updateData = (data: Partial<BookingData>) => {
@@ -94,11 +103,11 @@ export default function BookingPage() {
       return;
     }
 
-    if (!selectedBird) {
+    if (!selectedProduct) {
       toast({
         variant: 'destructive',
         title: 'Validation Error',
-        description: 'Please select a bird type.',
+        description: 'Please select a product.',
       });
       return;
     }
@@ -110,7 +119,7 @@ export default function BookingPage() {
       location: bookingData.location,
       birdType: bookingData.birdType,
       quantity: bookingData.quantity,
-      bookingFee: calculateBookingFee(selectedBird, bookingData.quantity),
+      bookingFee: calculateBookingFee(selectedProduct, bookingData.quantity),
       agentId: bookingData.referralCode || null,
       status: 'pending' as const,
       createdAt: serverTimestamp(),
@@ -136,6 +145,15 @@ export default function BookingPage() {
   }
 
   const renderStepContent = () => {
+    if (areProductsLoading) {
+        return (
+            <div className="space-y-4 text-center">
+                <Loader className="mx-auto h-12 w-12 animate-spin text-primary" />
+                <p className="text-muted-foreground">Loading available products...</p>
+            </div>
+        )
+    }
+
     switch (step) {
       case 1:
         return (
@@ -143,6 +161,7 @@ export default function BookingPage() {
             bookingData={bookingData}
             onUpdateData={updateData}
             onNextStep={nextStep}
+            products={products || []}
           />
         );
       case 2:
@@ -150,6 +169,7 @@ export default function BookingPage() {
           <SelectQuantityStep
             bookingData={bookingData}
             onUpdateData={updateData}
+            product={selectedProduct}
           />
         );
       case 3:
@@ -160,7 +180,7 @@ export default function BookingPage() {
           />
         );
       case 4:
-        return <SummaryStep bookingData={bookingData} bird={selectedBird} />;
+        return <SummaryStep bookingData={bookingData} product={selectedProduct} />;
       default:
         return null;
     }
@@ -224,3 +244,4 @@ export default function BookingPage() {
     </div>
   );
 }
+

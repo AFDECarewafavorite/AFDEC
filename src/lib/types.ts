@@ -1,25 +1,24 @@
 import type { Timestamp, FieldValue } from 'firebase/firestore';
 
-export type BirdId = string;
+export type ProductId = string;
 
-export type BirdType = {
-  id: BirdId;
+export interface Product {
+  id: ProductId;
   name: string;
   description: string;
-  image: {
-    id: string;
-    src: string;
-    width: number;
-    height: number;
-    hint: string;
-  };
+  category: 'chick' | 'grower' | 'mature';
+  imageUrl: string;
+  imageHint: string;
+  imageWidth: number;
+  imageHeight: number;
   bookingFeePerUnit: number;
   pricePerUnit: number;
   maturity?: string;
-};
+  isActive: boolean;
+}
 
 export interface BookingData {
-  birdType: BirdId | null;
+  birdType: ProductId | null;
   quantity: number;
   fullName: string;
   phone: string;
@@ -35,7 +34,7 @@ export interface Booking {
   fullName:string;
   phone: string;
   location: string;
-  birdType: BirdId;
+  birdType: ProductId;
   quantity: number;
   bookingFee: number;
   agentId?: string;
@@ -55,3 +54,4 @@ export interface Agent {
   availableBalance: number;
   totalBookings: number;
 }
+

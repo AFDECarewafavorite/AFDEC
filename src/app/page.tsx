@@ -1,3 +1,4 @@
+'use client';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -10,17 +11,21 @@ import {
   Award,
   ShoppingBag,
   ListOrdered,
+  Loader,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BIRD_TYPES } from '@/lib/placeholder-data';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, where } from 'firebase/firestore';
+import type { Product } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const heroImage = PlaceHolderImages.find((img) => img.id === 'hero');
 
-const WhatsAppIcon = ({className}: {className?:string}) => (
+const WhatsAppIcon = ({className}: {className?: string}) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="24"
@@ -37,7 +42,7 @@ const WhatsAppIcon = ({className}: {className?:string}) => (
     </svg>
 );
 
-const FacebookIcon = ({className}: {className?:string}) => (
+const FacebookIcon = ({className}: {className?: string}) => (
     <svg 
         xmlns="http://www.w3.org/2000/svg" 
         width="24" 
@@ -56,6 +61,13 @@ const FacebookIcon = ({className}: {className?:string}) => (
 
 
 export default function Home() {
+  const firestore = useFirestore();
+  const productsQuery = useMemoFirebase(
+    () => (firestore ? query(collection(firestore, 'products'), where('isActive', '==', true)) : null),
+    [firestore]
+  );
+  const { data: products, isLoading: areProductsLoading } = useCollection<Product>(productsQuery);
+
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
@@ -110,45 +122,67 @@ export default function Home() {
               needs.
             </p>
             <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-              {BIRD_TYPES.map((bird) => (
+              {areProductsLoading && Array.from({length: 4}).map((_, i) => (
+                <Card key={i} className="flex flex-col">
+                  <CardHeader className="p-0">
+                    <Skeleton className="w-full h-48" />
+                  </CardHeader>
+                  <CardContent className="p-6 flex-1 flex flex-col">
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-4 w-full mt-4" />
+                    <Skeleton className="h-4 w-1/2 mt-2" />
+                    <div className="mt-4 flex justify-between items-center">
+                        <Skeleton className="h-5 w-24" />
+                        <Skeleton className="h-5 w-20" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              {!areProductsLoading && products?.map((product) => (
                 <Card
-                  key={bird.id}
+                  key={product.id}
                   className="overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out flex flex-col"
                 >
                   <CardHeader className="p-0">
                     <Image
-                      src={bird.image.src}
-                      alt={bird.name}
-                      width={bird.image.width}
-                      height={bird.image.height}
+                      src={product.imageUrl}
+                      alt={product.name}
+                      width={product.imageWidth}
+                      height={product.imageHeight}
                       className="w-full h-48 object-cover"
-                      data-ai-hint={bird.image.hint}
+                      data-ai-hint={product.imageHint}
                     />
                   </CardHeader>
                   <CardContent className="p-6 flex-1 flex flex-col">
                     <CardTitle className="font-headline text-xl">
-                      {bird.name}
+                      {product.name}
                     </CardTitle>
                     <p className="mt-2 text-foreground/70 flex-1">
-                      {bird.description}
+                      {product.description}
                     </p>
                     <div className="mt-4 flex justify-between items-center">
-                        {bird.maturity && (
+                        {product.maturity && (
                             <Badge
                             variant="outline"
                             className="border-primary/50 text-primary"
                             >
-                            Maturity: {bird.maturity}
+                            Maturity: {product.maturity}
                             </Badge>
                         )}
                          <p className="font-semibold text-primary">
-                            ₦{bird.bookingFeePerUnit} fee
+                            ₦{product.bookingFeePerUnit} fee
                         </p>
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
+            {!areProductsLoading && products?.length === 0 && (
+                <div className="text-center col-span-full py-16">
+                    <ShoppingBag className="mx-auto h-12 w-12 text-muted-foreground" />
+                    <p className="mt-4 text-muted-foreground">No products available at the moment. Please check back later.</p>
+                </div>
+            )}
           </div>
         </section>
 
@@ -280,3 +314,4 @@ export default function Home() {
     </div>
   );
 }
+

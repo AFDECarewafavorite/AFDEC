@@ -223,6 +223,73 @@
         "amount",
         "status"
       ]
+    },
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents a product (type of bird) available for booking, managed by an admin.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the product."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the product (e.g., Agrited Day-old Chicks)."
+        },
+        "description": {
+          "type": "string",
+          "description": "A short description of the product."
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the bird (chick, grower, mature)."
+        },
+        "pricePerUnit": {
+          "type": "number",
+          "description": "The total price per unit to be paid on collection."
+        },
+        "bookingFeePerUnit": {
+          "type": "number",
+          "description": "The booking fee per unit, paid upfront."
+        },
+        "maturity": {
+          "type": "string",
+          "description": "Expected maturity time for the bird."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL for the product image."
+        },
+        "imageHint": {
+          "type": "string",
+          "description": "Hint for AI to find a better image."
+        },
+        "imageWidth": {
+            "type": "number"
+        },
+        "imageHeight": {
+            "type": "number"
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Whether the product is currently available for booking."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "category",
+        "pricePerUnit",
+        "bookingFeePerUnit",
+        "isActive",
+        "imageUrl",
+        "imageHint",
+        "imageWidth",
+        "imageHeight"
+      ]
     }
   },
   "auth": {
@@ -337,6 +404,22 @@
             {
               "name": "userId",
               "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/products/{productId}",
+        "definition": {
+          "entityName": "Product",
+          "schema": {
+            "$ref": "#/backend/entities/Product"
+          },
+          "description": "Stores all available products that customers can book. Managed by admins.",
+          "params": [
+            {
+              "name": "productId",
+              "description": "The unique identifier of the product."
             }
           ]
         }
