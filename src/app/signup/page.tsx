@@ -50,8 +50,7 @@ export default function SignupPage() {
       const user = userCredential.user;
       
       if (user) {
-          // You can replace 'YOUR_ADMIN_EMAIL@gmail.com' with your actual email to make it an admin account.
-          const isDemoAdmin = email === 'admin@afdec.online' || email === 'YOUR_ADMIN_EMAIL@gmail.com';
+          const isDemoAdmin = email === 'admin@afdec.online';
           const isDemoAgent = email === 'agent@afdec.online';
 
           let role: 'Customer' | 'Admin' | 'Agent' = 'Customer';
@@ -121,11 +120,10 @@ export default function SignupPage() {
             <CardContent className="space-y-4">
             <div className="text-center text-sm text-muted-foreground bg-muted/50 p-3 rounded-md">
                 <p className="font-bold text-left">Creating Demo Accounts</p>
-                <p className="text-left">To test different roles, you can sign up with these specific emails:</p>
+                <p className="text-left">To test different roles, sign up with a special email below. Any other email will create a standard customer account.</p>
                 <ul className="text-left mt-2 space-y-1">
-                    <li><strong>Admin:</strong> <code className="font-mono text-xs">admin@afdec.online</code> or your own email (see code).</li>
-                    <li><strong>Agent:</strong> <code className="font-mono text-xs">agent@afdec.online</code></li>
-                    <li>Any other email will create a standard customer account.</li>
+                    <li><strong>For an Admin account, use:</strong> <code className="font-mono text-xs">admin@afdec.online</code></li>
+                    <li><strong>For an Agent account, use:</strong> <code className="font-mono text-xs">agent@afdec.online</code></li>
                 </ul>
             </div>
             <div className="space-y-2">

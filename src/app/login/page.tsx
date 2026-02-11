@@ -46,12 +46,11 @@ export default function LoginPage() {
         <form onSubmit={handleLogin}>
           <CardContent className="space-y-4">
           <div className="text-center text-sm text-muted-foreground bg-muted/50 p-3 rounded-md">
-                <p className="font-bold text-left">Demo Accounts</p>
-                <p className="text-left">Use the sign up page to create these accounts first.</p>
+                <p className="font-bold text-left">For Testing:</p>
+                <p className='text-left'>First, use the <Link href="/signup" className='underline'>Sign Up</Link> page to create a demo account with one of the special emails below. You can choose any password.</p>
                 <ul className="text-left mt-2 space-y-1">
-                    <li><strong>Admin:</strong> <code className="font-mono text-xs">admin@afdec.online</code></li>
-                    <li><strong>Agent:</strong> <code className="font-mono text-xs">agent@afdec.online</code></li>
-                    <li><strong>Password:</strong> <code className="font-mono text-xs">password</code></li>
+                    <li><strong>Admin Email:</strong> <code className="font-mono text-xs">admin@afdec.online</code></li>
+                    <li><strong>Agent Email:</strong> <code className="font-mono text-xs">agent@afdec.online</code></li>
                 </ul>
             </div>
             <div className="space-y-2">
