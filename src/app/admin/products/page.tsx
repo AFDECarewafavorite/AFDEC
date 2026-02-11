@@ -1,13 +1,13 @@
 'use client';
 
-import { useCollection, useFirestore, useMemoFirebase, useUser, useDoc } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
+import { useCollection, useFirestore, useMemoFirebase, useUser, useDoc, setDocumentNonBlocking } from '@/firebase';
+import { collection, query, orderBy, doc } from 'firebase/firestore';
 import type { Product } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { PlusCircle, ShieldAlert, MoreHorizontal, Bird } from 'lucide-react';
+import { PlusCircle, ShieldAlert, MoreHorizontal, Bird, Loader } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -26,14 +26,72 @@ import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ProductDialog } from './components/product-dialog';
+import { useToast } from '@/hooks/use-toast';
+
+const demoProducts: Omit<Product, 'id'>[] = [
+    {
+        name: 'Agrited Broiler (Day-old)',
+        description: 'High-quality day-old broiler chicks from Agrited hatcheries. Known for fast growth.',
+        category: 'chick',
+        pricePerUnit: 1850,
+        bookingFeePerUnit: 50,
+        maturity: '5-6 weeks',
+        imageUrl: 'https://picsum.photos/seed/agrited/600/400',
+        imageHint: 'day-old chick',
+        imageWidth: 600,
+        imageHeight: 400,
+        isActive: true,
+    },
+    {
+        name: 'Zartech Broiler (Day-old)',
+        description: 'Hardy and reliable day-old broiler chicks from Zartech farms.',
+        category: 'chick',
+        pricePerUnit: 1800,
+        bookingFeePerUnit: 50,
+        maturity: '6-7 weeks',
+        imageUrl: 'https://picsum.photos/seed/zartech/600/400',
+        imageHint: 'yellow chick',
+        imageWidth: 600,
+        imageHeight: 400,
+        isActive: true,
+    },
+    {
+        name: 'Point of Lay (Grower)',
+        description: 'Young hens approaching the age of laying eggs. Great for starting your own egg production.',
+        category: 'grower',
+        pricePerUnit: 4500,
+        bookingFeePerUnit: 500,
+        maturity: '16-18 weeks',
+        imageUrl: 'https://picsum.photos/seed/pol/600/400',
+        imageHint: 'young chicken',
+        imageWidth: 600,
+        imageHeight: 400,
+        isActive: true,
+    },
+    {
+        name: 'Mature Broiler (Live)',
+        description: 'Fully grown broiler, ready for market. Average weight of 2.5kg.',
+        category: 'mature',
+        pricePerUnit: 8000,
+        bookingFeePerUnit: 1000,
+        maturity: 'Ready',
+        imageUrl: 'https://picsum.photos/seed/broiler/600/400',
+        imageHint: 'white chicken',
+        imageWidth: 600,
+        imageHeight: 400,
+        isActive: true,
+    },
+];
 
 export default function AdminProductsPage() {
     const firestore = useFirestore();
     const { user, isUserLoading: isAuthLoading } = useUser();
     const router = useRouter();
+    const { toast } = useToast();
 
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(undefined);
+    const [isSeeding, setIsSeeding] = useState(false);
 
     const adminRoleRef = useMemoFirebase(
         () => (firestore && user ? doc(firestore, 'roles_admin', user.uid) : null),
@@ -55,7 +113,7 @@ export default function AdminProductsPage() {
         [firestore, isUserAdmin]
     );
 
-    const { data: products, isLoading: areProductsLoading, error: productsError } = useCollection<Product>(productsQuery);
+    const { data: products, isLoading: areProductsLoading } = useCollection<Product>(productsQuery);
 
     const handleAddProduct = () => {
         setSelectedProduct(undefined);
@@ -66,6 +124,34 @@ export default function AdminProductsPage() {
         setSelectedProduct(product);
         setDialogOpen(true);
     }
+
+    const handleSeedProducts = () => {
+        if (!firestore) return;
+        setIsSeeding(true);
+
+        try {
+            demoProducts.forEach(productData => {
+                const productRef = doc(collection(firestore, 'products'));
+                const newProduct = { ...productData, id: productRef.id };
+                setDocumentNonBlocking(productRef, newProduct, { merge: false });
+            });
+            toast({
+                title: 'Seeding Products',
+                description: 'Demo products are being added to your database.',
+            });
+        } catch (error) {
+            console.error("Error seeding products:", error);
+            toast({
+                variant: 'destructive',
+                title: 'Seeding Failed',
+                description: 'Could not add demo products. Check console for errors.',
+            });
+        } finally {
+            setTimeout(() => {
+                setIsSeeding(false);
+            }, 2500); 
+        }
+    };
 
     if (!isAuthorizing && user && !isUserAdmin) {
         return (
@@ -128,8 +214,16 @@ export default function AdminProductsPage() {
                         ))}
                         {!isLoading && products?.length === 0 && (
                             <TableRow>
-                                <TableCell colSpan={6} className="h-24 text-center">
-                                    No products found. Add one to get started.
+                                <TableCell colSpan={6} className="h-48 text-center">
+                                    <Bird className="mx-auto h-12 w-12 text-muted-foreground" />
+                                    <h3 className="mt-4 text-lg font-semibold">No Products Found</h3>
+                                    <p className="mt-2 text-sm text-muted-foreground">Get started by adding your first product or seeding demo data.</p>
+                                    <div className="mt-6">
+                                        <Button onClick={handleSeedProducts} disabled={isSeeding}>
+                                            {isSeeding ? <Loader className="mr-2 h-4 w-4 animate-spin" /> : <PlusCircle className="mr-2 h-4 w-4" />}
+                                            {isSeeding ? 'Seeding...' : 'Seed Demo Products'}
+                                        </Button>
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         )}
@@ -173,4 +267,3 @@ export default function AdminProductsPage() {
         </div>
     );
 }
-

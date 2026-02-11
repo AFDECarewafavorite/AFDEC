@@ -4,8 +4,8 @@ import BookingsTable from './components/bookings-table';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { DollarSign, ShoppingBag, Users, ShieldAlert, Package } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useUser, useDoc } from '@/firebase';
-import { collectionGroup, query, orderBy, doc } from 'firebase/firestore';
-import type { Booking } from '@/lib/types';
+import { collectionGroup, query, orderBy, doc, collection } from 'firebase/firestore';
+import type { Agent, Booking } from '@/lib/types';
 import { BookingsTableSkeleton } from './components/bookings-table-skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
@@ -45,6 +45,12 @@ export default function AdminDashboard() {
   );
 
   const { data: bookings, isLoading: areBookingsLoading, error: bookingsError } = useCollection<Booking>(bookingsQuery);
+  
+  const agentsQuery = useMemoFirebase(
+    () => (firestore && isUserAdmin ? collection(firestore, 'agents') : null),
+    [firestore, isUserAdmin]
+  );
+  const { data: agents, isLoading: areAgentsLoading } = useCollection<Agent>(agentsQuery);
 
   // Show Access Denied for non-admins
   if (!isAuthorizing && user && !isUserAdmin) {
@@ -84,8 +90,8 @@ export default function AdminDashboard() {
     )
   }
 
-  // Show loading skeleton if authorizing OR if we are an admin and bookings are loading
-  const showLoading = isAuthorizing || (isUserAdmin && areBookingsLoading);
+  // Show loading skeleton if authorizing OR if we are an admin and data is loading
+  const showLoading = isAuthorizing || (isUserAdmin && (areBookingsLoading || areAgentsLoading));
 
   const totalRevenue = bookings
     ?.reduce((acc, b) => acc + b.bookingFee, 0)
@@ -130,13 +136,13 @@ export default function AdminDashboard() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Agents</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Agents</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+2</div>
+            <div className="text-2xl font-bold">{showLoading ? <Skeleton className="h-8 w-12" /> : `+${agents?.length ?? 0}`}</div>
             <p className="text-xs text-muted-foreground">
-              With recent referrals
+              Registered in the system
             </p>
           </CardContent>
         </Card>
@@ -174,4 +180,3 @@ export default function AdminDashboard() {
     </div>
   );
 }
-
