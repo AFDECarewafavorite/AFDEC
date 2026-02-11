@@ -12,23 +12,52 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Mail, Lock } from 'lucide-react';
+import { Mail, Lock, Loader } from 'lucide-react';
 import Link from 'next/link';
 import Logo from '@/components/logo';
 import { useAuth } from '@/firebase';
-import { initiateEmailSignIn } from '@/firebase/non-blocking-login';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 export default function LoginPage() {
   const auth = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    initiateEmailSignIn(auth, email, password);
-    router.push('/'); // Redirect after login attempt
+    if (!auth) {
+        toast({
+            variant: "destructive",
+            title: "Authentication service not ready",
+            description: "Please wait a moment and try again.",
+        });
+        return;
+    }
+    setIsLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      toast({
+        title: "Login Successful",
+        description: "Welcome back!",
+      });
+      router.push('/');
+    } catch (error: any) {
+        console.error("Login failed:", error);
+        toast({
+            variant: "destructive",
+            title: "Login Failed",
+            description: error.code === 'auth/invalid-credential' 
+                ? 'Invalid email or password.' 
+                : error.message || 'An unexpected error occurred.',
+        });
+    } finally {
+        setIsLoading(false);
+    }
   };
 
   return (
@@ -65,6 +94,7 @@ export default function LoginPage() {
                   className="pl-10 h-12"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -79,11 +109,13 @@ export default function LoginPage() {
                   className="pl-10 h-12"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full h-12 text-base">
-              Login
+            <Button type="submit" className="w-full h-12 text-base" disabled={isLoading}>
+                {isLoading && <Loader className="animate-spin mr-2" />}
+                {isLoading ? 'Logging in...' : 'Login'}
             </Button>
           </CardContent>
         </form>
