@@ -78,7 +78,8 @@ export default function LoginPage() {
                 <p className="font-bold text-left">For Testing:</p>
                 <p className='text-left'>First, use the <Link href="/signup" className='underline'>Sign Up</Link> page to create a demo account with one of the special emails below. You can choose any password.</p>
                 <ul className="text-left mt-2 space-y-1">
-                    <li><strong>Admin Email:</strong> <code className="font-mono text-xs">admin@afdec.online</code></li>
+                    <li><strong>CEO Email:</strong> <code className="font-mono text-xs">ceo@afdec.online</code></li>
+                    <li><strong>Manager Email:</strong> <code className="font-mono text-xs">manager@afdec.online</code></li>
                     <li><strong>Agent Email:</strong> <code className="font-mono text-xs">agent@afdec.online</code></li>
                 </ul>
             </div>

@@ -1,0 +1,129 @@
+'use client';
+
+import { useCollection, useFirestore, useMemoFirebase, useUser, useDoc, setDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
+import { collection, query, orderBy, doc } from 'firebase/firestore';
+import type { User as UserType, UserRole } from '@/lib/types';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { ShieldAlert, Users, Loader } from 'lucide-react';
+import { UsersTable } from './components/users-table';
+import { UsersTableSkeleton } from './components/users-table-skeleton';
+import { useToast } from '@/hooks/use-toast';
+
+export default function AdminUsersPage() {
+    const firestore = useFirestore();
+    const { user, isUserLoading: isAuthLoading } = useUser();
+    const router = useRouter();
+    const { toast } = useToast();
+
+    const ceoRoleRef = useMemoFirebase(
+        () => (firestore && user ? doc(firestore, 'roles_ceo', user.uid) : null),
+        [firestore, user]
+    );
+    const { data: ceoRole, isLoading: isCeoRoleLoading } = useDoc(ceoRoleRef);
+    
+    const isUserCEO = !!ceoRole;
+    const isAuthorizing = isAuthLoading || (user && isCeoRoleLoading);
+
+    useEffect(() => {
+        if (!isAuthLoading && !user) {
+          router.push('/login');
+        }
+    }, [user, isAuthLoading, router]);
+
+    const usersQuery = useMemoFirebase(
+        () => (firestore && isUserCEO ? query(collection(firestore, 'users'), orderBy('fullName')) : null),
+        [firestore, isUserCEO]
+    );
+
+    const { data: users, isLoading: areUsersLoading } = useCollection<UserType>(usersQuery);
+
+    const handleRoleChange = (userId: string, newRole: UserRole) => {
+        if (!firestore) return;
+    
+        const userRef = doc(firestore, 'users', userId);
+        updateDocumentNonBlocking(userRef, { role: newRole });
+    
+        const managerRoleRef = doc(firestore, 'roles_manager', userId);
+        const ceoRoleRef = doc(firestore, 'roles_ceo', userId);
+    
+        // Clean up old roles first
+        deleteDocumentNonBlocking(managerRoleRef);
+        deleteDocumentNonBlocking(ceoRoleRef);
+    
+        // Assign new role
+        if (newRole === 'Manager') {
+            setDocumentNonBlocking(managerRoleRef, { userId }, { merge: true });
+        } else if (newRole === 'CEO') {
+            setDocumentNonBlocking(ceoRoleRef, { userId }, { merge: true });
+        }
+
+        toast({
+            title: "Role Updated",
+            description: `User role has been changed to ${newRole}.`,
+        })
+    };
+
+    const handleSuspendToggle = (userId: string, currentStatus: boolean) => {
+        if (!firestore) return;
+        const userRef = doc(firestore, 'users', userId);
+        updateDocumentNonBlocking(userRef, { isSuspended: !currentStatus });
+        toast({
+            title: `User ${!currentStatus ? 'Suspended' : 'Unsuspended'}`,
+            description: `The user's account status has been updated.`,
+        })
+    }
+
+    if (!isAuthorizing && user && !isUserCEO) {
+        return (
+            <div className="container mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+                <ShieldAlert className="h-16 w-16 text-destructive" />
+                <h1 className="mt-6 text-3xl font-bold font-headline">Access Denied</h1>
+                <p className="mt-2 text-lg text-muted-foreground">
+                    Only the CEO can access this page.
+                </p>
+                <Button asChild variant="outline" className="mt-8">
+                    <Link href="/admin">Back to Dashboard</Link>
+                </Button>
+            </div>
+        )
+    }
+
+    const isLoading = isAuthorizing || areUsersLoading;
+
+    return (
+        <div className="container mx-auto py-8 px-4">
+            <header className="mb-8 flex items-center justify-between">
+                <div>
+                    <h1 className="text-3xl font-bold font-headline text-primary">
+                    User Management
+                    </h1>
+                    <p className="text-muted-foreground">
+                    Assign roles and manage user accounts.
+                    </p>
+                </div>
+            </header>
+            
+            <div className="rounded-lg border">
+                {isLoading && <UsersTableSkeleton />}
+                {!isLoading && users && (
+                    <UsersTable 
+                        users={users} 
+                        onRoleChange={handleRoleChange} 
+                        onSuspendToggle={handleSuspendToggle}
+                        currentUserId={user?.uid || ''}
+                    />
+                )}
+                {!isLoading && !users?.length && (
+                    <div className="h-48 text-center flex flex-col justify-center items-center">
+                        <Users className="mx-auto h-12 w-12 text-muted-foreground" />
+                        <h3 className="mt-4 text-lg font-semibold">No Other Users Found</h3>
+                        <p className="mt-2 text-sm text-muted-foreground">As more users sign up, they will appear here.</p>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}

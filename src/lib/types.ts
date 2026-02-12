@@ -17,6 +17,18 @@ export interface Product {
   isActive: boolean;
 }
 
+export type UserRole = 'Customer' | 'Agent' | 'Manager' | 'CEO';
+
+export interface User {
+    id: string;
+    role: UserRole;
+    phone: string;
+    language: string;
+    email: string | null;
+    fullName: string;
+    isSuspended?: boolean;
+}
+
 export interface BookingData {
   birdType: ProductId | null;
   quantity: number;
@@ -54,4 +66,3 @@ export interface Agent {
   availableBalance: number;
   totalBookings: number;
 }
-

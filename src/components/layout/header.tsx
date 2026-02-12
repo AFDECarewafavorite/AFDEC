@@ -19,7 +19,7 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/booking', label: 'Book Now' },
   { href: '/agent', label: 'Agent Portal' },
-  { href: '/admin', label: 'Admin' },
+  { href: '/admin', label: 'Dashboard' },
 ];
 
 export default function Header() {
@@ -39,7 +39,7 @@ export default function Header() {
                 href={link.href}
                 className={cn(
                   'transition-colors hover:text-primary',
-                  pathname === link.href
+                  pathname.startsWith(link.href) && link.href !== '/' || pathname === '/' && link.href === '/'
                     ? 'text-primary'
                     : 'text-foreground/60'
                 )}
@@ -82,7 +82,7 @@ export default function Header() {
                     href={link.href}
                     className={cn(
                       'text-lg transition-colors hover:text-primary',
-                      pathname === link.href
+                      pathname.startsWith(link.href) && link.href !== '/' || pathname === '/' && link.href === '/'
                         ? 'text-primary font-semibold'
                         : 'text-foreground/80'
                     )}

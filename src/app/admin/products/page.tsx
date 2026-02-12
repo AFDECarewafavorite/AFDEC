@@ -93,14 +93,20 @@ export default function AdminProductsPage() {
     const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(undefined);
     const [isSeeding, setIsSeeding] = useState(false);
 
-    const adminRoleRef = useMemoFirebase(
-        () => (firestore && user ? doc(firestore, 'roles_admin', user.uid) : null),
+    const managerRoleRef = useMemoFirebase(
+        () => (firestore && user ? doc(firestore, 'roles_manager', user.uid) : null),
+        [firestore, user]
+      );
+    const { data: managerRole, isLoading: isManagerRoleLoading } = useDoc(managerRoleRef);
+    
+    const ceoRoleRef = useMemoFirebase(
+        () => (firestore && user ? doc(firestore, 'roles_ceo', user.uid) : null),
         [firestore, user]
     );
-    const { data: adminRole, isLoading: isAdminRoleLoading } = useDoc(adminRoleRef);
+    const { data: ceoRole, isLoading: isCeoRoleLoading } = useDoc(ceoRoleRef);
     
-    const isUserAdmin = !!adminRole;
-    const isAuthorizing = isAuthLoading || (user && isAdminRoleLoading);
+    const isUserPrivileged = !!managerRole || !!ceoRole;
+    const isAuthorizing = isAuthLoading || (user && (isManagerRoleLoading || isCeoRoleLoading));
 
     useEffect(() => {
         if (!isAuthLoading && !user) {
@@ -109,8 +115,8 @@ export default function AdminProductsPage() {
     }, [user, isAuthLoading, router]);
 
     const productsQuery = useMemoFirebase(
-        () => (firestore && isUserAdmin ? query(collection(firestore, 'products'), orderBy('name')) : null),
-        [firestore, isUserAdmin]
+        () => (firestore && isUserPrivileged ? query(collection(firestore, 'products'), orderBy('name')) : null),
+        [firestore, isUserPrivileged]
     );
 
     const { data: products, isLoading: areProductsLoading } = useCollection<Product>(productsQuery);
@@ -153,7 +159,7 @@ export default function AdminProductsPage() {
         }
     };
 
-    if (!isAuthorizing && user && !isUserAdmin) {
+    if (!isAuthorizing && user && !isUserPrivileged) {
         return (
             <div className="container mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
                 <ShieldAlert className="h-16 w-16 text-destructive" />
@@ -175,10 +181,10 @@ export default function AdminProductsPage() {
             <header className="mb-8 flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold font-headline text-primary">
-                    Product Management
+                    Product Catalog
                     </h1>
                     <p className="text-muted-foreground">
-                    Add, edit, and manage available bird products.
+                    Add, edit, and manage available bird products for booking.
                     </p>
                 </div>
                 <ProductDialog open={dialogOpen} onOpenChange={setDialogOpen} product={selectedProduct}>

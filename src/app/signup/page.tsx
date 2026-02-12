@@ -21,6 +21,7 @@ import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { doc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
+import type { UserRole } from '@/lib/types';
 
 export default function SignupPage() {
   const auth = useAuth();
@@ -44,18 +45,18 @@ export default function SignupPage() {
     }
 
     try {
-      // We await user creation here to reliably get the user's UID.
-      // This is crucial for creating their corresponding profile document in Firestore.
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       
       if (user) {
-          const isDemoAdmin = email === 'admin@afdec.online';
+          const isDemoCEO = email === 'ceo@afdec.online';
+          const isDemoManager = email === 'manager@afdec.online';
           const isDemoAgent = email === 'agent@afdec.online';
 
-          let role: 'Customer' | 'Admin' | 'Agent' = 'Customer';
-          if (isDemoAdmin) role = 'Admin';
-          if (isDemoAgent) role = 'Agent';
+          let role: UserRole = 'Customer';
+          if (isDemoCEO) role = 'CEO';
+          else if (isDemoManager) role = 'Manager';
+          else if (isDemoAgent) role = 'Agent';
 
           const userProfile = {
               id: user.uid,
@@ -64,14 +65,19 @@ export default function SignupPage() {
               language: 'en',
               email: user.email,
               fullName: fullName,
+              isSuspended: false,
           };
           const userRef = doc(firestore, 'users', user.uid);
           setDocumentNonBlocking(userRef, userProfile, { merge: true });
 
-          if (isDemoAdmin) {
-            const adminRoleRef = doc(firestore, 'roles_admin', user.uid);
-            // This is for demo purposes. In production, this should be a trusted server operation.
-            setDocumentNonBlocking(adminRoleRef, { createdBy: user.uid }, { merge: true });
+          if (isDemoCEO) {
+            const ceoRoleRef = doc(firestore, 'roles_ceo', user.uid);
+            setDocumentNonBlocking(ceoRoleRef, { userId: user.uid }, { merge: true });
+          }
+
+          if (isDemoManager) {
+            const managerRoleRef = doc(firestore, 'roles_manager', user.uid);
+            setDocumentNonBlocking(managerRoleRef, { userId: user.uid }, { merge: true });
           }
 
           if (isDemoAgent) {
@@ -122,8 +128,9 @@ export default function SignupPage() {
                 <p className="font-bold text-left">Creating Demo Accounts</p>
                 <p className="text-left">To test different roles, sign up with a special email below. Any other email will create a standard customer account.</p>
                 <ul className="text-left mt-2 space-y-1">
-                    <li><strong>For an Admin account, use:</strong> <code className="font-mono text-xs">admin@afdec.online</code></li>
-                    <li><strong>For an Agent account, use:</strong> <code className="font-mono text-xs">agent@afdec.online</code></li>
+                    <li><strong>CEO Account:</strong> <code className="font-mono text-xs">ceo@afdec.online</code></li>
+                    <li><strong>Manager Account:</strong> <code className="font-mono text-xs">manager@afdec.online</code></li>
+                    <li><strong>Agent Account:</strong> <code className="font-mono text-xs">agent@afdec.online</code></li>
                 </ul>
             </div>
             <div className="space-y-2">

@@ -2,10 +2,10 @@
 
 import BookingsTable from './components/bookings-table';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { DollarSign, ShoppingBag, Users, ShieldAlert, Package } from 'lucide-react';
+import { DollarSign, ShoppingBag, Users, ShieldAlert, Package, UserCog } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useUser, useDoc } from '@/firebase';
 import { collectionGroup, query, orderBy, doc, collection } from 'firebase/firestore';
-import type { Agent, Booking } from '@/lib/types';
+import type { Agent, Booking, User as UserType } from '@/lib/types';
 import { BookingsTableSkeleton } from './components/bookings-table-skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
@@ -18,17 +18,22 @@ export default function AdminDashboard() {
   const { user, isUserLoading: isAuthLoading } = useUser();
   const router = useRouter();
 
-  // Check if the user has an admin role document.
-  const adminRoleRef = useMemoFirebase(
-    () => (firestore && user ? doc(firestore, 'roles_admin', user.uid) : null),
+  const managerRoleRef = useMemoFirebase(
+    () => (firestore && user ? doc(firestore, 'roles_manager', user.uid) : null),
     [firestore, user]
   );
-  const { data: adminRole, isLoading: isAdminRoleLoading } = useDoc(adminRoleRef);
+  const { data: managerRole, isLoading: isManagerRoleLoading } = useDoc(managerRoleRef);
 
-  const isUserAdmin = !!adminRole;
-  const isAuthorizing = isAuthLoading || (user && isAdminRoleLoading);
+  const ceoRoleRef = useMemoFirebase(
+    () => (firestore && user ? doc(firestore, 'roles_ceo', user.uid) : null),
+    [firestore, user]
+  );
+  const { data: ceoRole, isLoading: isCeoRoleLoading } = useDoc(ceoRoleRef);
+  
+  const isUserCEO = !!ceoRole;
+  const isUserPrivileged = !!managerRole || !!ceoRole;
+  const isAuthorizing = isAuthLoading || (user && (isManagerRoleLoading || isCeoRoleLoading));
 
-  // Redirect non-logged-in users.
   useEffect(() => {
     if (!isAuthLoading && !user) {
       router.push('/login');
@@ -37,23 +42,21 @@ export default function AdminDashboard() {
 
   const bookingsQuery = useMemoFirebase(
     () =>
-      // Only build query if user is a confirmed admin
-      (firestore && isUserAdmin)
+      (firestore && isUserPrivileged)
         ? query(collectionGroup(firestore, 'bookings'), orderBy('createdAt', 'desc'))
         : null,
-    [firestore, isUserAdmin]
+    [firestore, isUserPrivileged]
   );
 
   const { data: bookings, isLoading: areBookingsLoading, error: bookingsError } = useCollection<Booking>(bookingsQuery);
   
   const agentsQuery = useMemoFirebase(
-    () => (firestore && isUserAdmin ? collection(firestore, 'agents') : null),
-    [firestore, isUserAdmin]
+    () => (firestore && isUserPrivileged ? collection(firestore, 'agents') : null),
+    [firestore, isUserPrivileged]
   );
   const { data: agents, isLoading: areAgentsLoading } = useCollection<Agent>(agentsQuery);
 
-  // Show Access Denied for non-admins
-  if (!isAuthorizing && user && !isUserAdmin) {
+  if (!isAuthorizing && user && !isUserPrivileged) {
     return (
         <div className="container mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
             <ShieldAlert className="h-16 w-16 text-destructive" />
@@ -62,7 +65,7 @@ export default function AdminDashboard() {
                 You do not have the necessary permissions to view this page.
             </p>
             <p className="text-sm text-muted-foreground">
-                Please sign in as an administrator.
+                Please sign in as a Manager or CEO.
             </p>
             <Button asChild variant="outline" className="mt-8">
                 <Link href="/login">Go to Login</Link>
@@ -72,7 +75,6 @@ export default function AdminDashboard() {
   }
 
   if (bookingsError) {
-    // This will now only trigger for actual errors during the bookings fetch for an admin.
     return (
         <div className="container mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
             <ShieldAlert className="h-16 w-16 text-destructive" />
@@ -90,8 +92,7 @@ export default function AdminDashboard() {
     )
   }
 
-  // Show loading skeleton if authorizing OR if we are an admin and data is loading
-  const showLoading = isAuthorizing || (isUserAdmin && (areBookingsLoading || areAgentsLoading));
+  const showLoading = isAuthorizing || (isUserPrivileged && (areBookingsLoading || areAgentsLoading));
 
   const totalRevenue = bookings
     ?.reduce((acc, b) => acc + b.bookingFee, 0)
@@ -102,10 +103,10 @@ export default function AdminDashboard() {
     <div className="container mx-auto py-8 px-4">
       <header className="mb-8">
         <h1 className="text-3xl font-bold font-headline text-primary">
-          Admin Dashboard
+          {isUserCEO ? 'CEO Dashboard' : 'Manager Dashboard'}
         </h1>
         <p className="text-muted-foreground">
-          Manage all bookings and agents from here.
+          {isUserCEO ? 'Oversee all operations, users, and agents.' : 'Manage all bookings and products from here.'}
         </p>
       </header>
 
@@ -136,30 +137,47 @@ export default function AdminDashboard() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Agents</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{showLoading ? <Skeleton className="h-8 w-12" /> : `+${agents?.length ?? 0}`}</div>
-            <p className="text-xs text-muted-foreground">
-              Registered in the system
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Manage Products</CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
               <p className="text-xs text-muted-foreground mb-2">
-                Add, edit, and control available birds for booking.
+                Add, edit, and control available birds.
               </p>
               <Button asChild size="sm">
                 <Link href="/admin/products">Go to Products</Link>
               </Button>
           </CardContent>
         </Card>
+        {isUserCEO ? (
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">User Management</CardTitle>
+                    <UserCog className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <p className="text-xs text-muted-foreground mb-2">
+                        Manage roles and permissions for all users.
+                    </p>
+                    <Button asChild size="sm">
+                        <Link href="/admin/users">Manage Users</Link>
+                    </Button>
+                </CardContent>
+            </Card>
+        ) : (
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Agents</CardTitle>
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{showLoading ? <Skeleton className="h-8 w-12" /> : `+${agents?.length ?? 0}`}</div>
+                    <p className="text-xs text-muted-foreground">
+                    Registered in the system
+                    </p>
+                </CardContent>
+            </Card>
+        )}
       </div>
 
       <Card>

@@ -12,7 +12,8 @@
         },
         "role": {
           "type": "string",
-          "description": "Role of the user (Customer, Agent, Admin)."
+          "description": "Role of the user.",
+          "enum": ["Customer", "Agent", "Manager", "CEO"]
         },
         "phone": {
           "type": "string",
@@ -29,6 +30,10 @@
         "fullName": {
           "type": "string",
           "description": "User's full name."
+        },
+        "isSuspended": {
+            "type": "boolean",
+            "description": "Whether the user account is suspended."
         }
       },
       "required": [
@@ -393,13 +398,33 @@
         }
       },
       {
-        "path": "/roles_admin/{userId}",
+        "path": "/roles_ceo/{userId}",
         "definition": {
-          "entityName": "User",
           "schema": {
-            "$ref": "#/backend/entities/User"
+            "type": "object",
+            "properties": {
+              "userId": { "type": "string" }
+            }
           },
-          "description": "Marks a user as an admin. Existence of a document with the user's ID grants admin privileges.",
+          "description": "Marks a user as a CEO. Existence of a document with the user's ID grants CEO privileges.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      },
+       {
+        "path": "/roles_manager/{userId}",
+        "definition": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "userId": { "type": "string" }
+            }
+          },
+          "description": "Marks a user as a Manager. Existence of a document with the user's ID grants Manager privileges.",
           "params": [
             {
               "name": "userId",
@@ -425,6 +450,6 @@
         }
       }
     ],
-    "reasoning": "The Firestore data structure is designed to support the AFDEC Online Chicken Booking System, focusing on authorization independence, clarity, and scalability. User roles (Customer, Agent, Admin) are central to the security model. Bookings are structured to link customers and agents, with commissions and withdrawals managed accordingly.\n\n**Authorization Independence:**\n\n*   The structure uses path-based ownership for user-related data (e.g., `/users/{userId}/bookings/{bookingId}`).\n*   For collaborative data or scenarios requiring more complex access control, consider denormalizing roles or memberships directly into documents. However, given the current entities and requirements, path-based ownership is sufficient.\n\n**QAPs (Rules are not Filters):**\n\n*   The segregation of user data using path-based ownership allows for efficient and secure `list` operations. For instance, a customer can only `list` bookings under their `/users/{userId}/bookings` path.\n*   Admin access can be granted at the top level of collections (e.g., `/bookings`) via a separate `/roles_admin/{uid}` collection. The existence of a document in this collection grants admin privileges.\n\n**Data Integrity:**\n\n*   Timestamps (`createdAt`) are included in bookings to maintain data integrity and support chronological ordering.\n*   The explicit `status` field in the `Booking`, `Commission`, and `Withdrawal` entities ensures a clear and predictable state management, making it easier to implement business logic and security rules based on document state."
+    "reasoning": "The Firestore data structure is designed to support the AFDEC Online Chicken Booking System, focusing on authorization independence, clarity, and scalability. User roles (Customer, Agent, Manager, CEO) are central to the security model. Bookings are structured to link customers and agents, with commissions and withdrawals managed accordingly.\n\n**Authorization Independence:**\n\n*   The structure uses path-based ownership for user-related data (e.g., `/users/{userId}/bookings/{bookingId}`).\n*   Role-based access is managed through separate collections (`/roles_ceo`, `/roles_manager`) for clear and efficient privilege checking.\n\n**QAPs (Rules are not Filters):**\n\n*   The segregation of user data using path-based ownership allows for efficient and secure `list` operations.\n*   CEO and Manager access is granted at higher levels of the data hierarchy, enabling them to perform system-wide operations like listing all users or all bookings."
   }
 }
