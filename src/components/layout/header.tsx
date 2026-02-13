@@ -10,7 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Menu, Bird, Globe } from 'lucide-react';
+import { Menu, Globe } from 'lucide-react';
 import Logo from '../logo';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -97,9 +97,28 @@ export default function Header() {
                   </Link>
                 ))}
               </nav>
-              <div className="mt-auto pt-6">
+              <div className="mt-auto pt-6 border-t">
+                <div className="flex items-center justify-between mb-4">
+                    <span className="text-lg text-foreground/80">Language</span>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                        <Button variant="outline">
+                            <Globe className="mr-2 h-4 w-4" />
+                            English
+                        </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                        <DropdownMenuItem>
+                            English
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            Hausa
+                        </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
                 <Button asChild className="w-full">
-                  <Link href="/login">Login</Link>
+                  <Link href="/login">Login / Sign Up</Link>
                 </Button>
               </div>
             </div>
