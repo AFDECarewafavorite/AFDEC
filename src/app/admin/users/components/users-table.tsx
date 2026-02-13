@@ -16,14 +16,14 @@ import {
     SelectValue,
   } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import type { User, UserRole } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
   
 interface UsersTableProps {
     users: User[];
     currentUserId: string;
-    onRoleChange: (userId: string, newRole: UserRole) => void;
+    onRoleChange: (userId: string, currentRole: UserRole, newRole: UserRole) => void;
     onSuspendToggle: (userId: string, currentStatus: boolean) => void;
 }
 
@@ -47,7 +47,7 @@ export function UsersTable({ users, onRoleChange, onSuspendToggle, currentUserId
             </TableHeader>
             <TableBody>
                 {users.map(user => {
-                     const userInitials = user.fullName.split(' ').map(s => s[0]).join('');
+                     const userInitials = user.fullName ? user.fullName.split(' ').map(s => s[0]).join('') : 'U';
                      const isCurrentUser = user.id === currentUserId;
 
                      return (
@@ -65,7 +65,7 @@ export function UsersTable({ users, onRoleChange, onSuspendToggle, currentUserId
                             <TableCell>
                                 <Select 
                                     defaultValue={user.role} 
-                                    onValueChange={(value) => onRoleChange(user.id, value as UserRole)}
+                                    onValueChange={(value) => onRoleChange(user.id, user.role, value as UserRole)}
                                     disabled={isCurrentUser}
                                 >
                                     <SelectTrigger className={`w-[120px] ${roleColors[user.role]}`}>

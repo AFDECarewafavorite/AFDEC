@@ -16,10 +16,8 @@
  * - Path-Based Ownership: A user's UID in the document path is the primary mechanism for granting access.
  * - Role Segregation: CEO and Manager privileges are managed in separate collections (`/roles_ceo`, `/roles_manager`).
  *   This is a classic denormalization pattern for efficient role lookups and prevents self-escalation of privileges.
- * - System-Generated Data: Collections like `/commissions` are read-only for agents, assuming they are created by a trusted backend.
- * - Immutable Ownership: Critical relational fields are enforced to be immutable after creation.
- * - Suspension Check: The rules do not yet enforce account suspension. An `isSuspended` flag can be added to user profiles,
- *   but enforcement requires careful implementation (e.g., via custom claims or widespread `get()` calls) to avoid performance issues.
+ * - CEO Supremacy: The CEO role has broad, system-wide read and write access.
+ * - Manager Focus: The Manager role is limited to managing bookings and products, but cannot manage users or agents.
  */
 rules_version = '2';
 service cloud.firestore {
@@ -41,7 +39,7 @@ service cloud.firestore {
     }
     
     function isPrivileged() {
-        return isCEO() || isManager();
+        return isManager() || isCEO();
     }
 
     function isOwner(userId) {
@@ -64,71 +62,77 @@ service cloud.firestore {
     // Collection Rules
     // --------------------------------
 
+    // Only the CEO can manage who is a CEO or Manager.
     match /roles_ceo/{userId} {
-      allow get: if isOwner(userId) || isCEO();
-      allow list: if isCEO();
-      allow write: if isCEO(); // CEOs can manage other CEOs
-      allow delete: if isCEO();
+      allow read, write, delete: if isCEO();
     }
 
     match /roles_manager/{userId} {
-      allow get: if isOwner(userId) || isCEO();
-      allow list: if isCEO();
-      allow write: if isCEO(); // Only CEOs can make or remove managers
-      allow delete: if isCEO();
+      allow read, write, delete: if isCEO();
     }
 
+    // Products can be read by anyone, but only managed by privileged users (Manager, CEO).
     match /products/{productId} {
       allow read: if true;
       allow write: if isPrivileged();
     }
 
+    // Users can be created by anyone (signup).
+    // A user can get their own profile.
+    // The CEO can list, get, update (e.g. for role change/suspension), and delete any user.
     match /users/{userId} {
       allow get: if isOwner(userId) || isCEO();
       allow list: if isCEO();
-      allow create: if isOwner(userId) && request.resource.data.id == userId;
-      // Allow user to update their own doc, and CEO to update any user doc (for role changes/suspension)
-      allow update: if (isExistingOwner(userId) && request.resource.data.id == resource.data.id) || (isCEO() && isExistingDoc());
-      allow delete: if isExistingOwner(userId) || isCEO();
+      allow create: if true; 
+      allow update: if isOwner(userId) || isCEO();
+      allow delete: if isOwner(userId) || isCEO();
     }
 
+    // - A user can manage their own bookings.
+    // - Privileged users (Manager, CEO) can view any booking.
+    // - An agent can view a booking they are referred in.
     match /users/{userId}/bookings/{bookingId} {
       allow get: if isOwner(userId) || isPrivileged() || (isAgent() && resource.data.agentId == request.auth.uid);
       allow list: if isOwner(userId) || isPrivileged();
       allow create: if isOwner(userId);
-      allow update: if isExistingOwner(userId) || (isPrivileged() && isExistingDoc());
-      allow delete: if isExistingOwner(userId);
+      allow update: if isOwner(userId) || isPrivileged();
+      allow delete: if isOwner(userId);
     }
     
+    // This allows Managers/CEOs to use a collectionGroup query across all bookings.
     match /{path=**}/bookings/{bookingId} {
-      allow get, list: if isPrivileged() || (isAgent() && resource.data.agentId == request.auth.uid);
+      allow read: if isPrivileged();
     }
 
+    // Agents can get their own profile.
+    // The CEO can create, list, get, update, and delete any agent profile.
     match /agents/{agentId} {
-      allow get: if isOwner(agentId) || isPrivileged();
-      allow list: if isPrivileged();
-      allow create: if isOwner(agentId) && request.resource.data.userId == agentId;
-      // Allow agent to update their own profile, or privileged users to manage them.
-      allow update: if isExistingOwner(agentId) || isPrivileged();
-      allow delete: if isExistingOwner(agentId) || isPrivileged();
+      allow get: if isOwner(agentId) || isCEO();
+      allow list: if isCEO();
+      allow create: if isCEO();
+      allow update: if isOwner(agentId) || isCEO();
+      allow delete: if isOwner(agentId) || isCEO();
     }
 
+    // Commissions can be created by privileged users (Manager marking a booking complete).
+    // An agent can read their own commissions.
+    // The CEO can read anyone's commissions for auditing.
     match /agents/{agentId}/commissions/{commissionId} {
-      allow get: if isOwner(agentId) || isPrivileged();
-      allow list: if isOwner(agentId) || isPrivileged();
+      allow get: if isOwner(agentId) || isCEO();
+      allow list: if isOwner(agentId) || isCEO();
       allow create: if isPrivileged();
-      allow update: if false; // Server-side logic
-      allow delete: if false; // Server-side logic
+      allow update: if false; // Server-side logic only
+      allow delete: if false; // Server-side logic only
     }
 
+    // An agent can create their own withdrawal requests.
+    // Privileged users (Manager, CEO) can view and update (approve/reject) withdrawals.
     match /agents/{agentId}/withdrawals/{withdrawalId} {
       allow get: if isOwner(agentId) || isPrivileged();
       allow list: if isOwner(agentId) || isPrivileged();
       allow create: if isOwner(agentId) && request.resource.data.agentId == agentId;
       allow update: if isPrivileged() && isExistingDoc();
-      allow delete: if false;
+      allow delete: if false; // Disallow deletion for record-keeping
     }
   }
 }
-
-    

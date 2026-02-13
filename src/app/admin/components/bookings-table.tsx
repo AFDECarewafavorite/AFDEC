@@ -18,9 +18,9 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import type { Booking, BookingStatus, Product } from '@/lib/types';
+import type { Agent, Booking, BookingStatus, Product } from '@/lib/types';
 import { cn, calculateCommission, formatCurrency } from '@/lib/utils';
-import { Phone, MoreVertical, Bird } from 'lucide-react';
+import { Phone, MoreVertical, Bird, MapPin, UserCheck } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
     DropdownMenu,
@@ -34,6 +34,7 @@ import { useToast } from '@/hooks/use-toast';
 
 interface BookingsTableProps {
   bookings: Booking[];
+  agents: Agent[];
 }
 
 const statusStyles: { [key in BookingStatus]: string } = {
@@ -43,7 +44,7 @@ const statusStyles: { [key in BookingStatus]: string } = {
   completed: 'bg-green-500/20 text-green-400 border-green-500/30',
 };
 
-export default function BookingsTable({ bookings }: BookingsTableProps) {
+export default function BookingsTable({ bookings, agents }: BookingsTableProps) {
   const firestore = useFirestore();
   const { toast } = useToast();
 
@@ -71,6 +72,7 @@ export default function BookingsTable({ bookings }: BookingsTableProps) {
         updateDocumentNonBlocking(agentRef, {
             totalCommission: increment(commissionAmount),
             availableBalance: increment(commissionAmount),
+            totalBookings: increment(1),
         });
 
         // 2. Create the commission document for record-keeping
@@ -96,6 +98,10 @@ export default function BookingsTable({ bookings }: BookingsTableProps) {
         });
     }
   };
+
+  const getAgentName = (agentId: string) => {
+    return agents.find(a => a.id === agentId)?.name || 'Unknown';
+  }
 
   return (
     <Table>
@@ -130,6 +136,16 @@ export default function BookingsTable({ bookings }: BookingsTableProps) {
                             <Phone className="h-3 w-3" />
                             {booking.phone}
                         </a>
+                        <div className="text-muted-foreground text-sm flex items-center gap-1">
+                            <MapPin className="h-3 w-3" />
+                            {booking.location}
+                        </div>
+                        {booking.agentId && (
+                             <div className="text-muted-foreground text-xs flex items-center gap-1 mt-1 text-purple-400">
+                                <UserCheck className="h-3 w-3" />
+                                Agent: {getAgentName(booking.agentId)}
+                            </div>
+                        )}
                     </div>
                 </div>
               </TableCell>
@@ -209,5 +225,3 @@ export default function BookingsTable({ bookings }: BookingsTableProps) {
     </Table>
   );
 }
-
-    

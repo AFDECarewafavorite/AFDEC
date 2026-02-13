@@ -186,7 +186,7 @@ export default function AdminDashboard() {
         </CardHeader>
         <CardContent>
             {showLoading && <BookingsTableSkeleton />}
-            {!showLoading && bookings && <BookingsTable bookings={bookings} />}
+            {!showLoading && bookings && agents && <BookingsTable bookings={bookings} agents={agents} />}
             {!showLoading && !bookings?.length && (
               <div className="text-center py-12 text-muted-foreground">
                 <ShoppingBag className="mx-auto h-12 w-12" />

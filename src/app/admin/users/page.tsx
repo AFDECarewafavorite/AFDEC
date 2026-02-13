@@ -4,10 +4,10 @@ import { useCollection, useFirestore, useMemoFirebase, useUser, useDoc, setDocum
 import { collection, query, orderBy, doc } from 'firebase/firestore';
 import type { User as UserType, UserRole } from '@/lib/types';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ShieldAlert, Users, Loader } from 'lucide-react';
+import { ShieldAlert, Users } from 'lucide-react';
 import { UsersTable } from './components/users-table';
 import { UsersTableSkeleton } from './components/users-table-skeleton';
 import { useToast } from '@/hooks/use-toast';
@@ -40,30 +40,50 @@ export default function AdminUsersPage() {
 
     const { data: users, isLoading: areUsersLoading } = useCollection<UserType>(usersQuery);
 
-    const handleRoleChange = (userId: string, newRole: UserRole) => {
+    const handleRoleChange = (userId: string, currentRole: UserRole, newRole: UserRole) => {
         if (!firestore) return;
     
+        const targetUser = users?.find(u => u.id === userId);
+        if (!targetUser) return;
+        
+        // 1. Update the role in the user's primary document
         const userRef = doc(firestore, 'users', userId);
         updateDocumentNonBlocking(userRef, { role: newRole });
     
+        // 2. Manage role collections
         const managerRoleRef = doc(firestore, 'roles_manager', userId);
         const ceoRoleRef = doc(firestore, 'roles_ceo', userId);
+        const agentRef = doc(firestore, 'agents', userId);
     
-        // Clean up old roles first
+        // Clean up all potential old roles
         deleteDocumentNonBlocking(managerRoleRef);
         deleteDocumentNonBlocking(ceoRoleRef);
+        if (currentRole === 'Agent') {
+            deleteDocumentNonBlocking(agentRef);
+        }
     
-        // Assign new role
+        // Assign new role-specific documents
         if (newRole === 'Manager') {
             setDocumentNonBlocking(managerRoleRef, { userId }, { merge: true });
         } else if (newRole === 'CEO') {
             setDocumentNonBlocking(ceoRoleRef, { userId }, { merge: true });
+        } else if (newRole === 'Agent') {
+            const agentProfile = {
+                id: userId,
+                userId: userId,
+                name: targetUser.fullName,
+                referralCode: `${targetUser.fullName.split(' ')[0].toUpperCase()}${userId.slice(0, 4)}`,
+                totalCommission: 0,
+                availableBalance: 0,
+                totalBookings: 0,
+            };
+            setDocumentNonBlocking(agentRef, agentProfile, { merge: true });
         }
 
         toast({
             title: "Role Updated",
-            description: `User role has been changed to ${newRole}.`,
-        })
+            description: `${targetUser.fullName}'s role has been changed to ${newRole}.`,
+        });
     };
 
     const handleSuspendToggle = (userId: string, currentStatus: boolean) => {

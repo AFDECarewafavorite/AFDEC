@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Mail, Lock, User as UserIcon, Phone } from 'lucide-react';
+import { Mail, Lock, User as UserIcon, Phone, Loader } from 'lucide-react';
 import Link from 'next/link';
 import Logo from '@/components/logo';
 import { useAuth, useFirestore } from '@/firebase';
@@ -32,6 +32,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,12 +44,16 @@ export default function SignupPage() {
       });
       return;
     }
+    setIsLoading(true);
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       
       if (user) {
+          // --- DEMO ACCOUNT LOGIC ---
+          // This logic is for testing convenience. In a real production app,
+          // roles would be assigned by a CEO from the admin dashboard.
           const isDemoCEO = email === 'ceo@afdec.online';
           const isDemoManager = email === 'manager@afdec.online';
           const isDemoAgent = email === 'agent@afdec.online';
@@ -57,6 +62,7 @@ export default function SignupPage() {
           if (isDemoCEO) role = 'CEO';
           else if (isDemoManager) role = 'Manager';
           else if (isDemoAgent) role = 'Agent';
+          // --- END DEMO ACCOUNT LOGIC ---
 
           const userProfile = {
               id: user.uid,
@@ -70,17 +76,14 @@ export default function SignupPage() {
           const userRef = doc(firestore, 'users', user.uid);
           setDocumentNonBlocking(userRef, userProfile, { merge: true });
 
+          // Create role-specific documents for demo accounts
           if (isDemoCEO) {
             const ceoRoleRef = doc(firestore, 'roles_ceo', user.uid);
             setDocumentNonBlocking(ceoRoleRef, { userId: user.uid }, { merge: true });
-          }
-
-          if (isDemoManager) {
+          } else if (isDemoManager) {
             const managerRoleRef = doc(firestore, 'roles_manager', user.uid);
             setDocumentNonBlocking(managerRoleRef, { userId: user.uid }, { merge: true });
-          }
-
-          if (isDemoAgent) {
+          } else if (isDemoAgent) {
             const agentProfile = {
               id: user.uid,
               userId: user.uid,
@@ -107,11 +110,13 @@ export default function SignupPage() {
             title: "Sign-up Failed",
             description: error.message || "Could not create your account. Please try again.",
         })
+    } finally {
+        setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh] px-4">
+    <div className="flex items-center justify-center min-h-[80vh] px-4 py-8">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
             <div className='mx-auto mb-4'>
@@ -125,8 +130,8 @@ export default function SignupPage() {
         <form onSubmit={handleSignup}>
             <CardContent className="space-y-4">
             <div className="text-center text-sm text-muted-foreground bg-muted/50 p-3 rounded-md">
-                <p className="font-bold text-left">Creating Demo Accounts</p>
-                <p className="text-left">To test different roles, sign up with a special email below. Any other email will create a standard customer account.</p>
+                <p className="font-bold text-left">Creating Demo Accounts (For Testing)</p>
+                <p className="text-left">To test different roles, sign up with a special email below. Any other email will create a standard customer account, which can then be promoted by a CEO.</p>
                 <ul className="text-left mt-2 space-y-1">
                     <li><strong>CEO Account:</strong> <code className="font-mono text-xs">ceo@afdec.online</code></li>
                     <li><strong>Manager Account:</strong> <code className="font-mono text-xs">manager@afdec.online</code></li>
@@ -145,6 +150,7 @@ export default function SignupPage() {
                     className="pl-10 h-12"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
+                    disabled={isLoading}
                 />
                 </div>
             </div>
@@ -160,6 +166,7 @@ export default function SignupPage() {
                     className="pl-10 h-12"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    disabled={isLoading}
                 />
                 </div>
             </div>
@@ -175,6 +182,7 @@ export default function SignupPage() {
                     className="pl-10 h-12"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
+                    disabled={isLoading}
                 />
                 </div>
             </div>
@@ -191,11 +199,13 @@ export default function SignupPage() {
                     className="pl-10 h-12"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    disabled={isLoading}
                 />
                 </div>
             </div>
-            <Button type="submit" className="w-full h-12 text-base">
-                Sign Up
+            <Button type="submit" className="w-full h-12 text-base" disabled={isLoading}>
+                {isLoading && <Loader className="animate-spin mr-2" />}
+                {isLoading ? 'Creating Account...' : 'Sign Up'}
             </Button>
             </CardContent>
         </form>
