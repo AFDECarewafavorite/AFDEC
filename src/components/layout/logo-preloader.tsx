@@ -10,7 +10,7 @@ export default function LogoPreloader() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoaded(true);
-    }, 1000); // The preloader will be visible for 1 second
+    }, 800); // The preloader will be visible for 0.8 seconds
 
     return () => clearTimeout(timer);
   }, []);
