@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
+import Logo from "@/components/logo";
 
 export default function LogoPreloader() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -23,14 +23,11 @@ export default function LogoPreloader() {
       )}
       aria-hidden={isLoaded}
     >
-      <div className="animate-logo">
-        <Image
-          src="/logo.png"
-          alt="AFDEC Logo"
-          width={250}
-          height={250}
-          priority // Prioritize loading of the logo
-          className="drop-shadow-[0_0_20px_gold]"
+      <div className="animate-logo flex flex-col items-center gap-4">
+        <Logo
+            iconContainerClassName="bg-transparent p-0"
+            iconClassName="w-24 h-24 text-primary drop-shadow-[0_0_20px_gold]"
+            textClassName="text-5xl text-primary drop-shadow-[0_0_20px_gold]"
         />
       </div>
     </div>
