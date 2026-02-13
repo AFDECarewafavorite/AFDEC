@@ -46,7 +46,7 @@
     opacity: 0;
     transform: scale(0.8);
   }
-  50% {
+  60% {
     opacity: 1;
     transform: scale(1.05);
   }
@@ -57,5 +57,5 @@
 }
 
 .animate-logo {
-  animation: logoAnimation 2s ease-in-out;
+  animation: logoAnimation 0.8s ease-in-out;
 }

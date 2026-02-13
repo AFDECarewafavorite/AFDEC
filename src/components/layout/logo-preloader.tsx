@@ -10,7 +10,7 @@ export default function LogoPreloader() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoaded(true);
-    }, 3000); // The preloader will be visible for 3 seconds
+    }, 1000); // The preloader will be visible for 1 second
 
     return () => clearTimeout(timer);
   }, []);
@@ -18,7 +18,7 @@ export default function LogoPreloader() {
   return (
     <div
       className={cn(
-        "fixed inset-0 flex items-center justify-center bg-black z-[99] transition-opacity duration-1000 ease-in-out",
+        "fixed inset-0 flex items-center justify-center bg-black z-[99] transition-opacity duration-500 ease-in-out",
         isLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
       )}
       aria-hidden={isLoaded}
