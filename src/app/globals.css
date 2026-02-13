@@ -40,3 +40,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes logoAnimation {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-logo {
+  animation: logoAnimation 2s ease-in-out;
+}

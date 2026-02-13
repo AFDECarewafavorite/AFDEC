@@ -6,14 +6,11 @@ import Header from '@/components/layout/header';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import Footer from '@/components/layout/footer';
 import { LanguageProvider } from '@/context/language-provider';
+import LogoPreloader from '@/components/layout/logo-preloader';
 
 export const metadata: Metadata = {
   title: 'AFDEC Online',
   description: 'AFDEC Online Chicken Booking System',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-  },
 };
 
 export default function RootLayout({
@@ -40,6 +37,7 @@ export default function RootLayout({
           'min-h-screen bg-background font-body text-foreground antialiased'
         )}
       >
+        <LogoPreloader />
         <LanguageProvider>
           <FirebaseClientProvider>
             <div className="relative flex min-h-screen flex-col">
