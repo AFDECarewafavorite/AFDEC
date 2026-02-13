@@ -182,13 +182,22 @@
           "type": "string",
           "description": "Reference to Booking. (Relationship: Booking 1:N Commission) The ID of the booking for which the commission was earned."
         },
+        "customerName": {
+          "type": "string",
+          "description": "The name of the customer who made the booking."
+        },
         "amount": {
           "type": "number",
           "description": "Amount of the commission."
         },
         "status": {
           "type": "string",
-          "description": "Status of the commission (e.g., pending, paid)."
+          "description": "Status of the commission (e.g., credited)."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp of when the commission was created.",
+          "format": "date-time"
         }
       },
       "required": [
@@ -196,7 +205,9 @@
         "agentId",
         "bookingId",
         "amount",
-        "status"
+        "status",
+        "createdAt",
+        "customerName"
       ]
     },
     "Withdrawal": {
@@ -453,3 +464,5 @@
     "reasoning": "The Firestore data structure is designed to support the AFDEC Online Chicken Booking System, focusing on authorization independence, clarity, and scalability. User roles (Customer, Agent, Manager, CEO) are central to the security model. Bookings are structured to link customers and agents, with commissions and withdrawals managed accordingly.\n\n**Authorization Independence:**\n\n*   The structure uses path-based ownership for user-related data (e.g., `/users/{userId}/bookings/{bookingId}`).\n*   Role-based access is managed through separate collections (`/roles_ceo`, `/roles_manager`) for clear and efficient privilege checking.\n\n**QAPs (Rules are not Filters):**\n\n*   The segregation of user data using path-based ownership allows for efficient and secure `list` operations.\n*   CEO and Manager access is granted at higher levels of the data hierarchy, enabling them to perform system-wide operations like listing all users or all bookings."
   }
 }
+
+    

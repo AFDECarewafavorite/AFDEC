@@ -19,7 +19,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { Booking, BookingStatus, Product } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import { cn, calculateCommission, formatCurrency } from '@/lib/utils';
 import { Phone, MoreVertical, Bird } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -28,8 +28,9 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
-import { useFirestore, updateDocumentNonBlocking, useCollection, useMemoFirebase } from '@/firebase';
-import { doc, collection } from 'firebase/firestore';
+import { useFirestore, updateDocumentNonBlocking, addDocumentNonBlocking, useCollection, useMemoFirebase } from '@/firebase';
+import { doc, collection, increment, serverTimestamp } from 'firebase/firestore';
+import { useToast } from '@/hooks/use-toast';
 
 interface BookingsTableProps {
   bookings: Booking[];
@@ -44,6 +45,7 @@ const statusStyles: { [key in BookingStatus]: string } = {
 
 export default function BookingsTable({ bookings }: BookingsTableProps) {
   const firestore = useFirestore();
+  const { toast } = useToast();
 
   const productsQuery = useMemoFirebase(
     () => (firestore ? collection(firestore, 'products') : null),
@@ -51,11 +53,48 @@ export default function BookingsTable({ bookings }: BookingsTableProps) {
   );
   const { data: products } = useCollection<Product>(productsQuery);
 
-  const handleStatusChange = (bookingId: string, customerId: string, newStatus: BookingStatus) => {
-    if (!firestore || !customerId || !bookingId) return;
+  const handleStatusChange = (booking: Booking, newStatus: BookingStatus) => {
+    if (!firestore || !booking.customerId || !booking.id) return;
+    if (booking.status === newStatus) return; // No change
 
-    const bookingRef = doc(firestore, 'users', customerId, 'bookings', bookingId);
+    const bookingRef = doc(firestore, 'users', booking.customerId, 'bookings', booking.id);
+    
+    // Always update the booking status
     updateDocumentNonBlocking(bookingRef, { status: newStatus });
+
+    // If the booking is being marked as 'completed' and has an agent, process commission
+    if (newStatus === 'completed' && booking.agentId) {
+        const commissionAmount = calculateCommission(booking.bookingFee);
+        const agentRef = doc(firestore, 'agents', booking.agentId);
+        
+        // 1. Update the agent's balances using increment
+        updateDocumentNonBlocking(agentRef, {
+            totalCommission: increment(commissionAmount),
+            availableBalance: increment(commissionAmount),
+        });
+
+        // 2. Create the commission document for record-keeping
+        const commissionsRef = collection(firestore, 'agents', booking.agentId, 'commissions');
+        const commissionPayload = {
+            agentId: booking.agentId,
+            bookingId: booking.id,
+            amount: commissionAmount,
+            status: 'credited' as const,
+            createdAt: serverTimestamp(),
+            customerName: booking.fullName,
+        };
+        addDocumentNonBlocking(commissionsRef, commissionPayload);
+
+        toast({
+            title: 'Status Updated & Commission Processed',
+            description: `Booking completed. Commission of ${formatCurrency(commissionAmount)} processed for the agent.`,
+        });
+    } else {
+        toast({
+            title: 'Booking Status Updated',
+            description: `Booking status changed to ${newStatus}.`,
+        });
+    }
   };
 
   return (
@@ -120,7 +159,7 @@ export default function BookingsTable({ bookings }: BookingsTableProps) {
                 <Select
                   defaultValue={booking.status}
                   onValueChange={(value) =>
-                    handleStatusChange(booking.id, booking.customerId, value as BookingStatus)
+                    handleStatusChange(booking, value as BookingStatus)
                   }
                 >
                   <SelectTrigger
@@ -171,3 +210,4 @@ export default function BookingsTable({ bookings }: BookingsTableProps) {
   );
 }
 
+    

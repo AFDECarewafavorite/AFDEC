@@ -116,7 +116,7 @@ service cloud.firestore {
     match /agents/{agentId}/commissions/{commissionId} {
       allow get: if isOwner(agentId) || isPrivileged();
       allow list: if isOwner(agentId) || isPrivileged();
-      allow create: if false; // Server-side logic
+      allow create: if isPrivileged();
       allow update: if false; // Server-side logic
       allow delete: if false; // Server-side logic
     }
@@ -130,3 +130,5 @@ service cloud.firestore {
     }
   }
 }
+
+    

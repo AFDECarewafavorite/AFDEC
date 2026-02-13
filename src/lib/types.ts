@@ -66,3 +66,17 @@ export interface Agent {
   availableBalance: number;
   totalBookings: number;
 }
+
+export type CommissionStatus = 'credited' | 'paid_out';
+
+export interface Commission {
+  id: string;
+  agentId: string;
+  bookingId: string;
+  customerName: string;
+  amount: number;
+  status: CommissionStatus;
+  createdAt: Timestamp | FieldValue;
+}
+
+    

@@ -13,18 +13,11 @@ import AgentDashboardLayout from './components/agent-dashboard-layout';
 import { useUser, useDoc, useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Agent, Booking } from '@/lib/types';
-import { doc, query, collectionGroup, where } from 'firebase/firestore';
+import type { Agent, Commission } from '@/lib/types';
+import { doc, query, collection, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
-
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('en-NG', {
-    style: 'currency',
-    currency: 'NGN',
-    minimumFractionDigits: 0,
-  }).format(amount);
-};
+import { formatCurrency } from '@/lib/utils';
 
 export default function AgentDashboard() {
   const { user, isUserLoading } = useUser();
@@ -45,18 +38,18 @@ export default function AgentDashboard() {
   
   const isUserAgent = !!agent;
 
-  const referredBookingsQuery = useMemoFirebase(
+  const commissionsQuery = useMemoFirebase(
     () =>
       (firestore && user && isUserAgent)
-        ? query(collectionGroup(firestore, 'bookings'), where('agentId', '==', user.uid))
+        ? query(collection(firestore, 'agents', user.uid, 'commissions'), orderBy('createdAt', 'desc'))
         : null,
     [firestore, user, isUserAgent]
   );
-  const { data: bookings, isLoading: areBookingsLoading, error: bookingsError } = useCollection<Booking>(referredBookingsQuery);
+  const { data: commissions, isLoading: areCommissionsLoading, error: commissionsError } = useCollection<Commission>(commissionsQuery);
 
-  const isLoading = isUserLoading || isAgentLoading || (isUserAgent && areBookingsLoading);
+  const isLoading = isUserLoading || isAgentLoading || (isUserAgent && areCommissionsLoading);
   const isAuthorizing = isUserLoading || (user && isAgentLoading);
-  const hasError = agentError || bookingsError;
+  const hasError = agentError || commissionsError;
 
   if (!isAuthorizing && user && !agent) {
     return (
@@ -163,7 +156,7 @@ export default function AgentDashboard() {
                 <ShoppingBag className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-                {isLoading ? <Skeleton className="h-8 w-12" /> : <div className="text-2xl font-bold">+{bookings?.length || 0}</div>}
+                {isLoading ? <Skeleton className="h-8 w-12" /> : <div className="text-2xl font-bold">+{agent?.totalBookings || 0}</div>}
                 <p className="text-xs text-muted-foreground">From your referrals</p>
             </CardContent>
         </Card>
@@ -181,7 +174,7 @@ export default function AgentDashboard() {
 
       <Card>
         <CardHeader>
-            <CardTitle>Your Referral History</CardTitle>
+            <CardTitle>Your Commission History</CardTitle>
         </CardHeader>
         <CardContent>
             {isLoading && (
@@ -191,11 +184,11 @@ export default function AgentDashboard() {
                     <Skeleton className="h-10 w-full" />
                 </div>
             )}
-            {!isLoading && bookings && bookings.length > 0 && <AgentDashboardLayout bookings={bookings} />}
-            {!isLoading && (!bookings || bookings.length === 0) && (
+            {!isLoading && commissions && commissions.length > 0 && <AgentDashboardLayout commissions={commissions} />}
+            {!isLoading && (!commissions || commissions.length === 0) && (
               <div className="text-center py-12 text-muted-foreground">
                 <ShoppingBag className="mx-auto h-12 w-12" />
-                <p className="mt-4">No referral bookings found yet.</p>
+                <p className="mt-4">No commissions earned yet.</p>
               </div>
             )}
         </CardContent>
@@ -203,3 +196,5 @@ export default function AgentDashboard() {
     </div>
   );
 }
+
+    
