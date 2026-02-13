@@ -25,10 +25,10 @@ export default function LogoPreloader() {
     >
       <div className="animate-logo flex flex-col items-center gap-4">
         <Logo
-            iconContainerClassName="bg-transparent p-0"
-            iconClassName="w-24 h-24 text-primary drop-shadow-[0_0_20px_gold]"
-            textClassName="text-5xl text-primary drop-shadow-[0_0_20px_gold]"
+            width={150}
+            height={150}
         />
+        <p className="text-2xl text-primary drop-shadow-[0_0_10px_gold] font-headline">AFDEC</p>
       </div>
     </div>
   );
