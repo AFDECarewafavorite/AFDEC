@@ -19,17 +19,19 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
-const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/booking', label: 'Book Now' },
-  { href: '/agent', label: 'Agent Portal' },
-  { href: '/admin', label: 'Dashboard' },
-];
+} from '@/components/ui/dropdown-menu';
+import { useLanguage } from '@/context/language-provider';
 
 export default function Header() {
   const pathname = usePathname();
+  const { language, setLanguage, t } = useLanguage();
+
+  const navLinks = [
+    { href: '/', label: t('home') },
+    { href: '/booking', label: t('bookNow') },
+    { href: '/agent', label: t('agentPortal') },
+    { href: '/admin', label: t('dashboard') },
+  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -45,7 +47,8 @@ export default function Header() {
                 href={link.href}
                 className={cn(
                   'transition-colors hover:text-primary',
-                  pathname.startsWith(link.href) && link.href !== '/' || pathname === '/' && link.href === '/'
+                  (pathname.startsWith(link.href) && link.href !== '/') ||
+                    (pathname === '/' && link.href === '/')
                     ? 'text-primary'
                     : 'text-foreground/60'
                 )}
@@ -88,7 +91,8 @@ export default function Header() {
                     href={link.href}
                     className={cn(
                       'text-lg transition-colors hover:text-primary',
-                      pathname.startsWith(link.href) && link.href !== '/' || pathname === '/' && link.href === '/'
+                      (pathname.startsWith(link.href) && link.href !== '/') ||
+                        (pathname === '/' && link.href === '/')
                         ? 'text-primary font-semibold'
                         : 'text-foreground/80'
                     )}
@@ -99,26 +103,28 @@ export default function Header() {
               </nav>
               <div className="mt-auto pt-6 border-t">
                 <div className="flex items-center justify-between mb-4">
-                    <span className="text-lg text-foreground/80">Language</span>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                        <Button variant="outline">
-                            <Globe className="mr-2 h-4 w-4" />
-                            English
-                        </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
-                            English
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            Hausa
-                        </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                  <span className="text-lg text-foreground/80">
+                    {t('language')}
+                  </span>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline">
+                        <Globe className="mr-2 h-4 w-4" />
+                        {language === 'en' ? t('english') : t('hausa')}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onSelect={() => setLanguage('en')}>
+                        {t('english')}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => setLanguage('ha')}>
+                        {t('hausa')}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
                 <Button asChild className="w-full">
-                  <Link href="/login">Login / Sign Up</Link>
+                  <Link href="/login">{t('loginSignUp')}</Link>
                 </Button>
               </div>
             </div>
@@ -137,16 +143,16 @@ export default function Header() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  English
+                <DropdownMenuItem onSelect={() => setLanguage('en')}>
+                  {t('english')}
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  Hausa
+                <DropdownMenuItem onSelect={() => setLanguage('ha')}>
+                  {t('hausa')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <Button asChild>
-              <Link href="/login">Login / Sign Up</Link>
+              <Link href="/login">{t('loginSignUp')}</Link>
             </Button>
           </div>
         </div>
