@@ -62,13 +62,16 @@ service cloud.firestore {
     // Collection Rules
     // --------------------------------
 
-    // Only the CEO can manage who is a CEO or Manager.
+    // A user can check their own role document to verify permissions.
+    // Only the CEO can list all roles or modify them.
     match /roles_ceo/{userId} {
-      allow read, write, delete: if isCEO();
+      allow get: if isOwner(userId) || isCEO();
+      allow list, write, delete: if isCEO();
     }
 
     match /roles_manager/{userId} {
-      allow read, write, delete: if isCEO();
+      allow get: if isOwner(userId) || isCEO();
+      allow list, write, delete: if isCEO();
     }
 
     // Products can be read by anyone, but only managed by privileged users (Manager, CEO).
