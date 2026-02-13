@@ -27,6 +27,7 @@ import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ProductDialog } from './components/product-dialog';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/context/language-provider';
 
 const demoProducts: Omit<Product, 'id'>[] = [
     {
@@ -88,6 +89,7 @@ export default function AdminProductsPage() {
     const { user, isUserLoading: isAuthLoading } = useUser();
     const router = useRouter();
     const { toast } = useToast();
+    const { t } = useLanguage();
 
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(undefined);
@@ -142,15 +144,15 @@ export default function AdminProductsPage() {
                 setDocumentNonBlocking(productRef, newProduct, { merge: false });
             });
             toast({
-                title: 'Seeding Products',
-                description: 'Demo products are being added to your database.',
+                title: t('seedingProducts'),
+                description: t('seedingProductsDesc'),
             });
         } catch (error) {
             console.error("Error seeding products:", error);
             toast({
                 variant: 'destructive',
-                title: 'Seeding Failed',
-                description: 'Could not add demo products. Check console for errors.',
+                title: t('seedingFailed'),
+                description: t('seedingFailedDesc'),
             });
         } finally {
             setTimeout(() => {
@@ -163,12 +165,12 @@ export default function AdminProductsPage() {
         return (
             <div className="container mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
                 <ShieldAlert className="h-16 w-16 text-destructive" />
-                <h1 className="mt-6 text-3xl font-bold font-headline">Access Denied</h1>
+                <h1 className="mt-6 text-3xl font-bold font-headline">{t('accessDenied')}</h1>
                 <p className="mt-2 text-lg text-muted-foreground">
-                    You do not have the necessary permissions to view this page.
+                    {t('accessDeniedAdmin')}
                 </p>
                 <Button asChild variant="outline" className="mt-8">
-                    <Link href="/admin">Back to Dashboard</Link>
+                    <Link href="/admin">{t('backToDashboard')}</Link>
                 </Button>
             </div>
         )
@@ -181,16 +183,16 @@ export default function AdminProductsPage() {
             <header className="mb-8 flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold font-headline text-primary">
-                    Product Catalog
+                    {t('productCatalog')}
                     </h1>
                     <p className="text-muted-foreground">
-                    Add, edit, and manage available bird products for booking.
+                    {t('productCatalogSubtitle')}
                     </p>
                 </div>
                 <ProductDialog open={dialogOpen} onOpenChange={setDialogOpen} product={selectedProduct}>
                     <Button onClick={handleAddProduct}>
                         <PlusCircle className="mr-2 h-4 w-4" />
-                        Add Product
+                        {t('addProduct')}
                     </Button>
                 </ProductDialog>
             </header>
@@ -199,12 +201,12 @@ export default function AdminProductsPage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Product</TableHead>
-                            <TableHead>Category</TableHead>
-                            <TableHead>Price</TableHead>
-                            <TableHead>Booking Fee</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead>{t('tableColProduct')}</TableHead>
+                            <TableHead>{t('tableColCategory')}</TableHead>
+                            <TableHead>{t('tableColPrice')}</TableHead>
+                            <TableHead>{t('bookingFee')}</TableHead>
+                            <TableHead>{t('status')}</TableHead>
+                            <TableHead className="text-right">{t('tableColActions')}</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -222,12 +224,12 @@ export default function AdminProductsPage() {
                             <TableRow>
                                 <TableCell colSpan={6} className="h-48 text-center">
                                     <Bird className="mx-auto h-12 w-12 text-muted-foreground" />
-                                    <h3 className="mt-4 text-lg font-semibold">No Products Found</h3>
-                                    <p className="mt-2 text-sm text-muted-foreground">Get started by adding your first product or seeding demo data.</p>
+                                    <h3 className="mt-4 text-lg font-semibold">{t('noProductsFound')}</h3>
+                                    <p className="mt-2 text-sm text-muted-foreground">{t('noProductsFoundDesc')}</p>
                                     <div className="mt-6">
                                         <Button onClick={handleSeedProducts} disabled={isSeeding}>
                                             {isSeeding ? <Loader className="mr-2 h-4 w-4 animate-spin" /> : <PlusCircle className="mr-2 h-4 w-4" />}
-                                            {isSeeding ? 'Seeding...' : 'Seed Demo Products'}
+                                            {isSeeding ? t('seeding') : t('seedDemoProducts')}
                                         </Button>
                                     </div>
                                 </TableCell>
@@ -246,7 +248,7 @@ export default function AdminProductsPage() {
                                 <TableCell>{product.bookingFeePerUnit}</TableCell>
                                 <TableCell>
                                     <Badge variant={product.isActive ? 'default' : 'secondary'} className={product.isActive ? 'bg-green-500/20 text-green-400 border-green-500/30' : ''}>
-                                        {product.isActive ? 'Active' : 'Inactive'}
+                                        {product.isActive ? t('active') : t('inactive')}
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="text-right">
@@ -259,9 +261,9 @@ export default function AdminProductsPage() {
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
                                             <DropdownMenuItem onClick={() => handleEditProduct(product)}>
-                                                Edit
+                                                {t('edit')}
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem>Delete (not implemented)</DropdownMenuItem>
+                                            <DropdownMenuItem>{t('delete')}</DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>
                                 </TableCell>

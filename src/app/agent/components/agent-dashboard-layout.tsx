@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { Timestamp } from 'firebase/firestore';
 import { format } from 'date-fns';
 import { formatCurrency } from '@/lib/utils';
+import { useLanguage } from '@/context/language-provider';
 
 interface AgentDashboardLayoutProps {
   commissions: Commission[];
@@ -37,14 +38,15 @@ const formatDate = (date: any) => {
 export default function AgentDashboardLayout({
   commissions,
 }: AgentDashboardLayoutProps) {
+  const { t } = useLanguage();
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>From Customer</TableHead>
-          <TableHead>Date Credited</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead className="text-right">Commission Earned</TableHead>
+          <TableHead>{t('fromCustomer')}</TableHead>
+          <TableHead>{t('dateCredited')}</TableHead>
+          <TableHead>{t('status')}</TableHead>
+          <TableHead className="text-right">{t('commissionEarned')}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -68,5 +70,3 @@ export default function AgentDashboardLayout({
     </Table>
   );
 }
-
-    

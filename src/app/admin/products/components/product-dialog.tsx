@@ -37,6 +37,7 @@ import { useFirestore, setDocumentNonBlocking } from '@/firebase';
 import { doc, collection } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { ReactNode } from 'react';
+import { useLanguage } from '@/context/language-provider';
 
 const productSchema = z.object({
   name: z.string().min(3, 'Name must be at least 3 characters'),
@@ -69,6 +70,7 @@ export function ProductDialog({
 }: ProductDialogProps) {
   const firestore = useFirestore();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues: product
@@ -96,8 +98,8 @@ export function ProductDialog({
 
     setDocumentNonBlocking(productRef, payload, { merge: true });
     toast({
-      title: product ? 'Product Updated' : 'Product Added',
-      description: `${data.name} has been saved.`,
+      title: product ? t('productUpdated') : t('productAdded'),
+      description: t('productSavedDesc').replace('{productName}', data.name),
     });
     onOpenChange(false);
     form.reset();
@@ -108,9 +110,9 @@ export function ProductDialog({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>{product ? 'Edit' : 'Add'} Product</DialogTitle>
+          <DialogTitle>{product ? t('editProductTitle') : t('addProductTitle')}</DialogTitle>
           <DialogDescription>
-            {product ? 'Edit the details of' : 'Add a new product to'} your catalog.
+            {product ? t('editProductDesc') : t('addProductDesc')}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -120,7 +122,7 @@ export function ProductDialog({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Product Name</FormLabel>
+                  <FormLabel>{t('productName')}</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g. Agrited Day-old Chicks" {...field} />
                   </FormControl>
@@ -133,9 +135,9 @@ export function ProductDialog({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>{t('description')}</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Describe the product..." {...field} />
+                    <Textarea placeholder={t('description') + '...'} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -146,17 +148,17 @@ export function ProductDialog({
                 name="category"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Category</FormLabel>
+                    <FormLabel>{t('tableColCategory')}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                         <SelectTrigger>
-                            <SelectValue placeholder="Select a category" />
+                            <SelectValue placeholder={t('selectCategory')} />
                         </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                        <SelectItem value="chick">Day-old Chick</SelectItem>
-                        <SelectItem value="grower">Grower</SelectItem>
-                        <SelectItem value="mature">Mature</SelectItem>
+                        <SelectItem value="chick">{t('dayOldChick')}</SelectItem>
+                        <SelectItem value="grower">{t('grower')}</SelectItem>
+                        <SelectItem value="mature">{t('mature')}</SelectItem>
                         </SelectContent>
                     </Select>
                     <FormMessage />
@@ -169,7 +171,7 @@ export function ProductDialog({
                 name="pricePerUnit"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Total Price (NGN)</FormLabel>
+                    <FormLabel>{t('totalPriceNGN')}</FormLabel>
                     <FormControl>
                         <Input type="number" {...field} />
                     </FormControl>
@@ -182,7 +184,7 @@ export function ProductDialog({
                 name="bookingFeePerUnit"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Booking Fee (NGN)</FormLabel>
+                    <FormLabel>{t('bookingFeeNGN')}</FormLabel>
                     <FormControl>
                         <Input type="number" {...field} />
                     </FormControl>
@@ -196,7 +198,7 @@ export function ProductDialog({
               name="maturity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Maturity</FormLabel>
+                  <FormLabel>{t('maturity')}</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g. 5-6 weeks" {...field} />
                   </FormControl>
@@ -209,7 +211,7 @@ export function ProductDialog({
               name="imageUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Image URL</FormLabel>
+                  <FormLabel>{t('imageUrl')}</FormLabel>
                   <FormControl>
                     <Input placeholder="https://..." {...field} />
                   </FormControl>
@@ -223,7 +225,7 @@ export function ProductDialog({
                 name="imageHint"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Image Hint</FormLabel>
+                    <FormLabel>{t('imageHint')}</FormLabel>
                     <FormControl>
                         <Input placeholder="e.g. chicken" {...field} />
                     </FormControl>
@@ -236,7 +238,7 @@ export function ProductDialog({
                 name="imageWidth"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Image Width</FormLabel>
+                    <FormLabel>{t('imageWidth')}</FormLabel>
                     <FormControl>
                         <Input type="number" {...field} />
                     </FormControl>
@@ -249,7 +251,7 @@ export function ProductDialog({
                 name="imageHeight"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Image Height</FormLabel>
+                    <FormLabel>{t('imageHeight')}</FormLabel>
                     <FormControl>
                         <Input type="number" {...field} />
                     </FormControl>
@@ -264,9 +266,9 @@ export function ProductDialog({
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                   <div className="space-y-0.5">
-                    <FormLabel>Active</FormLabel>
+                    <FormLabel>{t('active')}</FormLabel>
                     <DialogDescription>
-                      Inactive products won't be visible to customers.
+                      {t('inactiveProductsDesc')}
                     </DialogDescription>
                   </div>
                   <FormControl>
@@ -280,9 +282,9 @@ export function ProductDialog({
             />
             <DialogFooter>
                 <DialogClose asChild>
-                    <Button type="button" variant="ghost">Cancel</Button>
+                    <Button type="button" variant="ghost">{t('cancel')}</Button>
                 </DialogClose>
-              <Button type="submit">Save Product</Button>
+              <Button type="submit">{t('saveProduct')}</Button>
             </DialogFooter>
           </form>
         </Form>
@@ -290,4 +292,3 @@ export function ProductDialog({
     </Dialog>
   );
 }
-

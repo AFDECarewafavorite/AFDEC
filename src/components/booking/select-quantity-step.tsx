@@ -1,9 +1,12 @@
+'use client';
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Minus, Plus, Bird } from 'lucide-react';
 import type { BookingData, Product } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { calculateBookingFee } from '@/lib/utils';
+import { useLanguage } from '@/context/language-provider';
 
 interface SelectQuantityStepProps {
   bookingData: BookingData;
@@ -27,6 +30,7 @@ export default function SelectQuantityStep({
   onUpdateData,
   product,
 }: SelectQuantityStepProps) {
+  const { t } = useLanguage();
   const { quantity } = bookingData;
 
   const handleQuantityChange = (newQuantity: number) => {
@@ -41,10 +45,10 @@ export default function SelectQuantityStep({
   return (
     <div className="text-center">
       <h2 className="text-3xl font-bold font-headline text-primary">
-        Step 2: Select Quantity
+        {t('bookingStep2Title')}
       </h2>
       <p className="mt-2 text-lg text-foreground/80">
-        How many chickens would you like to book? (Minimum 1)
+        {t('bookingStep2Subtitle')}
       </p>
       <div className="mt-8 flex flex-col items-center gap-8">
         <div className="flex items-center gap-4">
@@ -54,7 +58,7 @@ export default function SelectQuantityStep({
             className="h-12 w-12 rounded-full"
             onClick={() => handleQuantityChange(quantity - 1)}
             disabled={quantity <= MIN_QUANTITY}
-            aria-label="Decrease quantity"
+            aria-label={t('decreaseQuantity')}
           >
             <Minus className="h-6 w-6" />
           </Button>
@@ -67,7 +71,7 @@ export default function SelectQuantityStep({
             className="h-12 w-12 rounded-full"
             onClick={() => handleQuantityChange(quantity + 1)}
             disabled={quantity >= MAX_QUANTITY}
-            aria-label="Increase quantity"
+            aria-label={t('increaseQuantity')}
           >
             <Plus className="h-6 w-6" />
           </Button>
@@ -76,18 +80,18 @@ export default function SelectQuantityStep({
         {product && (
             <Card className="w-full bg-transparent p-4 rounded-lg border border-border text-left">
                 <div className="flex justify-between items-center mb-2">
-                    <p className="text-muted-foreground">Booking Fee (Payable now)</p>
+                    <p className="text-muted-foreground">{t('bookingFeePayableNow')}</p>
                     <p className="font-bold text-lg text-primary">{formatCurrency(bookingFee)}</p>
                 </div>
                 <div className="flex justify-between items-center">
-                    <p className="text-muted-foreground">Estimated Total Price</p>
+                    <p className="text-muted-foreground">{t('estimatedTotalPrice')}</p>
                     <p className="font-bold text-lg">{formatCurrency(totalPrice)}</p>
                 </div>
             </Card>
         )}
         
         <div className="w-full bg-card p-4 rounded-lg border border-border">
-          <p className="text-sm font-medium text-foreground/70 mb-4">Live Preview</p>
+          <p className="text-sm font-medium text-foreground/70 mb-4">{t('livePreview')}</p>
           <div className="flex flex-wrap gap-2 justify-center max-h-48 overflow-y-auto p-2 rounded-md bg-background">
             {Array.from({ length: quantity > 50 ? 50 : quantity }).map((_, i) => (
               <Bird key={i} className="w-6 h-6 text-primary/70" />
@@ -99,4 +103,3 @@ export default function SelectQuantityStep({
     </div>
   );
 }
-

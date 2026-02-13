@@ -11,12 +11,14 @@ import { ShieldAlert, Users } from 'lucide-react';
 import { UsersTable } from './components/users-table';
 import { UsersTableSkeleton } from './components/users-table-skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/context/language-provider';
 
 export default function AdminUsersPage() {
     const firestore = useFirestore();
     const { user, isUserLoading: isAuthLoading } = useUser();
     const router = useRouter();
     const { toast } = useToast();
+    const { t } = useLanguage();
 
     const ceoRoleRef = useMemoFirebase(
         () => (firestore && user ? doc(firestore, 'roles_ceo', user.uid) : null),
@@ -81,8 +83,8 @@ export default function AdminUsersPage() {
         }
 
         toast({
-            title: "Role Updated",
-            description: `${targetUser.fullName}'s role has been changed to ${newRole}.`,
+            title: t('roleUpdated'),
+            description: t('roleUpdatedDesc').replace('{fullName}', targetUser.fullName).replace('{newRole}', newRole),
         });
     };
 
@@ -91,8 +93,8 @@ export default function AdminUsersPage() {
         const userRef = doc(firestore, 'users', userId);
         updateDocumentNonBlocking(userRef, { isSuspended: !currentStatus });
         toast({
-            title: `User ${!currentStatus ? 'Suspended' : 'Unsuspended'}`,
-            description: `The user's account status has been updated.`,
+            title: !currentStatus ? t('userSuspended') : t('userUnsuspended'),
+            description: t('userStatusUpdated'),
         })
     }
 
@@ -100,12 +102,12 @@ export default function AdminUsersPage() {
         return (
             <div className="container mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
                 <ShieldAlert className="h-16 w-16 text-destructive" />
-                <h1 className="mt-6 text-3xl font-bold font-headline">Access Denied</h1>
+                <h1 className="mt-6 text-3xl font-bold font-headline">{t('accessDenied')}</h1>
                 <p className="mt-2 text-lg text-muted-foreground">
-                    Only the CEO can access this page.
+                    {t('accessDeniedCEO')}
                 </p>
                 <Button asChild variant="outline" className="mt-8">
-                    <Link href="/admin">Back to Dashboard</Link>
+                    <Link href="/admin">{t('backToDashboard')}</Link>
                 </Button>
             </div>
         )
@@ -118,10 +120,10 @@ export default function AdminUsersPage() {
             <header className="mb-8 flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold font-headline text-primary">
-                    User Management
+                    {t('userManagement')}
                     </h1>
                     <p className="text-muted-foreground">
-                    Assign roles and manage user accounts.
+                    {t('userManagementSubtitle')}
                     </p>
                 </div>
             </header>
@@ -139,8 +141,8 @@ export default function AdminUsersPage() {
                 {!isLoading && !users?.length && (
                     <div className="h-48 text-center flex flex-col justify-center items-center">
                         <Users className="mx-auto h-12 w-12 text-muted-foreground" />
-                        <h3 className="mt-4 text-lg font-semibold">No Other Users Found</h3>
-                        <p className="mt-2 text-sm text-muted-foreground">As more users sign up, they will appear here.</p>
+                        <h3 className="mt-4 text-lg font-semibold">{t('noOtherUsersFound')}</h3>
+                        <p className="mt-2 text-sm text-muted-foreground">{t('noOtherUsersFoundDesc')}</p>
                     </div>
                 )}
             </div>

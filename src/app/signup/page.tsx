@@ -22,12 +22,14 @@ import { doc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import type { UserRole } from '@/lib/types';
+import { useLanguage } from '@/context/language-provider';
 
 export default function SignupPage() {
   const auth = useAuth();
   const firestore = useFirestore();
   const router = useRouter();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -122,24 +124,24 @@ export default function SignupPage() {
             <div className='mx-auto mb-4'>
                 <Logo />
             </div>
-          <CardTitle className="text-2xl font-headline">Create an Account</CardTitle>
+          <CardTitle className="text-2xl font-headline">{t('createAnAccount')}</CardTitle>
           <CardDescription>
-            Join AFDEC to start booking your chickens today.
+            {t('signupSubtitle')}
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSignup}>
             <CardContent className="space-y-4">
             <div className="text-center text-sm text-muted-foreground bg-muted/50 p-3 rounded-md">
-                <p className="font-bold text-left">Creating Demo Accounts (For Testing)</p>
-                <p className="text-left">To test different roles, sign up with a special email below. Any other email will create a standard customer account, which can then be promoted by a CEO.</p>
+                <p className="font-bold text-left">{t('creatingDemoAccounts')}</p>
+                <p className="text-left">{t('creatingDemoAccountsDesc')}</p>
                 <ul className="text-left mt-2 space-y-1">
-                    <li><strong>CEO Account:</strong> <code className="font-mono text-xs">ceo@afdec.online</code></li>
-                    <li><strong>Manager Account:</strong> <code className="font-mono text-xs">manager@afdec.online</code></li>
-                    <li><strong>Agent Account:</strong> <code className="font-mono text-xs">agent@afdec.online</code></li>
+                    <li><strong>{t('ceoAccount')}</strong> <code className="font-mono text-xs">ceo@afdec.online</code></li>
+                    <li><strong>{t('managerAccount')}</strong> <code className="font-mono text-xs">manager@afdec.online</code></li>
+                    <li><strong>{t('agentAccount')}</strong> <code className="font-mono text-xs">agent@afdec.online</code></li>
                 </ul>
             </div>
             <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="fullName">{t('fullName')}</Label>
                 <div className="relative">
                 <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
@@ -155,7 +157,7 @@ export default function SignupPage() {
                 </div>
             </div>
             <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('email')}</Label>
                 <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
@@ -171,7 +173,7 @@ export default function SignupPage() {
                 </div>
             </div>
             <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone">{t('phoneNumber')}</Label>
                 <div className="relative">
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
@@ -187,7 +189,7 @@ export default function SignupPage() {
                 </div>
             </div>
             <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('password')}</Label>
                 <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
@@ -195,7 +197,7 @@ export default function SignupPage() {
                     type="password"
                     required
                     minLength={6}
-                    placeholder="Must be at least 6 characters"
+                    placeholder={t('passwordMinLength')}
                     className="pl-10 h-12"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -205,15 +207,15 @@ export default function SignupPage() {
             </div>
             <Button type="submit" className="w-full h-12 text-base" disabled={isLoading}>
                 {isLoading && <Loader className="animate-spin mr-2" />}
-                {isLoading ? 'Creating Account...' : 'Sign Up'}
+                {isLoading ? t('creatingAccount') : t('signUp')}
             </Button>
             </CardContent>
         </form>
         <CardFooter className="flex flex-col gap-4">
           <p className="text-sm text-muted-foreground">
-            Already have an account?{' '}
+            {t('alreadyHaveAccount')}{' '}
             <Link href="/login" className="underline hover:text-primary">
-              Log in
+              {t('login')}
             </Link>
           </p>
         </CardFooter>

@@ -19,6 +19,7 @@ import { Switch } from '@/components/ui/switch';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import type { User, UserRole } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '@/context/language-provider';
   
 interface UsersTableProps {
     users: User[];
@@ -35,14 +36,15 @@ const roleColors: Record<UserRole, string> = {
 };
 
 export function UsersTable({ users, onRoleChange, onSuspendToggle, currentUserId }: UsersTableProps) {
+    const { t } = useLanguage();
     return (
         <Table>
             <TableHeader>
                 <TableRow>
-                <TableHead>User</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead className="text-center">Suspended</TableHead>
+                <TableHead>{t('tableColUser')}</TableHead>
+                <TableHead>{t('email')}</TableHead>
+                <TableHead>{t('tableColRole')}</TableHead>
+                <TableHead className="text-center">{t('tableColSuspended')}</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -69,7 +71,7 @@ export function UsersTable({ users, onRoleChange, onSuspendToggle, currentUserId
                                     disabled={isCurrentUser}
                                 >
                                     <SelectTrigger className={`w-[120px] ${roleColors[user.role]}`}>
-                                        <SelectValue placeholder="Set role" />
+                                        <SelectValue placeholder={t('tableColRole')} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="Customer">Customer</SelectItem>
@@ -87,7 +89,7 @@ export function UsersTable({ users, onRoleChange, onSuspendToggle, currentUserId
                                         aria-label="Suspend user"
                                         disabled={isCurrentUser}
                                     />
-                                    {user.isSuspended && <Badge variant="destructive" className="ml-4">Yes</Badge>}
+                                    {user.isSuspended && <Badge variant="destructive" className="ml-4">{t('suspendedYes')}</Badge>}
                                 </div>
                             </TableCell>
                         </TableRow>

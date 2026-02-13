@@ -31,6 +31,7 @@ import {
 import { useFirestore, updateDocumentNonBlocking, addDocumentNonBlocking, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, collection, increment, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/context/language-provider';
 
 interface BookingsTableProps {
   bookings: Booking[];
@@ -47,6 +48,7 @@ const statusStyles: { [key in BookingStatus]: string } = {
 export default function BookingsTable({ bookings, agents }: BookingsTableProps) {
   const firestore = useFirestore();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const productsQuery = useMemoFirebase(
     () => (firestore ? collection(firestore, 'products') : null),
@@ -88,30 +90,30 @@ export default function BookingsTable({ bookings, agents }: BookingsTableProps) 
         addDocumentNonBlocking(commissionsRef, commissionPayload);
 
         toast({
-            title: 'Status Updated & Commission Processed',
-            description: `Booking completed. Commission of ${formatCurrency(commissionAmount)} processed for the agent.`,
+            title: t('statusUpdatedAndCommission'),
+            description: t('statusUpdatedAndCommissionDesc').replace('{amount}', formatCurrency(commissionAmount)),
         });
     } else {
         toast({
-            title: 'Booking Status Updated',
-            description: `Booking status changed to ${newStatus}.`,
+            title: t('bookingStatusUpdated'),
+            description: t('bookingStatusUpdatedDesc').replace('{newStatus}', newStatus),
         });
     }
   };
 
   const getAgentName = (agentId: string) => {
-    return agents.find(a => a.id === agentId)?.name || 'Unknown';
+    return agents.find(a => a.id === agentId)?.name || t('unknown');
   }
 
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Customer</TableHead>
-          <TableHead>Product</TableHead>
-          <TableHead className="text-center">Quantity</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
+          <TableHead>{t('tableColCustomer')}</TableHead>
+          <TableHead>{t('tableColProduct')}</TableHead>
+          <TableHead className="text-center">{t('tableColQuantity')}</TableHead>
+          <TableHead>{t('tableColStatus')}</TableHead>
+          <TableHead className="text-right">{t('tableColActions')}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -143,7 +145,7 @@ export default function BookingsTable({ bookings, agents }: BookingsTableProps) 
                         {booking.agentId && (
                              <div className="text-muted-foreground text-xs flex items-center gap-1 mt-1 text-purple-400">
                                 <UserCheck className="h-3 w-3" />
-                                Agent: {getAgentName(booking.agentId)}
+                                {t('agent')}: {getAgentName(booking.agentId)}
                             </div>
                         )}
                     </div>
@@ -165,7 +167,7 @@ export default function BookingsTable({ bookings, agents }: BookingsTableProps) 
                       <Bird className='w-5 h-5 text-muted-foreground' />
                     </div>
                   )}
-                  <span>{product?.name || 'Unknown Product'}</span>
+                  <span>{product?.name || t('unknownProduct')}</span>
                 </div>
               </TableCell>
               <TableCell className="text-center font-medium">
@@ -184,7 +186,7 @@ export default function BookingsTable({ bookings, agents }: BookingsTableProps) 
                       statusStyles[booking.status]
                     )}
                   >
-                    <SelectValue placeholder="Set status" />
+                    <SelectValue placeholder={t('setStatus')} />
                   </SelectTrigger>
                   <SelectContent>
                     {Object.keys(statusStyles).map((status) => (
@@ -211,10 +213,10 @@ export default function BookingsTable({ bookings, agents }: BookingsTableProps) 
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                     <DropdownMenuItem asChild>
-                        <a href={`tel:${booking.phone}`}>Call Customer</a>
+                        <a href={`tel:${booking.phone}`}>{t('callCustomer')}</a>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>View Details</DropdownMenuItem>
-                    <DropdownMenuItem>Add Note</DropdownMenuItem>
+                    <DropdownMenuItem>{t('viewDetails')}</DropdownMenuItem>
+                    <DropdownMenuItem>{t('addNote')}</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               </TableCell>

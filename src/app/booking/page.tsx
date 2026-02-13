@@ -26,6 +26,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useSearchParams } from 'next/navigation';
 import { calculateBookingFee } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useLanguage } from '@/context/language-provider';
 
 const TOTAL_STEPS = 4;
 
@@ -46,6 +47,7 @@ export default function BookingPage() {
   const [bookingId, setBookingId] = useState('');
   const { toast } = useToast();
   const searchParams = useSearchParams();
+  const { t } = useLanguage();
 
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
@@ -149,7 +151,7 @@ export default function BookingPage() {
         return (
             <div className="space-y-4 text-center">
                 <Loader className="mx-auto h-12 w-12 animate-spin text-primary" />
-                <p className="text-muted-foreground">Loading available products...</p>
+                <p className="text-muted-foreground">{t('loadingProducts')}</p>
             </div>
         )
     }
@@ -209,7 +211,7 @@ export default function BookingPage() {
           <div>
             {step > 1 && (
               <Button variant="outline" onClick={prevStep} size="lg">
-                <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                <ArrowLeft className="mr-2 h-4 w-4" /> {t('back')}
               </Button>
             )}
           </div>
@@ -226,7 +228,7 @@ export default function BookingPage() {
                       !bookingData.location))
                 }
               >
-                Next
+                {t('next')}
               </Button>
             )}
             {step === TOTAL_STEPS && (
@@ -235,7 +237,7 @@ export default function BookingPage() {
                 size="lg"
                 className="bg-accent hover:bg-accent/90 text-accent-foreground"
               >
-                Confirm & Pay Booking Fee
+                {t('confirmAndPay')}
               </Button>
             )}
           </div>
@@ -244,4 +246,3 @@ export default function BookingPage() {
     </div>
   );
 }
-

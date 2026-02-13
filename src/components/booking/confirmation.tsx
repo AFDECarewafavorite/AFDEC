@@ -1,5 +1,8 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useLanguage } from '@/context/language-provider';
 import { CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 
@@ -26,6 +29,7 @@ const WhatsAppIcon = () => (
   );
 
 export default function Confirmation({ bookingId, phone }: ConfirmationProps) {
+  const { t } = useLanguage();
   const businessPhoneNumber = '2341234567890'; // Replace with actual business WhatsApp number
   const message = `Hello AFDEC, I have just completed a booking with ID: ${bookingId}. My phone number is ${phone}.`;
   const whatsappUrl = `https://wa.me/${businessPhoneNumber}?text=${encodeURIComponent(message)}`;
@@ -36,10 +40,10 @@ export default function Confirmation({ bookingId, phone }: ConfirmationProps) {
         <CardContent className="p-8 md:p-12 text-center">
           <CheckCircle className="h-20 w-20 text-accent mx-auto" />
           <h1 className="mt-6 text-3xl md:text-4xl font-bold font-headline text-primary">
-            You're in the Queue!
+            {t('confirmationTitle')}
           </h1>
           <p className="mt-4 text-lg text-foreground/80">
-            Thank you for your booking. Your booking ID is:
+            {t('confirmationSubtitle')}
           </p>
           <div className="my-6 bg-card-foreground/5 dark:bg-black/20 inline-block px-6 py-3 rounded-lg border border-dashed border-border">
             <p className="text-2xl md:text-3xl font-bold tracking-widest font-mono text-primary">
@@ -47,18 +51,17 @@ export default function Confirmation({ bookingId, phone }: ConfirmationProps) {
             </p>
           </div>
           <p className="text-foreground/70">
-            A manager will call you soon on{' '}
-            <span className="font-bold text-foreground">{phone}</span> to confirm your allocation, collection date, and the final balance to be paid on collection day.
+            {t('confirmationDesc').replace('{phone}', phone)}
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-green-600 hover:bg-green-700 text-white">
               <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
                 <WhatsAppIcon/>
-                Message us on WhatsApp
+                {t('messageOnWhatsApp')}
               </a>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link href="/">Back to Home</Link>
+              <Link href="/">{t('backToHome')}</Link>
             </Button>
           </div>
         </CardContent>

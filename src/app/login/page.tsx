@@ -19,11 +19,13 @@ import { useAuth } from '@/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/context/language-provider';
 
 export default function LoginPage() {
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -67,24 +69,24 @@ export default function LoginPage() {
           <div className="mx-auto mb-4">
             <Logo />
           </div>
-          <CardTitle className="text-2xl font-headline">Welcome Back</CardTitle>
+          <CardTitle className="text-2xl font-headline">{t('welcomeBack')}</CardTitle>
           <CardDescription>
-            Enter your credentials to access your account.
+            {t('loginSubtitle')}
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleLogin}>
           <CardContent className="space-y-4">
           <div className="text-center text-sm text-muted-foreground bg-muted/50 p-3 rounded-md">
-                <p className="font-bold text-left">For Testing:</p>
-                <p className='text-left'>First, use the <Link href="/signup" className='underline'>Sign Up</Link> page to create a demo account with one of the special emails below. You can choose any password.</p>
+                <p className="font-bold text-left">{t('loginForTesting')}</p>
+                <p className='text-left'>{t('loginForTestingDesc').replace('Sign Up', t('signUp'))}</p>
                 <ul className="text-left mt-2 space-y-1">
-                    <li><strong>CEO Email:</strong> <code className="font-mono text-xs">ceo@afdec.online</code></li>
-                    <li><strong>Manager Email:</strong> <code className="font-mono text-xs">manager@afdec.online</code></li>
-                    <li><strong>Agent Email:</strong> <code className="font-mono text-xs">agent@afdec.online</code></li>
+                    <li><strong>{t('ceoEmail')}</strong> <code className="font-mono text-xs">ceo@afdec.online</code></li>
+                    <li><strong>{t('managerEmail')}</strong> <code className="font-mono text-xs">manager@afdec.online</code></li>
+                    <li><strong>{t('agentEmail')}</strong> <code className="font-mono text-xs">agent@afdec.online</code></li>
                 </ul>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('email')}</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
@@ -100,7 +102,7 @@ export default function LoginPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t('password')}</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
@@ -116,15 +118,15 @@ export default function LoginPage() {
             </div>
             <Button type="submit" className="w-full h-12 text-base" disabled={isLoading}>
                 {isLoading && <Loader className="animate-spin mr-2" />}
-                {isLoading ? 'Logging in...' : 'Login'}
+                {isLoading ? t('loggingIn') : t('login')}
             </Button>
           </CardContent>
         </form>
         <CardFooter className="flex flex-col gap-4">
           <p className="text-sm text-muted-foreground">
-            Don't have an account?{' '}
+            {t('dontHaveAccount')}{' '}
             <Link href="/signup" className="underline hover:text-primary">
-              Sign up
+              {t('signUp')}
             </Link>
           </p>
         </CardFooter>

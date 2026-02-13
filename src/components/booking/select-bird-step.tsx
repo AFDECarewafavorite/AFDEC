@@ -6,6 +6,7 @@ import type { BookingData, ProductId, Product } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { CheckCircle, ShoppingBag } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '@/context/language-provider';
 
 interface SelectBirdStepProps {
   bookingData: BookingData;
@@ -20,6 +21,8 @@ export default function SelectBirdStep({
   onNextStep,
   products,
 }: SelectBirdStepProps) {
+  const { t } = useLanguage();
+
   const handleSelect = (productId: ProductId) => {
     onUpdateData({ birdType: productId });
     setTimeout(() => onNextStep(), 300); // give a moment for visual feedback
@@ -37,9 +40,9 @@ export default function SelectBirdStep({
     return (
         <div className="text-center py-16">
             <ShoppingBag className="mx-auto h-12 w-12 text-muted-foreground" />
-            <h2 className="mt-4 text-2xl font-bold font-headline text-primary">No Products Available</h2>
+            <h2 className="mt-4 text-2xl font-bold font-headline text-primary">{t('noProductsForBooking')}</h2>
             <p className="mt-2 text-lg text-foreground/80">
-                The manager has not added any products for booking yet. Please check back later.
+                {t('noProductsForBookingDesc')}
             </p>
         </div>
     )
@@ -48,10 +51,10 @@ export default function SelectBirdStep({
   return (
     <div className="text-center">
       <h2 className="text-3xl font-bold font-headline text-primary">
-        Step 1: Select Bird Type
+        {t('bookingStep1Title')}
       </h2>
       <p className="mt-2 text-lg text-foreground/80">
-        Choose the type of chicken you want to book.
+        {t('bookingStep1Subtitle')}
       </p>
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
         {products.map((product) => (
@@ -94,7 +97,7 @@ export default function SelectBirdStep({
                     </Badge>
                   )}
                   <p className="font-semibold text-primary">
-                    {formatCurrency(product.bookingFeePerUnit)} fee
+                    {formatCurrency(product.bookingFeePerUnit)} {t('fee')}
                   </p>
                 </div>
               </div>
@@ -105,4 +108,3 @@ export default function SelectBirdStep({
     </div>
   );
 }
-

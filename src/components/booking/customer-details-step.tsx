@@ -1,8 +1,11 @@
+'use client';
+
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import type { BookingData } from '@/lib/types';
+import { useLanguage } from '@/context/language-provider';
 
 interface CustomerDetailsStepProps {
   bookingData: BookingData;
@@ -13,6 +16,7 @@ export default function CustomerDetailsStep({
   bookingData,
   onUpdateData,
 }: CustomerDetailsStepProps) {
+  const { t } = useLanguage();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onUpdateData({ [e.target.name]: e.target.value });
   };
@@ -20,15 +24,15 @@ export default function CustomerDetailsStep({
   return (
     <div className="text-center">
       <h2 className="text-3xl font-bold font-headline text-primary">
-        Step 3: Your Details
+        {t('bookingStep3Title')}
       </h2>
       <p className="mt-2 text-lg text-foreground/80">
-        Please provide your contact information. The manager will call you.
+        {t('bookingStep3Subtitle')}
       </p>
       <Card className="mt-8 text-left">
         <CardContent className="p-6 space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="fullName" className="text-lg">Full Name</Label>
+            <Label htmlFor="fullName" className="text-lg">{t('fullName')}</Label>
             <Input
               id="fullName"
               name="fullName"
@@ -40,7 +44,7 @@ export default function CustomerDetailsStep({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="phone" className="text-lg">Phone Number (Required)</Label>
+            <Label htmlFor="phone" className="text-lg">{t('phoneNumberRequired')}</Label>
             <Input
               id="phone"
               name="phone"
@@ -51,10 +55,10 @@ export default function CustomerDetailsStep({
               className="h-12 text-lg"
               required
             />
-            <p className="text-sm text-muted-foreground">We need this to call you about your booking.</p>
+            <p className="text-sm text-muted-foreground">{t('phoneNumberDesc')}</p>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="location" className="text-lg">Location (State / Town)</Label>
+            <Label htmlFor="location" className="text-lg">{t('location')}</Label>
             <Input
               id="location"
               name="location"
@@ -66,7 +70,7 @@ export default function CustomerDetailsStep({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="referralCode" className="text-lg">Referral Code (Optional)</Label>
+            <Label htmlFor="referralCode" className="text-lg">{t('referralCodeOptional')}</Label>
             <Input
               id="referralCode"
               name="referralCode"

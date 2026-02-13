@@ -18,11 +18,13 @@ import { doc, query, collection, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
+import { useLanguage } from '@/context/language-provider';
 
 export default function AgentDashboard() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const firestore = useFirestore();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -55,15 +57,12 @@ export default function AgentDashboard() {
     return (
         <div className="container mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
             <ShieldAlert className="h-16 w-16 text-destructive" />
-            <h1 className="mt-6 text-3xl font-bold font-headline">Access Denied</h1>
+            <h1 className="mt-6 text-3xl font-bold font-headline">{t('accessDenied')}</h1>
             <p className="mt-2 text-lg text-muted-foreground">
-                You do not have permission to view this page.
-            </p>
-            <p className="text-sm text-muted-foreground">
-                Ensure you are signed in as an agent.
+                {t('accessDeniedAgent')}
             </p>
             <Button asChild variant="outline" className="mt-8">
-                <Link href="/">Return to Homepage</Link>
+                <Link href="/">{t('returnToHomepage')}</Link>
             </Button>
         </div>
     )
@@ -73,15 +72,15 @@ export default function AgentDashboard() {
     return (
         <div className="container mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
             <ShieldAlert className="h-16 w-16 text-destructive" />
-            <h1 className="mt-6 text-3xl font-bold font-headline">Error Loading Data</h1>
+            <h1 className="mt-6 text-3xl font-bold font-headline">{t('errorLoadingData')}</h1>
             <p className="mt-2 text-lg text-muted-foreground">
-                Could not load your agent information.
+                {t('errorLoadingAgentData')}
             </p>
              <p className="text-sm text-muted-foreground max-w-md">
                 <code>{hasError.message}</code>
             </p>
             <Button asChild variant="outline" className="mt-8">
-                <Link href="/">Return to Homepage</Link>
+                <Link href="/">{t('returnToHomepage')}</Link>
             </Button>
         </div>
     )
@@ -98,21 +97,21 @@ export default function AgentDashboard() {
     <div className="container mx-auto py-8 px-4">
       <header className="mb-8">
         <h1 className="text-3xl font-bold font-headline text-primary">
-          Agent Portal
+          {t('agentPortal')}
         </h1>
         {isLoading ? (
             <Skeleton className="h-5 w-48 mt-2" />
         ) : (
             <p className="text-muted-foreground">
-            Welcome back, {agent?.name || 'Agent'}. Here's your referral dashboard.
+            {t('agentPortalWelcome').replace('{agentName}', agent?.name || t('agent'))}
             </p>
         )}
       </header>
       
       <Card className="mb-8">
         <CardHeader>
-            <CardTitle>Your Referral Link</CardTitle>
-            <CardDescription>Share this link or your code to earn commissions.</CardDescription>
+            <CardTitle>{t('yourReferralLink')}</CardTitle>
+            <CardDescription>{t('referralLinkDesc')}</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             {isLoading ? (
@@ -124,7 +123,7 @@ export default function AgentDashboard() {
             )}
             <Button variant="outline" onClick={copyToClipboard}>
                 <Copy className="mr-2 h-4 w-4" />
-                Copy Link
+                {t('copyLink')}
             </Button>
         </CardContent>
       </Card>
@@ -132,49 +131,49 @@ export default function AgentDashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Available Balance</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('availableBalance')}</CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
                 {isLoading ? <Skeleton className="h-8 w-24" /> : <div className="text-2xl font-bold">{formatCurrency(agent?.availableBalance || 0)}</div>}
-                <Button size="sm" className="mt-2" disabled={isLoading || (agent?.availableBalance || 0) === 0}>Withdraw</Button>
+                <Button size="sm" className="mt-2" disabled={isLoading || (agent?.availableBalance || 0) === 0}>{t('withdraw')}</Button>
             </CardContent>
         </Card>
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Commission</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('totalCommission')}</CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
                 {isLoading ? <Skeleton className="h-8 w-24" /> : <div className="text-2xl font-bold">{formatCurrency(agent?.totalCommission || 0)}</div>}
-                <p className="text-xs text-muted-foreground">All-time earnings</p>
+                <p className="text-xs text-muted-foreground">{t('allTimeEarnings')}</p>
             </CardContent>
         </Card>
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('totalBookings')}</CardTitle>
                 <ShoppingBag className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
                 {isLoading ? <Skeleton className="h-8 w-12" /> : <div className="text-2xl font-bold">+{agent?.totalBookings || 0}</div>}
-                <p className="text-xs text-muted-foreground">From your referrals</p>
+                <p className="text-xs text-muted-foreground">{t('fromYourReferrals')}</p>
             </CardContent>
         </Card>
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Your Code</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('yourCode')}</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
                 {isLoading ? <Skeleton className="h-8 w-20" /> : <div className="text-2xl font-bold font-mono tracking-wider">{agent?.referralCode}</div>}
-                <p className="text-xs text-muted-foreground">Share this with customers</p>
+                <p className="text-xs text-muted-foreground">{t('shareWithCustomers')}</p>
             </CardContent>
         </Card>
       </div>
 
       <Card>
         <CardHeader>
-            <CardTitle>Your Commission History</CardTitle>
+            <CardTitle>{t('commissionHistory')}</CardTitle>
         </CardHeader>
         <CardContent>
             {isLoading && (
@@ -188,7 +187,7 @@ export default function AgentDashboard() {
             {!isLoading && (!commissions || commissions.length === 0) && (
               <div className="text-center py-12 text-muted-foreground">
                 <ShoppingBag className="mx-auto h-12 w-12" />
-                <p className="mt-4">No commissions earned yet.</p>
+                <p className="mt-4">{t('noCommissionsEarned')}</p>
               </div>
             )}
         </CardContent>
@@ -196,5 +195,3 @@ export default function AgentDashboard() {
     </div>
   );
 }
-
-    

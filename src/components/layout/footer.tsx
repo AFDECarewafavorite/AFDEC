@@ -1,6 +1,9 @@
+'use client';
+
 import { Phone, Mail } from 'lucide-react';
 import Link from 'next/link';
 import Logo from '../logo';
+import { useLanguage } from '@/context/language-provider';
 
 const WhatsAppIcon = ({className}: {className?: string}) => (
     <svg
@@ -38,50 +41,49 @@ const FacebookIcon = ({className}: {className?: string}) => (
 
 
 export default function Footer() {
+    const { t } = useLanguage();
     return (
         <footer className="bg-card text-card-foreground py-12">
             <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-3 gap-8 text-center md:text-left">
                 <div className='flex flex-col items-center md:items-start'>
                    <Logo />
                    <p className="text-sm text-foreground/70 max-w-xs mt-4">
-                        The easiest way to book day-old chicks, growers, and mature
-                        chickens in Nigeria.
+                        {t('footerSlogan')}
                     </p>
                 </div>
 
                 <div>
-                    <h3 className="font-bold text-lg text-primary mb-4">Contact for Inquiries</h3>
+                    <h3 className="font-bold text-lg text-primary mb-4">{t('contactForInquiries')}</h3>
                     <div className="flex flex-col items-center md:items-start gap-4">
                         <a href="https://wa.me/2341234567890" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
                             <WhatsAppIcon className="w-6 h-6"/>
-                            <span className="font-medium">WhatsApp</span>
+                            <span className="font-medium">{t('whatsApp')}</span>
                         </a>
                         <a href="https://facebook.com/afdec" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
                             <FacebookIcon className="w-6 h-6"/>
-                            <span className="font-medium">Facebook</span>
+                            <span className="font-medium">{t('facebook')}</span>
                         </a>
                         <a href="tel:+2341234567890" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
                             <Phone className="w-6 h-6"/>
-                            <span className="font-medium">Call Us</span>
+                            <span className="font-medium">{t('callUs')}</span>
                         </a>
                         <a href="mailto:info@afdec.online" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
                             <Mail className="w-6 h-6"/>
-                            <span className="font-medium">Email Us</span>
+                            <span className="font-medium">{t('emailUs')}</span>
                         </a>
                     </div>
                 </div>
                 
                 <div>
-                    <h3 className="font-bold text-lg text-primary mb-4">Important Business Notice</h3>
+                    <h3 className="font-bold text-lg text-primary mb-4">{t('importantBusinessNotice')}</h3>
                     <p className="text-sm text-foreground/70">
-                        Paying the booking fee secures your place in the queue for the next available batch of chickens.
-                        Our manager will call you to confirm allocation, final balance, and your collection date.
+                       {t('importantBusinessNoticeDesc')}
                     </p>
                 </div>
             </div>
             <div className="container mx-auto px-4 md:px-6 mt-8 pt-8 border-t border-border">
                 <p className="text-sm text-foreground/50 text-center">
-                    © {new Date().getFullYear()} AFDEC Online. All Rights Reserved.
+                    {t('copyright').replace('{year}', new Date().getFullYear().toString())}
                 </p>
             </div>
         </footer>

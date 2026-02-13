@@ -12,11 +12,13 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/context/language-provider';
 
 export default function AdminDashboard() {
   const firestore = useFirestore();
   const { user, isUserLoading: isAuthLoading } = useUser();
   const router = useRouter();
+  const { t } = useLanguage();
 
   const managerRoleRef = useMemoFirebase(
     () => (firestore && user ? doc(firestore, 'roles_manager', user.uid) : null),
@@ -60,15 +62,12 @@ export default function AdminDashboard() {
     return (
         <div className="container mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
             <ShieldAlert className="h-16 w-16 text-destructive" />
-            <h1 className="mt-6 text-3xl font-bold font-headline">Access Denied</h1>
+            <h1 className="mt-6 text-3xl font-bold font-headline">{t('accessDenied')}</h1>
             <p className="mt-2 text-lg text-muted-foreground">
-                You do not have the necessary permissions to view this page.
-            </p>
-            <p className="text-sm text-muted-foreground">
-                Please sign in as a Manager or CEO.
+                {t('accessDeniedAdmin')}
             </p>
             <Button asChild variant="outline" className="mt-8">
-                <Link href="/login">Go to Login</Link>
+                <Link href="/login">{t('goToLogin')}</Link>
             </Button>
         </div>
     )
@@ -78,15 +77,15 @@ export default function AdminDashboard() {
     return (
         <div className="container mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
             <ShieldAlert className="h-16 w-16 text-destructive" />
-            <h1 className="mt-6 text-3xl font-bold font-headline">Error Fetching Data</h1>
+            <h1 className="mt-6 text-3xl font-bold font-headline">{t('errorFetchingData')}</h1>
             <p className="mt-2 text-lg text-muted-foreground">
-                Could not load bookings. There might be a network issue or a problem with the query.
+                {t('errorFetchingBookings')}
             </p>
              <p className="text-sm text-muted-foreground max-w-md">
                 <code>{bookingsError.message}</code>
             </p>
             <Button asChild variant="outline" className="mt-8">
-                <Link href="/">Return to Homepage</Link>
+                <Link href="/">{t('returnToHomepage')}</Link>
             </Button>
         </div>
     )
@@ -103,77 +102,77 @@ export default function AdminDashboard() {
     <div className="container mx-auto py-8 px-4">
       <header className="mb-8">
         <h1 className="text-3xl font-bold font-headline text-primary">
-          {isUserCEO ? 'CEO Dashboard' : 'Manager Dashboard'}
+          {isUserCEO ? t('ceoDashboard') : t('managerDashboard')}
         </h1>
         <p className="text-muted-foreground">
-          {isUserCEO ? 'Oversee all operations, users, and agents.' : 'Manage all bookings and products from here.'}
+          {isUserCEO ? t('ceoDashboardSubtitle') : t('managerDashboardSubtitle')}
         </p>
       </header>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('totalRevenue')}</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{showLoading ? <Skeleton className="h-8 w-32" /> : totalRevenue}</div>
             <p className="text-xs text-muted-foreground">
-              From booking fees
+              {t('fromBookingFees')}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('totalBookings')}</CardTitle>
             <ShoppingBag className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{showLoading ? <Skeleton className="h-8 w-12" /> : `+${totalBookings}`}</div>
             <p className="text-xs text-muted-foreground">
-              Across all statuses
+              {t('acrossAllStatuses')}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Manage Products</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('manageProducts')}</CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
               <p className="text-xs text-muted-foreground mb-2">
-                Add, edit, and control available birds.
+                {t('manageProductsDesc')}
               </p>
               <Button asChild size="sm">
-                <Link href="/admin/products">Go to Products</Link>
+                <Link href="/admin/products">{t('goToProducts')}</Link>
               </Button>
           </CardContent>
         </Card>
         {isUserCEO ? (
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">User Management</CardTitle>
+                    <CardTitle className="text-sm font-medium">{t('userManagement')}</CardTitle>
                     <UserCog className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                     <p className="text-xs text-muted-foreground mb-2">
-                        Manage roles and permissions for all users.
+                        {t('userManagementDesc')}
                     </p>
                     <Button asChild size="sm">
-                        <Link href="/admin/users">Manage Users</Link>
+                        <Link href="/admin/users">{t('manageUsers')}</Link>
                     </Button>
                 </CardContent>
             </Card>
         ) : (
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Agents</CardTitle>
+                    <CardTitle className="text-sm font-medium">{t('totalAgents')}</CardTitle>
                     <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                     <div className="text-2xl font-bold">{showLoading ? <Skeleton className="h-8 w-12" /> : `+${agents?.length ?? 0}`}</div>
                     <p className="text-xs text-muted-foreground">
-                    Registered in the system
+                    {t('registeredInSystem')}
                     </p>
                 </CardContent>
             </Card>
@@ -182,7 +181,7 @@ export default function AdminDashboard() {
 
       <Card>
         <CardHeader>
-            <CardTitle>All Bookings</CardTitle>
+            <CardTitle>{t('allBookings')}</CardTitle>
         </CardHeader>
         <CardContent>
             {showLoading && <BookingsTableSkeleton />}
@@ -190,7 +189,7 @@ export default function AdminDashboard() {
             {!showLoading && !bookings?.length && (
               <div className="text-center py-12 text-muted-foreground">
                 <ShoppingBag className="mx-auto h-12 w-12" />
-                <p className="mt-4">No bookings found.</p>
+                <p className="mt-4">{t('noBookingsFound')}</p>
               </div>
             )}
         </CardContent>

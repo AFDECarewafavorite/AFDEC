@@ -90,11 +90,10 @@ export default function Home() {
         <section id="bird-types" className="py-16 sm:py-24 bg-background/50">
           <div className="container mx-auto px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tight text-center font-headline text-primary">
-              What We Offer
+              {t('whatWeOffer')}
             </h2>
             <p className="mt-4 text-center text-lg text-foreground/80 max-w-2xl mx-auto">
-              Select from our range of high-quality birds to meet your poultry
-              needs.
+              {t('whatWeOfferSubtitle')}
             </p>
             <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
               {areProductsLoading &&
@@ -143,11 +142,11 @@ export default function Home() {
                             variant="outline"
                             className="border-primary/50 text-primary"
                           >
-                            Maturity: {product.maturity}
+                            {t('maturity')}: {product.maturity}
                           </Badge>
                         )}
                         <p className="font-semibold text-primary">
-                          ₦{product.bookingFeePerUnit} fee
+                          ₦{product.bookingFeePerUnit} {t('fee')}
                         </p>
                       </div>
                     </CardContent>
@@ -158,7 +157,7 @@ export default function Home() {
               <div className="text-center col-span-full py-16">
                 <ShoppingBag className="mx-auto h-12 w-12 text-muted-foreground" />
                 <p className="mt-4 text-muted-foreground">
-                  No products available at the moment. Please check back later.
+                  {t('noProductsAvailable')}
                 </p>
               </div>
             )}
@@ -168,10 +167,10 @@ export default function Home() {
         <section id="how-it-works" className="py-16 sm:py-24">
           <div className="container mx-auto px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tight text-center font-headline text-primary">
-              How It Works
+              {t('howItWorks')}
             </h2>
             <p className="mt-4 text-center text-lg text-foreground/80 max-w-2xl mx-auto">
-              Secure your chickens in 3 simple steps.
+              {t('howItWorksSubtitle')}
             </p>
             <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
               <div className="flex flex-col items-center">
@@ -179,11 +178,10 @@ export default function Home() {
                   <ListOrdered />
                 </div>
                 <h3 className="mt-4 text-xl font-semibold font-headline">
-                  1. Book & Join Queue
+                  {t('step1Title')}
                 </h3>
                 <p className="mt-2 text-foreground/70">
-                  Select your birds, quantity, and pay a small booking fee to
-                  get your place in line.
+                  {t('step1Desc')}
                 </p>
               </div>
               <div className="flex flex-col items-center">
@@ -191,11 +189,10 @@ export default function Home() {
                   <Phone />
                 </div>
                 <h3 className="mt-4 text-xl font-semibold font-headline">
-                  2. Get a Call
+                  {t('step2Title')}
                 </h3>
                 <p className="mt-2 text-foreground/70">
-                  Our manager will call to confirm your allocation, collection
-                  date, and the final balance payment.
+                  {t('step2Desc')}
                 </p>
               </div>
               <div className="flex flex-col items-center">
@@ -203,11 +200,10 @@ export default function Home() {
                   <ShoppingBag />
                 </div>
                 <h3 className="mt-4 text-xl font-semibold font-headline">
-                  3. Collect Your Birds
+                  {t('step3Title')}
                 </h3>
                 <p className="mt-2 text-foreground/70">
-                  Visit the collection point on the agreed date, pay the
-                  balance, and collect your chickens.
+                  {t('step3Desc')}
                 </p>
               </div>
             </div>
@@ -217,25 +213,22 @@ export default function Home() {
         <section id="lifecycle" className="py-16 sm:py-24 bg-background/50">
           <div className="container mx-auto px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tight text-center font-headline text-primary">
-              From Chick to Market
+              {t('fromChickToMarket')}
             </h2>
             <p className="mt-4 text-center text-lg text-foreground/80 max-w-2xl mx-auto">
-              Understand the journey of our birds and what to expect at each
-              stage.
+              {t('fromChickToMarketSubtitle')}
             </p>
             <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 font-headline">
                     <Shield className="text-primary" />
-                    Day-Old Chicks
+                    {t('dayOldChicks')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-foreground/70">
-                    The first few weeks are crucial. Our day-old chicks are from
-                    top-tier hatcheries, giving them a healthy start. They
-                    require warmth, special feed, and close monitoring.
+                    {t('dayOldChicksDesc')}
                   </p>
                 </CardContent>
               </Card>
@@ -243,15 +236,12 @@ export default function Home() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 font-headline">
                     <Clock className="text-primary" />
-                    Grower Stage
+                    {t('growerStage')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-foreground/70">
-                    After the initial delicate phase, they enter the grower
-                    stage. At 4 weeks, they are more resilient and experience
-                    rapid growth, building the framework for a healthy mature
-                    bird.
+                    {t('growerStageDesc')}
                   </p>
                 </CardContent>
               </Card>
@@ -259,14 +249,12 @@ export default function Home() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 font-headline">
                     <Award className="text-primary" />
-                    Maturity & Market
+                    {t('maturityAndMarket')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-foreground/70">
-                    Our broiler breeds typically reach full maturity for meat
-                    production in just 5-6 weeks. At this point, they have
-                    achieved their optimal weight and are ready for the market.
+                    {t('maturityAndMarketDesc')}
                   </p>
                 </CardContent>
               </Card>
