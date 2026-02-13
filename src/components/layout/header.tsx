@@ -10,10 +10,16 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Menu, Bird } from 'lucide-react';
+import { Menu, Bird, Globe } from 'lucide-react';
 import Logo from '../logo';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -103,7 +109,23 @@ export default function Header() {
           <div className="w-full flex-1 md:w-auto md:flex-none">
             {/* Can add a search bar here if needed */}
           </div>
-          <div className="hidden md:flex">
+          <div className="hidden md:flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Globe className="h-5 w-5" />
+                  <span className="sr-only">Select language</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  English
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  Hausa
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button asChild>
               <Link href="/login">Login / Sign Up</Link>
             </Button>

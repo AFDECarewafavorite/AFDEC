@@ -25,41 +25,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const heroImage = PlaceHolderImages.find((img) => img.id === 'hero');
 
-const WhatsAppIcon = ({className}: {className?: string}) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-    </svg>
-);
-
-const FacebookIcon = ({className}: {className?: string}) => (
-    <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        width="24" 
-        height="24" 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round" 
-        className={className}
-    >
-        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-    </svg>
-);
-
-
 export default function Home() {
   const firestore = useFirestore();
   const productsQuery = useMemoFirebase(
@@ -279,39 +244,6 @@ export default function Home() {
             </div>
         </section>
       </main>
-
-      <footer className="bg-card text-card-foreground py-8">
-        <div className="container mx-auto px-4 md:px-6 text-center">
-            <p className="font-bold text-primary">Contact Us</p>
-            <div className="flex justify-center items-center gap-6 my-4">
-                <a href="https://wa.me/2341234567890" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                    <WhatsAppIcon className="w-6 h-6"/>
-                    <span className="sr-only">WhatsApp</span>
-                </a>
-                <a href="https://facebook.com/afdec" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                    <FacebookIcon className="w-6 h-6"/>
-                    <span className="sr-only">Facebook</span>
-                </a>
-                <a href="tel:+2341234567890" className="text-muted-foreground hover:text-primary transition-colors">
-                    <Phone className="w-6 h-6"/>
-                    <span className="sr-only">Call Us</span>
-                </a>
-                <a href="mailto:info@afdec.online" className="text-muted-foreground hover:text-primary transition-colors">
-                    <Mail className="w-6 h-6"/>
-                    <span className="sr-only">Email Us</span>
-                </a>
-            </div>
-          <p className="font-bold text-primary mt-6">Important Business Notice</p>
-          <p className="text-sm text-foreground/70 max-w-3xl mx-auto mt-2">
-            Paying the booking fee secures your place in the queue for the next available batch of chickens.
-            Our manager will call you to confirm allocation, final balance, and your collection date.
-          </p>
-          <p className="text-sm text-foreground/50 mt-4">
-            © {new Date().getFullYear()} AFDEC Online. All Rights Reserved.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }
-
