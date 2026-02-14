@@ -32,3 +32,6 @@ This project is configured and ready for deployment on Vercel. Follow these step
 ### 4. Deploy
 - Click the **Deploy** button.
 - Vercel will build and deploy your application, providing you with a live URL (e.g., `afdec-booking.vercel.app`).
+git add .
+git commit -m "Fix: Isolate useSearchParams to fix Vercel build"
+git push
