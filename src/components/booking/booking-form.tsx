@@ -2,7 +2,6 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useSearchParams } from 'next/navigation';
 
 import type { BookingData, Product } from '@/lib/types';
 import StepIndicator from '@/components/booking/step-indicator';
@@ -39,14 +38,13 @@ const initialBookingData: BookingData = {
   referralCode: '',
 };
 
-export default function BookingForm() {
+export default function BookingForm({ initialReferralCode }: { initialReferralCode: string | null }) {
   const [step, setStep] = useState(1);
   const [bookingData, setBookingData] =
     useState<BookingData>(initialBookingData);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [bookingId, setBookingId] = useState('');
   const { toast } = useToast();
-  const searchParams = useSearchParams();
   const { t } = useLanguage();
 
   const { user, isUserLoading } = useUser();
@@ -61,11 +59,10 @@ export default function BookingForm() {
 
 
   useEffect(() => {
-    const refCode = searchParams.get('ref');
-    if (refCode) {
-      updateData({ referralCode: refCode });
+    if (initialReferralCode) {
+      updateData({ referralCode: initialReferralCode });
     }
-  }, [searchParams]);
+  }, [initialReferralCode]);
 
   useEffect(() => {
     // If user is not logged in and we are done checking, sign them in anonymously.

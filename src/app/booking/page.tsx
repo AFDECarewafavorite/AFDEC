@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import BookingForm from '@/components/booking/booking-form';
+import BookingFormWrapper from '@/components/booking/booking-form-wrapper';
 import { Loader } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -54,7 +54,7 @@ function BookingPageSkeleton() {
 export default function BookingPage() {
   return (
     <Suspense fallback={<BookingPageSkeleton />}>
-      <BookingForm />
+      <BookingFormWrapper />
     </Suspense>
   );
 }
