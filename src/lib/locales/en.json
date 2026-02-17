@@ -209,5 +209,10 @@
   "emailUs": "Email Us",
   "importantBusinessNotice": "Important Business Notice",
   "importantBusinessNoticeDesc": "Paying the booking fee secures your place in the queue for the next available batch of chickens. Our manager will call you to confirm allocation, final balance, and your collection date.",
-  "copyright": "© {year} AFDEC Online. All Rights Reserved."
+  "copyright": "© {year} AFDEC Online. All Rights Reserved.",
+  "navigateTo": "Navigate Our Services",
+  "navigateToSubtitle": "Quickly access our main features from one place.",
+  "bookNowCardDesc": "Place an order for day-old chicks, growers, or mature birds and secure your spot in the queue.",
+  "agentPortalCardDesc": "Access your referral dashboard, track commissions, and manage your earnings as a registered agent.",
+  "dashboardCardDesc": "For managers and CEOs. Oversee bookings, manage products, and administer user accounts."
 }

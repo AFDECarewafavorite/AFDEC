@@ -12,6 +12,8 @@ import {
   ShoppingBag,
   ListOrdered,
   Loader,
+  Briefcase,
+  LayoutDashboard,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -44,6 +46,27 @@ export default function Home() {
   );
   const { data: products, isLoading: areProductsLoading } =
     useCollection<Product>(productsQuery);
+
+  const navCards = [
+    {
+      href: '/booking',
+      icon: <ListOrdered className="h-8 w-8" />,
+      title: t('bookNow'),
+      description: t('bookNowCardDesc'),
+    },
+    {
+      href: '/agent',
+      icon: <Briefcase className="h-8 w-8" />,
+      title: t('agentPortal'),
+      description: t('agentPortalCardDesc'),
+    },
+    {
+      href: '/admin',
+      icon: <LayoutDashboard className="h-8 w-8" />,
+      title: t('dashboard'),
+      description: t('dashboardCardDesc'),
+    },
+  ];
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -83,6 +106,34 @@ export default function Home() {
                   <a href="#how-it-works">{t('learnMore')}</a>
                 </Button>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="navigation-grid" className="py-16 sm:py-24">
+          <div className="container mx-auto px-4 md:px-6">
+            <h2 className="text-3xl font-bold tracking-tight text-center font-headline text-primary">
+              {t('navigateTo')}
+            </h2>
+            <p className="mt-4 text-center text-lg text-foreground/80 max-w-2xl mx-auto">
+              {t('navigateToSubtitle')}
+            </p>
+            <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+              {navCards.map((card) => (
+                <Link href={card.href} key={card.href}>
+                  <Card className="h-full transform hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer flex flex-col">
+                    <CardHeader className="flex flex-col items-center text-center">
+                      <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary text-primary-foreground mb-4">
+                        {card.icon}
+                      </div>
+                      <CardTitle className="font-headline text-2xl">{card.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-center text-foreground/70 flex-1">
+                      <p>{card.description}</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
             </div>
           </div>
         </section>

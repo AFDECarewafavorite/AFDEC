@@ -209,5 +209,10 @@
   "emailUs": "Aiko Mana Imel",
   "importantBusinessNotice": "Muhimmiyar Sanarwar Kasuwanci",
   "importantBusinessNoticeDesc": "Biyan kuɗin rajista yana tabbatar da wurinka a cikin jerin gwano don rukunin kajin da ke gaba. Manajanmu zai kira ka don tabbatar da rabonka, sauran kuɗi, da ranar karɓa.",
-  "copyright": "© {year} AFDEC Online. An Kiyaye Dukkan Haƙƙoƙi."
+  "copyright": "© {year} AFDEC Online. An Kiyaye Dukkan Haƙƙoƙi.",
+  "navigateTo": "Duba Ayyukanmu",
+  "navigateToSubtitle": "Samu damar shiga manyan sassanmu daga wuri guda.",
+  "bookNowCardDesc": "Yi odar kajin kwana ɗaya, masu girma, ko manyan tsuntsaye kuma ka tabbatar da matsayinka a cikin jerin.",
+  "agentPortalCardDesc": "Shiga shafin gayyatarka, bibiyi kwamitoci, da kuma sarrafa kuɗaɗen da ka samu a matsayin wakili mai rijista.",
+  "dashboardCardDesc": "Don manajoji da Shugabanni. Kula da rajista, sarrafa kayayyaki, da gudanar da asusun masu amfani."
 }
