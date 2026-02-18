@@ -8,6 +8,12 @@ import {
   Briefcase,
   Search,
   Tag,
+  Bird,
+  TrendingUp,
+  Settings,
+  ArrowUpRight,
+  Phone,
+  Mail,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -27,6 +33,23 @@ import { useLanguage } from '@/context/language-provider';
 import { cn } from '@/lib/utils';
 
 const heroImage = PlaceHolderImages.find((img) => img.id === 'hero');
+
+const WhatsAppIcon = ({className}: {className?: string}) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+    </svg>
+);
 
 export default function Home() {
   const firestore = useFirestore();
@@ -112,6 +135,11 @@ export default function Home() {
                     {t('bookNow')} <ArrowRight className="ml-3 h-8 w-8" />
                   </Link>
                 </Button>
+                <Button asChild variant="outline" size="lg" className="h-16 px-12 text-2xl font-black uppercase rounded-2xl border-4">
+                  <Link href="#how-it-works">
+                    {t('learnMore')}
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>
@@ -148,6 +176,70 @@ export default function Home() {
                   </Card>
                 </Link>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Learn More / Process Section */}
+        <section id="how-it-works" className="py-20 md:py-32 bg-primary/5">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="space-y-8">
+                <Badge className="bg-primary text-primary-foreground text-xl font-black px-6 py-2 uppercase rounded-xl">
+                  {t('rearingToProfitTitle')}
+                </Badge>
+                <h2 className="text-5xl md:text-7xl font-black font-headline text-primary uppercase tracking-tighter leading-none">
+                  {t('fromChickToMarket')}
+                </h2>
+                <p className="text-2xl font-bold italic opacity-90 leading-snug">
+                  {t('rearingToProfitDesc')}
+                </p>
+                <div className="space-y-6 pt-4">
+                  <div className="flex gap-6">
+                    <div className="h-16 w-16 bg-primary/20 rounded-2xl flex items-center justify-center flex-shrink-0">
+                      <Bird className="h-8 w-8 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-black uppercase text-primary tracking-tighter">{t('dayOldChicks')}</h3>
+                      <p className="text-lg font-bold opacity-70">{t('dayOldChicksDesc')}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-6">
+                    <div className="h-16 w-16 bg-accent/20 rounded-2xl flex items-center justify-center flex-shrink-0">
+                      <TrendingUp className="h-8 w-8 text-accent" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-black uppercase text-accent tracking-tighter">{t('maturityAndMarket')}</h3>
+                      <p className="text-lg font-bold opacity-70">{t('maturityAndMarketDesc')}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-6">
+                    <div className="h-16 w-16 bg-blue-500/20 rounded-2xl flex items-center justify-center flex-shrink-0">
+                      <Settings className="h-8 w-8 text-blue-500" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-black uppercase text-blue-500 tracking-tighter">{t('feedsAndTools')}</h3>
+                      <p className="text-lg font-bold opacity-70">{t('feedsAndToolsDesc')}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="relative h-[500px] md:h-[700px] rounded-3xl overflow-hidden border-8 border-primary/20 shadow-2xl">
+                 <Image
+                    src="https://picsum.photos/seed/rearing/800/1200"
+                    alt="Chicken Rearing"
+                    fill
+                    className="object-cover"
+                    data-ai-hint="chicken farm"
+                 />
+                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-8">
+                    <div className="bg-primary p-6 rounded-2xl shadow-2xl">
+                        <p className="text-primary-foreground font-black text-3xl uppercase leading-none italic">
+                            {"Buy -> Rear -> Sell -> Profit"}
+                        </p>
+                    </div>
+                 </div>
+              </div>
             </div>
           </div>
         </section>
@@ -216,6 +308,35 @@ export default function Home() {
                   </p>
                 </div>
               )}
+            </div>
+          </div>
+        </section>
+
+        {/* Contact to Sell Section */}
+        <section className="py-20 md:py-32 bg-accent/10 border-t-8 border-accent/20">
+          <div className="container mx-auto px-4 md:px-6 text-center">
+            <h2 className="text-5xl md:text-8xl font-black font-headline text-accent uppercase tracking-tighter mb-8 drop-shadow-lg">
+              {t('contactToSell')}
+            </h2>
+            <p className="text-2xl md:text-4xl font-bold italic max-w-4xl mx-auto mb-16 opacity-90 leading-tight">
+              {t('contactToSellDesc')}
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-6">
+              <Button asChild size="lg" className="h-20 px-12 text-2xl font-black bg-green-600 hover:bg-green-700 text-white rounded-2xl shadow-2xl shadow-green-600/30">
+                <a href="https://wa.me/2341234567890" target="_blank" rel="noopener noreferrer">
+                  <WhatsAppIcon className="mr-3 h-8 w-8" /> WhatsApp
+                </a>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="h-20 px-12 text-2xl font-black rounded-2xl border-4 border-accent text-accent hover:bg-accent hover:text-white">
+                <a href="tel:+2341234567890">
+                  <Phone className="mr-3 h-8 w-8" /> {t('callUs')}
+                </a>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="h-20 px-12 text-2xl font-black rounded-2xl border-4 border-accent text-accent hover:bg-accent hover:text-white">
+                <a href="mailto:sales@afdec.online">
+                  <Mail className="mr-3 h-8 w-8" /> {t('emailUs')}
+                </a>
+              </Button>
             </div>
           </div>
         </section>

@@ -1,3 +1,4 @@
+
 {
   "home": "Home",
   "bookNow": "Book Now",
@@ -219,5 +220,11 @@
   "saleCardDesc": "View live deals.",
   "checkBookingStatus": "CHECK BOOKING STATUS",
   "checkStatusDesc": "Search by Phone, Name, or ID.",
-  "searchPlaceholder": "Phone, Name, or Booking ID"
+  "searchPlaceholder": "Phone, Name, or Booking ID",
+  "rearingToProfitTitle": "Rear for Profit",
+  "rearingToProfitDesc": "Buy from us, rear them, and we will buy back at a premium price! Maximize your domestic earnings easily.",
+  "contactToSell": "READY TO SELL?",
+  "contactToSellDesc": "Contact us via WhatsApp, Phone, or Email to sell your mature birds back to us.",
+  "feedsAndTools": "Feeds & Tools",
+  "feedsAndToolsDesc": "We also sell high-quality chicken food and rearing tools to ensure your success."
 }

@@ -1,3 +1,4 @@
+
 {
   "home": "Gida",
   "bookNow": "Yi Rajista",
@@ -219,5 +220,11 @@
   "saleCardDesc": "Duba tayin kwanan nan.",
   "checkBookingStatus": "DUBA HALIN RAJISTA",
   "checkStatusDesc": "Bincika ta Waya, Suna, ko ID.",
-  "searchPlaceholder": "Waya, Suna, ko ID na Rajista"
+  "searchPlaceholder": "Waya, Suna, ko ID na Rajista",
+  "rearingToProfitTitle": "Riba ta hanyar Kiwo",
+  "rearingToProfitDesc": "Sayi kaji daga gare mu, ka yi kiwon su, mu kuma za mu sake saye a farashi mai kyau! Ka haɓaka kuɗin shigarka cikin sauƙi.",
+  "contactToSell": "SHIRYE KA KE KA SAYAR?",
+  "contactToSellDesc": "Tuntuɓi mu ta WhatsApp, Waya, ko Imel don sayar mana da manyan kajinka.",
+  "feedsAndTools": "Abinci & Kayan Aiki",
+  "feedsAndToolsDesc": "Muna kuma sayar da ingantaccen abincin kaza da kayan aikin kiwo don tabbatar da nasararka."
 }
