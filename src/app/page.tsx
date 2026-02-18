@@ -11,7 +11,6 @@ import {
   Bird,
   TrendingUp,
   Settings,
-  ArrowUpRight,
   Phone,
   Mail,
 } from 'lucide-react';
@@ -145,7 +144,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Navigation Grid (4 Items) */}
+        {/* Navigation Grid (4 Items, 2-column on mobile) */}
         <section className="py-16 md:py-24 bg-muted/30">
           <div className="container mx-auto px-4 md:px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
@@ -156,15 +155,15 @@ export default function Home() {
                   className="group"
                 >
                   <Card className="h-full border-4 border-primary/10 bg-card/50 backdrop-blur-sm hover:border-primary hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 transform hover:-translate-y-2 rounded-3xl overflow-hidden">
-                    <CardHeader className="flex flex-col items-center text-center p-6 md:p-8">
+                    <CardHeader className="flex flex-col items-center text-center p-4 md:p-8">
                       <div className={cn(
-                        "flex items-center justify-center h-20 w-20 md:h-28 md:w-28 rounded-3xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-xl border-2 border-white/5",
+                        "flex items-center justify-center h-16 w-16 md:h-28 md:w-28 rounded-2xl md:rounded-3xl mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-xl border-2 border-white/5",
                         card.bgColor,
                         card.color
                       )}>
                         {card.icon}
                       </div>
-                      <CardTitle className="font-headline text-xl md:text-2xl font-black group-hover:text-primary transition-colors leading-tight uppercase tracking-tighter">
+                      <CardTitle className="font-headline text-lg md:text-2xl font-black group-hover:text-primary transition-colors leading-tight uppercase tracking-tighter">
                         {card.title}
                       </CardTitle>
                     </CardHeader>
@@ -224,7 +223,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="relative h-[500px] md:h-[700px] rounded-3xl overflow-hidden border-8 border-primary/20 shadow-2xl">
+              <div className="relative h-[400px] md:h-[700px] rounded-3xl overflow-hidden border-8 border-primary/20 shadow-2xl">
                  <Image
                     src="https://picsum.photos/seed/chicken-chicks/800/1200"
                     alt="Chicken and Chicks"
@@ -273,7 +272,7 @@ export default function Home() {
                     key={product.id}
                     className="overflow-hidden flex flex-col border-4 border-transparent hover:border-primary/50 hover:shadow-2xl transition-all duration-300 rounded-3xl"
                   >
-                    <div className="relative h-48 md:h-64 w-full">
+                    <div className="relative h-40 md:h-64 w-full">
                       <Image
                         src={product.imageUrl}
                         alt={product.name}
@@ -282,19 +281,19 @@ export default function Home() {
                         data-ai-hint={product.imageHint}
                       />
                     </div>
-                    <CardContent className="p-6 md:p-8 flex-1 flex flex-col bg-card/80">
-                      <CardTitle className="font-headline text-2xl md:text-3xl font-black mb-4 text-primary uppercase tracking-tighter">
+                    <CardContent className="p-4 md:p-8 flex-1 flex flex-col bg-card/80">
+                      <CardTitle className="font-headline text-xl md:text-3xl font-black mb-2 md:mb-4 text-primary uppercase tracking-tighter">
                         {product.name}
                       </CardTitle>
-                      <p className="text-foreground/90 text-sm md:text-lg mb-8 flex-1 line-clamp-3 font-bold italic">
+                      <p className="text-foreground/90 text-sm md:text-lg mb-4 md:mb-8 flex-1 line-clamp-2 md:line-clamp-3 font-bold italic leading-tight">
                         {product.description}
                       </p>
-                      <div className="flex flex-col gap-4 mt-auto">
-                        <Badge variant="outline" className="border-primary/40 text-primary w-fit text-sm font-black px-4 py-1 uppercase">
+                      <div className="flex flex-col gap-2 md:gap-4 mt-auto">
+                        <Badge variant="outline" className="border-primary/40 text-primary w-fit text-xs md:text-sm font-black px-3 py-1 uppercase">
                           {product.maturity}
                         </Badge>
-                        <p className="font-black text-primary text-2xl md:text-3xl tracking-tighter">
-                          ₦{product.bookingFeePerUnit} <span className="text-sm uppercase opacity-70">{t('fee')}</span>
+                        <p className="font-black text-primary text-xl md:text-3xl tracking-tighter">
+                          ₦{product.bookingFeePerUnit} <span className="text-xs md:text-sm uppercase opacity-70">{t('fee')}</span>
                         </p>
                       </div>
                     </CardContent>

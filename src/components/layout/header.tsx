@@ -32,7 +32,7 @@ export default function Header() {
         <div className="flex items-center gap-3 md:gap-8">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center gap-3 px-4 md:px-6 h-14 hover:bg-primary/10 rounded-2xl transition-all border-2 border-transparent hover:border-primary/30">
+              <Button variant="ghost" className="flex items-center gap-2 px-3 md:px-6 h-14 hover:bg-primary/10 rounded-2xl transition-all border-2 border-transparent hover:border-primary/30">
                 <Languages className="h-8 w-8 text-primary" />
                 <span className="font-black text-lg md:text-xl uppercase tracking-tight hidden sm:inline-block">
                   {t('language')}
