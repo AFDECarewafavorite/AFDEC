@@ -3,15 +3,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   ArrowRight,
-  CheckCircle,
   Phone,
-  Mail,
-  Clock,
-  Shield,
-  Award,
   ShoppingBag,
   ListOrdered,
-  Loader,
   Briefcase,
   LayoutDashboard,
 } from 'lucide-react';
@@ -22,7 +16,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -31,6 +24,7 @@ import { collection, query, where } from 'firebase/firestore';
 import type { Product } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/context/language-provider';
+import { cn } from '@/lib/utils';
 
 const heroImage = PlaceHolderImages.find((img) => img.id === 'hero');
 
@@ -51,19 +45,19 @@ export default function Home() {
   const navCards = [
     {
       href: '/booking',
-      icon: <ListOrdered className="h-8 w-8" />,
+      icon: <ListOrdered className="h-6 w-6 md:h-8 md:w-8" />,
       title: t('bookNow'),
       description: t('bookNowCardDesc'),
     },
     {
       href: '/agent',
-      icon: <Briefcase className="h-8 w-8" />,
+      icon: <Briefcase className="h-6 w-6 md:h-8 md:w-8" />,
       title: t('agentPortal'),
       description: t('agentPortalCardDesc'),
     },
     {
       href: '/admin',
-      icon: <LayoutDashboard className="h-8 w-8" />,
+      icon: <LayoutDashboard className="h-6 w-6 md:h-8 md:w-8" />,
       title: t('dashboard'),
       description: t('dashboardCardDesc'),
     },
@@ -73,7 +67,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative w-full py-20 md:py-32 lg:py-40 border-b">
+        <section className="relative w-full py-16 md:py-32 lg:py-40 border-b overflow-hidden">
           {heroImage && (
             <Image
               src={heroImage.imageUrl}
@@ -92,10 +86,10 @@ export default function Home() {
               >
                 AFDEC Online Chicken Booking
               </Badge>
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl font-headline text-primary mb-6">
+              <h1 className="text-3xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl font-headline text-primary mb-6">
                 {t('heroTitle')}
               </h1>
-              <p className="text-lg leading-8 text-foreground/80 max-w-2xl mx-auto mb-10">
+              <p className="text-base md:text-lg leading-relaxed text-foreground/80 max-w-2xl mx-auto mb-10">
                 {t('heroSubtitle')}
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4">
@@ -112,31 +106,40 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Main Navigation Grid (Grips) */}
-        <section id="navigation-grid" className="py-20 bg-muted/30">
+        {/* Main Navigation Grid (Grips) - 2 columns on mobile */}
+        <section id="navigation-grid" className="py-12 md:py-20 bg-muted/30">
           <div className="container mx-auto px-4 md:px-6">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold tracking-tight font-headline text-primary">
+            <div className="text-center mb-8 md:mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold tracking-tight font-headline text-primary">
                 {t('navigateTo')}
               </h2>
-              <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
+              <p className="mt-2 text-sm md:text-lg text-foreground/80 max-w-2xl mx-auto">
                 {t('navigateToSubtitle')}
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {navCards.map((card) => (
-                <Link href={card.href} key={card.href} className="group">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-8">
+              {navCards.map((card, idx) => (
+                <Link 
+                  href={card.href} 
+                  key={card.href} 
+                  className={cn(
+                    "group",
+                    idx === 2 ? "col-span-2 md:col-span-1" : ""
+                  )}
+                >
                   <Card className="h-full border-2 border-transparent hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 transform hover:-translate-y-1">
-                    <CardHeader className="flex flex-col items-center text-center pb-2">
-                      <div className="flex items-center justify-center h-20 w-20 rounded-2xl bg-primary/10 text-primary mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <CardHeader className="flex flex-col items-center text-center p-3 md:p-6 pb-1">
+                      <div className="flex items-center justify-center h-10 w-10 md:h-20 md:w-20 rounded-xl bg-primary/10 text-primary mb-2 md:mb-6 group-hover:scale-110 transition-transform duration-300">
                         {card.icon}
                       </div>
-                      <CardTitle className="font-headline text-2xl group-hover:text-primary transition-colors">
+                      <CardTitle className="font-headline text-xs md:text-2xl group-hover:text-primary transition-colors">
                         {card.title}
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="text-center text-foreground/70 px-6 pb-8">
-                      <p className="leading-relaxed">{card.description}</p>
+                    <CardContent className="text-center text-foreground/70 px-2 md:px-6 pb-3 md:pb-8">
+                      <p className="text-[10px] md:text-sm leading-tight md:leading-relaxed line-clamp-2">
+                        {card.description}
+                      </p>
                     </CardContent>
                   </Card>
                 </Link>
@@ -146,28 +149,28 @@ export default function Home() {
         </section>
 
         {/* Bird Catalog Section */}
-        <section id="bird-types" className="py-20">
+        <section id="bird-types" className="py-12 md:py-20">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold tracking-tight font-headline text-primary">
+              <h2 className="text-2xl md:text-3xl font-bold tracking-tight font-headline text-primary">
                 {t('whatWeOffer')}
               </h2>
-              <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
+              <p className="mt-4 text-sm md:text-lg text-foreground/80 max-w-2xl mx-auto">
                 {t('whatWeOfferSubtitle')}
               </p>
             </div>
             
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
               {areProductsLoading ? (
                 Array.from({ length: 4 }).map((_, i) => (
                   <Card key={i} className="flex flex-col overflow-hidden">
-                    <Skeleton className="w-full h-48 rounded-none" />
-                    <CardContent className="p-6 space-y-4">
-                      <Skeleton className="h-6 w-3/4" />
-                      <Skeleton className="h-16 w-full" />
+                    <Skeleton className="w-full h-32 md:h-48 rounded-none" />
+                    <CardContent className="p-4 space-y-4">
+                      <Skeleton className="h-5 w-3/4" />
+                      <Skeleton className="h-12 w-full" />
                       <div className="flex justify-between items-center">
-                        <Skeleton className="h-6 w-20" />
-                        <Skeleton className="h-6 w-24" />
+                        <Skeleton className="h-5 w-16" />
+                        <Skeleton className="h-5 w-20" />
                       </div>
                     </CardContent>
                   </Card>
@@ -178,7 +181,7 @@ export default function Home() {
                     key={product.id}
                     className="overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300"
                   >
-                    <div className="relative h-48 w-full">
+                    <div className="relative h-32 md:h-48 w-full">
                       <Image
                         src={product.imageUrl}
                         alt={product.name}
@@ -187,20 +190,20 @@ export default function Home() {
                         data-ai-hint={product.imageHint}
                       />
                     </div>
-                    <CardContent className="p-6 flex-1 flex flex-col">
-                      <CardTitle className="font-headline text-xl mb-3">
+                    <CardContent className="p-4 md:p-6 flex-1 flex flex-col">
+                      <CardTitle className="font-headline text-base md:text-xl mb-2 md:mb-3">
                         {product.name}
                       </CardTitle>
-                      <p className="text-foreground/70 text-sm mb-6 flex-1 line-clamp-3">
+                      <p className="text-foreground/70 text-[10px] md:text-sm mb-4 flex-1 line-clamp-2 md:line-clamp-3">
                         {product.description}
                       </p>
-                      <div className="flex justify-between items-center mt-auto">
+                      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 mt-auto">
                         {product.maturity && (
-                          <Badge variant="outline" className="border-primary/30 text-primary">
+                          <Badge variant="outline" className="border-primary/30 text-primary w-fit text-[10px]">
                             {product.maturity}
                           </Badge>
                         )}
-                        <p className="font-bold text-primary">
+                        <p className="font-bold text-primary text-xs md:text-base">
                           ₦{product.bookingFeePerUnit} {t('fee')}
                         </p>
                       </div>
@@ -220,9 +223,9 @@ export default function Home() {
         </section>
 
         {/* How It Works Section */}
-        <section id="how-it-works" className="py-20 bg-muted/30">
+        <section id="how-it-works" className="py-12 md:py-20 bg-muted/30">
           <div className="container mx-auto px-4 md:px-6 text-center">
-            <h2 className="text-3xl font-bold tracking-tight font-headline text-primary mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold tracking-tight font-headline text-primary mb-12">
               {t('howItWorks')}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
@@ -238,7 +241,7 @@ export default function Home() {
                   <h3 className="text-xl font-bold font-headline mb-3">
                     {step.title}
                   </h3>
-                  <p className="text-foreground/70 leading-relaxed">
+                  <p className="text-foreground/70 leading-relaxed text-sm md:text-base">
                     {step.desc}
                   </p>
                 </div>

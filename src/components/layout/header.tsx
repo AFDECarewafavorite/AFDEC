@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Languages, UserCircle } from 'lucide-react';
+import { Globe, UserCircle } from 'lucide-react';
 import Logo from '../logo';
 import {
   DropdownMenu,
@@ -23,16 +23,16 @@ export default function Header() {
         <div className="flex items-center flex-1">
           <Link href="/" className="flex items-center space-x-2">
             <Logo width={40} height={40} />
-            <span className="hidden sm:inline-block font-headline font-bold text-xl tracking-tight">AFDEC</span>
+            <span className="hidden sm:inline-block font-headline font-bold text-xl tracking-tight text-primary">AFDEC</span>
           </Link>
         </div>
 
         <div className="flex items-center gap-2 md:gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center gap-2 px-3 h-10 hover:bg-primary/10">
-                <Languages className="h-5 w-5 text-primary" />
-                <span className="font-semibold text-sm hidden xs:inline">{t('language')}</span>
+              <Button variant="ghost" className="flex items-center gap-2 px-2 md:px-3 h-10 hover:bg-primary/10">
+                <Globe className="h-5 w-5 text-primary" />
+                <span className="font-semibold text-xs md:text-sm">{t('language')}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40 p-1">
@@ -51,7 +51,7 @@ export default function Header() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Button asChild className="h-10 px-4 md:px-6">
+          <Button asChild className="h-10 px-3 md:px-6">
             <Link href={user ? "/admin" : "/login"}>
               {user ? (
                 <div className="flex items-center gap-2">
@@ -59,7 +59,7 @@ export default function Header() {
                   <span className="hidden sm:inline">{t('dashboard')}</span>
                 </div>
               ) : (
-                t('loginSignUp')
+                <span className="text-xs md:text-sm font-bold">{t('loginSignUp')}</span>
               )}
             </Link>
           </Button>
