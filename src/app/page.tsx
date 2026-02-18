@@ -37,6 +37,7 @@ const heroImage = PlaceHolderImages.find((img) => img.id === 'hero');
 export default function Home() {
   const firestore = useFirestore();
   const { t } = useLanguage();
+
   const productsQuery = useMemoFirebase(
     () =>
       firestore
@@ -71,38 +72,39 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
-        <section className="relative w-full py-20 md:py-32 lg:py-40">
+        {/* Hero Section */}
+        <section className="relative w-full py-20 md:py-32 lg:py-40 border-b">
           {heroImage && (
             <Image
               src={heroImage.imageUrl}
               alt={heroImage.description}
               fill
-              className="absolute inset-0 object-cover w-full h-full opacity-20"
+              className="absolute inset-0 object-cover w-full h-full opacity-10"
               data-ai-hint={heroImage.imageHint}
               priority
             />
           )}
-          <div className="container mx-auto px-4 md:px-6 text-center relative">
+          <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
             <div className="max-w-3xl mx-auto">
               <Badge
                 variant="secondary"
-                className="mb-4 bg-primary/20 text-primary"
+                className="mb-4 bg-primary/20 text-primary px-4 py-1"
               >
                 AFDEC Online Chicken Booking
               </Badge>
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl font-headline text-primary">
+              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl font-headline text-primary mb-6">
                 {t('heroTitle')}
               </h1>
-              <p className="mt-6 text-lg leading-8 text-foreground/80 max-w-2xl mx-auto">
+              <p className="text-lg leading-8 text-foreground/80 max-w-2xl mx-auto mb-10">
                 {t('heroSubtitle')}
               </p>
-              <div className="mt-10 flex items-center justify-center gap-x-6">
-                <Button asChild size="lg">
+              <div className="flex flex-wrap items-center justify-center gap-4">
+                <Button asChild size="lg" className="h-12 px-8">
                   <Link href="/booking">
-                    {t('bookNow')} <ArrowRight className="ml-2" />
+                    {t('bookNow')} <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="lg">
+                <Button asChild variant="outline" size="lg" className="h-12 px-8">
                   <a href="#how-it-works">{t('learnMore')}</a>
                 </Button>
               </div>
@@ -110,26 +112,31 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="navigation-grid" className="py-16 sm:py-24">
+        {/* Main Navigation Grid (Grips) */}
+        <section id="navigation-grid" className="py-20 bg-muted/30">
           <div className="container mx-auto px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tight text-center font-headline text-primary">
-              {t('navigateTo')}
-            </h2>
-            <p className="mt-4 text-center text-lg text-foreground/80 max-w-2xl mx-auto">
-              {t('navigateToSubtitle')}
-            </p>
-            <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold tracking-tight font-headline text-primary">
+                {t('navigateTo')}
+              </h2>
+              <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
+                {t('navigateToSubtitle')}
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {navCards.map((card) => (
-                <Link href={card.href} key={card.href}>
-                  <Card className="h-full transform hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer flex flex-col">
-                    <CardHeader className="flex flex-col items-center text-center">
-                      <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary text-primary-foreground mb-4">
+                <Link href={card.href} key={card.href} className="group">
+                  <Card className="h-full border-2 border-transparent hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 transform hover:-translate-y-1">
+                    <CardHeader className="flex flex-col items-center text-center pb-2">
+                      <div className="flex items-center justify-center h-20 w-20 rounded-2xl bg-primary/10 text-primary mb-6 group-hover:scale-110 transition-transform duration-300">
                         {card.icon}
                       </div>
-                      <CardTitle className="font-headline text-2xl">{card.title}</CardTitle>
+                      <CardTitle className="font-headline text-2xl group-hover:text-primary transition-colors">
+                        {card.title}
+                      </CardTitle>
                     </CardHeader>
-                    <CardContent className="text-center text-foreground/70 flex-1">
-                      <p>{card.description}</p>
+                    <CardContent className="text-center text-foreground/70 px-6 pb-8">
+                      <p className="leading-relaxed">{card.description}</p>
                     </CardContent>
                   </Card>
                 </Link>
@@ -138,177 +145,104 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="bird-types" className="py-16 sm:py-24 bg-background/50">
+        {/* Bird Catalog Section */}
+        <section id="bird-types" className="py-20">
           <div className="container mx-auto px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tight text-center font-headline text-primary">
-              {t('whatWeOffer')}
-            </h2>
-            <p className="mt-4 text-center text-lg text-foreground/80 max-w-2xl mx-auto">
-              {t('whatWeOfferSubtitle')}
-            </p>
-            <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-              {areProductsLoading &&
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold tracking-tight font-headline text-primary">
+                {t('whatWeOffer')}
+              </h2>
+              <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
+                {t('whatWeOfferSubtitle')}
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+              {areProductsLoading ? (
                 Array.from({ length: 4 }).map((_, i) => (
-                  <Card key={i} className="flex flex-col">
-                    <CardHeader className="p-0">
-                      <Skeleton className="w-full h-48" />
-                    </CardHeader>
-                    <CardContent className="p-6 flex-1 flex flex-col">
+                  <Card key={i} className="flex flex-col overflow-hidden">
+                    <Skeleton className="w-full h-48 rounded-none" />
+                    <CardContent className="p-6 space-y-4">
                       <Skeleton className="h-6 w-3/4" />
-                      <Skeleton className="h-4 w-full mt-4" />
-                      <Skeleton className="h-4 w-1/2 mt-2" />
-                      <div className="mt-4 flex justify-between items-center">
-                        <Skeleton className="h-5 w-24" />
-                        <Skeleton className="h-5 w-20" />
+                      <Skeleton className="h-16 w-full" />
+                      <div className="flex justify-between items-center">
+                        <Skeleton className="h-6 w-20" />
+                        <Skeleton className="h-6 w-24" />
                       </div>
                     </CardContent>
                   </Card>
-                ))}
-              {!areProductsLoading &&
-                products?.map((product) => (
+                ))
+              ) : products?.length ? (
+                products.map((product) => (
                   <Card
                     key={product.id}
-                    className="overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out flex flex-col"
+                    className="overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300"
                   >
-                    <CardHeader className="p-0">
+                    <div className="relative h-48 w-full">
                       <Image
                         src={product.imageUrl}
                         alt={product.name}
-                        width={product.imageWidth}
-                        height={product.imageHeight}
-                        className="w-full h-48 object-cover"
+                        fill
+                        className="object-cover"
                         data-ai-hint={product.imageHint}
                       />
-                    </CardHeader>
+                    </div>
                     <CardContent className="p-6 flex-1 flex flex-col">
-                      <CardTitle className="font-headline text-xl">
+                      <CardTitle className="font-headline text-xl mb-3">
                         {product.name}
                       </CardTitle>
-                      <p className="mt-2 text-foreground/70 flex-1">
+                      <p className="text-foreground/70 text-sm mb-6 flex-1 line-clamp-3">
                         {product.description}
                       </p>
-                      <div className="mt-4 flex justify-between items-center">
+                      <div className="flex justify-between items-center mt-auto">
                         {product.maturity && (
-                          <Badge
-                            variant="outline"
-                            className="border-primary/50 text-primary"
-                          >
-                            {t('maturity')}: {product.maturity}
+                          <Badge variant="outline" className="border-primary/30 text-primary">
+                            {product.maturity}
                           </Badge>
                         )}
-                        <p className="font-semibold text-primary">
+                        <p className="font-bold text-primary">
                           ₦{product.bookingFeePerUnit} {t('fee')}
                         </p>
                       </div>
                     </CardContent>
                   </Card>
-                ))}
+                ))
+              ) : (
+                <div className="text-center col-span-full py-16 bg-muted/20 rounded-xl">
+                  <ShoppingBag className="mx-auto h-12 w-12 text-muted-foreground opacity-20" />
+                  <p className="mt-4 text-muted-foreground">
+                    {t('noProductsAvailable')}
+                  </p>
+                </div>
+              )}
             </div>
-            {!areProductsLoading && products?.length === 0 && (
-              <div className="text-center col-span-full py-16">
-                <ShoppingBag className="mx-auto h-12 w-12 text-muted-foreground" />
-                <p className="mt-4 text-muted-foreground">
-                  {t('noProductsAvailable')}
-                </p>
-              </div>
-            )}
           </div>
         </section>
 
-        <section id="how-it-works" className="py-16 sm:py-24">
-          <div className="container mx-auto px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tight text-center font-headline text-primary">
+        {/* How It Works Section */}
+        <section id="how-it-works" className="py-20 bg-muted/30">
+          <div className="container mx-auto px-4 md:px-6 text-center">
+            <h2 className="text-3xl font-bold tracking-tight font-headline text-primary mb-12">
               {t('howItWorks')}
             </h2>
-            <p className="mt-4 text-center text-lg text-foreground/80 max-w-2xl mx-auto">
-              {t('howItWorksSubtitle')}
-            </p>
-            <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-              <div className="flex flex-col items-center">
-                <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary text-primary-foreground">
-                  <ListOrdered />
-                </div>
-                <h3 className="mt-4 text-xl font-semibold font-headline">
-                  {t('step1Title')}
-                </h3>
-                <p className="mt-2 text-foreground/70">
-                  {t('step1Desc')}
-                </p>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary text-primary-foreground">
-                  <Phone />
-                </div>
-                <h3 className="mt-4 text-xl font-semibold font-headline">
-                  {t('step2Title')}
-                </h3>
-                <p className="mt-2 text-foreground/70">
-                  {t('step2Desc')}
-                </p>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary text-primary-foreground">
-                  <ShoppingBag />
-                </div>
-                <h3 className="mt-4 text-xl font-semibold font-headline">
-                  {t('step3Title')}
-                </h3>
-                <p className="mt-2 text-foreground/70">
-                  {t('step3Desc')}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="lifecycle" className="py-16 sm:py-24 bg-background/50">
-          <div className="container mx-auto px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tight text-center font-headline text-primary">
-              {t('fromChickToMarket')}
-            </h2>
-            <p className="mt-4 text-center text-lg text-foreground/80 max-w-2xl mx-auto">
-              {t('fromChickToMarketSubtitle')}
-            </p>
-            <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 font-headline">
-                    <Shield className="text-primary" />
-                    {t('dayOldChicks')}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-foreground/70">
-                    {t('dayOldChicksDesc')}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
+              {[
+                { icon: <ListOrdered />, title: t('step1Title'), desc: t('step1Desc') },
+                { icon: <Phone />, title: t('step2Title'), desc: t('step2Desc') },
+                { icon: <ShoppingBag />, title: t('step3Title'), desc: t('step3Desc') },
+              ].map((step, idx) => (
+                <div key={idx} className="flex flex-col items-center">
+                  <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary text-primary-foreground mb-6 shadow-lg shadow-primary/20">
+                    {step.icon}
+                  </div>
+                  <h3 className="text-xl font-bold font-headline mb-3">
+                    {step.title}
+                  </h3>
+                  <p className="text-foreground/70 leading-relaxed">
+                    {step.desc}
                   </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 font-headline">
-                    <Clock className="text-primary" />
-                    {t('growerStage')}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-foreground/70">
-                    {t('growerStageDesc')}
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 font-headline">
-                    <Award className="text-primary" />
-                    {t('maturityAndMarket')}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-foreground/70">
-                    {t('maturityAndMarketDesc')}
-                  </p>
-                </CardContent>
-              </Card>
+                </div>
+              ))}
             </div>
           </div>
         </section>
