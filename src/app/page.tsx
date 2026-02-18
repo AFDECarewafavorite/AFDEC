@@ -3,11 +3,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   ArrowRight,
-  Phone,
   ShoppingBag,
   ListOrdered,
   Briefcase,
-  LayoutDashboard,
+  Search,
+  Tag,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -45,21 +45,35 @@ export default function Home() {
   const navCards = [
     {
       href: '/booking',
-      icon: <ListOrdered className="h-8 w-8 md:h-12 md:w-12" />,
+      icon: <ListOrdered className="h-10 w-10 md:h-16 md:w-16" />,
       title: t('bookNow'),
       description: t('bookNowCardDesc'),
+      color: "text-primary",
+      bgColor: "bg-primary/20"
+    },
+    {
+      href: '#bird-types',
+      icon: <Tag className="h-10 w-10 md:h-16 md:w-16" />,
+      title: t('sale'),
+      description: t('saleCardDesc'),
+      color: "text-red-500",
+      bgColor: "bg-red-500/20"
+    },
+    {
+      href: '/check-status',
+      icon: <Search className="h-10 w-10 md:h-16 md:w-16" />,
+      title: t('checkBookingStatus'),
+      description: t('checkStatusDesc'),
+      color: "text-blue-500",
+      bgColor: "bg-blue-500/20"
     },
     {
       href: '/agent',
-      icon: <Briefcase className="h-8 w-8 md:h-12 md:w-12" />,
+      icon: <Briefcase className="h-10 w-10 md:h-16 md:w-16" />,
       title: t('agentPortal'),
       description: t('agentPortalCardDesc'),
-    },
-    {
-      href: '/admin',
-      icon: <LayoutDashboard className="h-8 w-8 md:h-12 md:w-12" />,
-      title: t('dashboard'),
-      description: t('dashboardCardDesc'),
+      color: "text-accent",
+      bgColor: "bg-accent/20"
     },
   ];
 
@@ -82,62 +96,52 @@ export default function Home() {
             <div className="max-w-4xl mx-auto">
               <Badge
                 variant="secondary"
-                className="mb-6 bg-primary/20 text-primary px-6 py-2 text-sm font-bold uppercase tracking-widest"
+                className="mb-6 bg-primary/20 text-primary px-8 py-3 text-lg font-black uppercase tracking-widest border-2 border-primary/30"
               >
-                AFDEC Online Chicken Booking
+                AFDEC Online
               </Badge>
-              <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl font-headline text-primary mb-8 drop-shadow-sm">
+              <h1 className="text-5xl font-black tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl font-headline text-primary mb-8 drop-shadow-2xl uppercase">
                 {t('heroTitle')}
               </h1>
-              <p className="text-lg md:text-2xl leading-relaxed text-foreground/90 max-w-2xl mx-auto mb-12 font-medium">
+              <p className="text-xl md:text-3xl leading-relaxed text-foreground/90 max-w-3xl mx-auto mb-12 font-bold italic">
                 {t('heroSubtitle')}
               </p>
               <div className="flex flex-wrap items-center justify-center gap-6">
-                <Button asChild size="lg" className="h-14 px-10 text-lg font-bold shadow-lg shadow-primary/20">
+                <Button asChild size="lg" className="h-16 px-12 text-2xl font-black shadow-2xl shadow-primary/40 uppercase rounded-2xl">
                   <Link href="/booking">
-                    {t('bookNow')} <ArrowRight className="ml-2 h-6 w-6" />
+                    {t('bookNow')} <ArrowRight className="ml-3 h-8 w-8" />
                   </Link>
-                </Button>
-                <Button asChild variant="outline" size="lg" className="h-14 px-10 text-lg font-bold border-2">
-                  <a href="#how-it-works">{t('learnMore')}</a>
                 </Button>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Main Navigation Grid (Grips) - 2 columns on mobile */}
-        <section id="navigation-grid" className="py-16 md:py-24 bg-muted/30">
+        {/* Navigation Grid (4 Items) */}
+        <section className="py-16 md:py-24 bg-muted/30">
           <div className="container mx-auto px-4 md:px-6">
-            <div className="text-center mb-12 md:mb-16">
-              <h2 className="text-3xl md:text-5xl font-black tracking-tight font-headline text-primary uppercase">
-                {t('navigateTo')}
-              </h2>
-              <p className="mt-4 text-base md:text-xl text-foreground/90 max-w-2xl mx-auto font-medium">
-                {t('navigateToSubtitle')}
-              </p>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-10">
-              {navCards.map((card, idx) => (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+              {navCards.map((card) => (
                 <Link 
                   href={card.href} 
                   key={card.href} 
-                  className={cn(
-                    "group",
-                    idx === 2 ? "col-span-2 md:col-span-1" : ""
-                  )}
+                  className="group"
                 >
-                  <Card className="h-full border-2 border-primary/10 bg-card/50 backdrop-blur-sm hover:border-primary hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 transform hover:-translate-y-2">
-                    <CardHeader className="flex flex-col items-center text-center p-4 md:p-8 pb-2">
-                      <div className="flex items-center justify-center h-14 w-14 md:h-24 md:w-24 rounded-2xl bg-primary/20 text-primary mb-4 md:mb-8 group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                  <Card className="h-full border-4 border-primary/10 bg-card/50 backdrop-blur-sm hover:border-primary hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 transform hover:-translate-y-2 rounded-3xl overflow-hidden">
+                    <CardHeader className="flex flex-col items-center text-center p-6 md:p-8">
+                      <div className={cn(
+                        "flex items-center justify-center h-20 w-20 md:h-28 md:w-28 rounded-3xl mb-6 group-hover:scale-110 transition-transform duration-300 shadow-xl border-2 border-white/5",
+                        card.bgColor,
+                        card.color
+                      )}>
                         {card.icon}
                       </div>
-                      <CardTitle className="font-headline text-base md:text-3xl font-black group-hover:text-primary transition-colors leading-tight">
+                      <CardTitle className="font-headline text-xl md:text-2xl font-black group-hover:text-primary transition-colors leading-tight uppercase tracking-tighter">
                         {card.title}
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="text-center text-foreground/80 px-4 md:px-8 pb-6 md:pb-10">
-                      <p className="text-xs md:text-lg leading-snug md:leading-relaxed line-clamp-2 font-medium">
+                    <CardContent className="text-center text-foreground/80 px-4 pb-8 hidden md:block">
+                      <p className="text-sm font-bold leading-tight">
                         {card.description}
                       </p>
                     </CardContent>
@@ -148,30 +152,26 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Bird Catalog Section */}
-        <section id="bird-types" className="py-16 md:py-24">
+        {/* Bird Catalog Section (SALE) */}
+        <section id="bird-types" className="py-20 md:py-32">
           <div className="container mx-auto px-4 md:px-6">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-black tracking-tight font-headline text-primary uppercase">
+            <div className="text-center mb-20">
+              <Badge className="bg-red-500 text-white px-6 py-2 text-xl font-black mb-4 animate-pulse uppercase">
+                {t('sale')}
+              </Badge>
+              <h2 className="text-5xl md:text-8xl font-black tracking-tighter font-headline text-primary uppercase drop-shadow-lg">
                 {t('whatWeOffer')}
               </h2>
-              <p className="mt-4 text-base md:text-xl text-foreground/90 max-w-2xl mx-auto font-medium">
-                {t('whatWeOfferSubtitle')}
-              </p>
             </div>
             
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-12">
               {areProductsLoading ? (
                 Array.from({ length: 4 }).map((_, i) => (
-                  <Card key={i} className="flex flex-col overflow-hidden">
-                    <Skeleton className="w-full h-40 md:h-56 rounded-none" />
-                    <CardContent className="p-4 space-y-4">
-                      <Skeleton className="h-6 w-3/4" />
-                      <Skeleton className="h-14 w-full" />
-                      <div className="flex justify-between items-center">
-                        <Skeleton className="h-6 w-16" />
-                        <Skeleton className="h-6 w-20" />
-                      </div>
+                  <Card key={i} className="flex flex-col overflow-hidden border-4">
+                    <Skeleton className="w-full h-48 md:h-64 rounded-none" />
+                    <CardContent className="p-6 space-y-4">
+                      <Skeleton className="h-8 w-3/4" />
+                      <Skeleton className="h-20 w-full" />
                     </CardContent>
                   </Card>
                 ))
@@ -179,9 +179,9 @@ export default function Home() {
                 products.map((product) => (
                   <Card
                     key={product.id}
-                    className="overflow-hidden flex flex-col border-2 border-transparent hover:border-primary/30 hover:shadow-2xl transition-all duration-300"
+                    className="overflow-hidden flex flex-col border-4 border-transparent hover:border-primary/50 hover:shadow-2xl transition-all duration-300 rounded-3xl"
                   >
-                    <div className="relative h-40 md:h-56 w-full">
+                    <div className="relative h-48 md:h-64 w-full">
                       <Image
                         src={product.imageUrl}
                         alt={product.name}
@@ -190,62 +190,32 @@ export default function Home() {
                         data-ai-hint={product.imageHint}
                       />
                     </div>
-                    <CardContent className="p-4 md:p-8 flex-1 flex flex-col">
-                      <CardTitle className="font-headline text-lg md:text-2xl font-black mb-3 text-primary">
+                    <CardContent className="p-6 md:p-8 flex-1 flex flex-col bg-card/80">
+                      <CardTitle className="font-headline text-2xl md:text-3xl font-black mb-4 text-primary uppercase tracking-tighter">
                         {product.name}
                       </CardTitle>
-                      <p className="text-foreground/80 text-xs md:text-base mb-6 flex-1 line-clamp-3 font-medium">
+                      <p className="text-foreground/90 text-sm md:text-lg mb-8 flex-1 line-clamp-3 font-bold italic">
                         {product.description}
                       </p>
-                      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mt-auto">
-                        {product.maturity && (
-                          <Badge variant="outline" className="border-primary/40 text-primary w-fit text-xs font-bold px-3 py-1">
-                            {product.maturity}
-                          </Badge>
-                        )}
-                        <p className="font-black text-primary text-sm md:text-xl">
-                          ₦{product.bookingFeePerUnit} {t('fee')}
+                      <div className="flex flex-col gap-4 mt-auto">
+                        <Badge variant="outline" className="border-primary/40 text-primary w-fit text-sm font-black px-4 py-1 uppercase">
+                          {product.maturity}
+                        </Badge>
+                        <p className="font-black text-primary text-2xl md:text-3xl tracking-tighter">
+                          ₦{product.bookingFeePerUnit} <span className="text-sm uppercase opacity-70">{t('fee')}</span>
                         </p>
                       </div>
                     </CardContent>
                   </Card>
                 ))
               ) : (
-                <div className="text-center col-span-full py-20 bg-muted/20 rounded-2xl border-2 border-dashed border-primary/20">
-                  <ShoppingBag className="mx-auto h-16 w-16 text-muted-foreground opacity-30" />
-                  <p className="mt-6 text-xl text-muted-foreground font-bold">
+                <div className="text-center col-span-full py-24 bg-muted/20 rounded-3xl border-4 border-dashed border-primary/20">
+                  <ShoppingBag className="mx-auto h-20 w-20 text-muted-foreground opacity-30" />
+                  <p className="mt-8 text-2xl text-muted-foreground font-black uppercase">
                     {t('noProductsAvailable')}
                   </p>
                 </div>
               )}
-            </div>
-          </div>
-        </section>
-
-        {/* How It Works Section */}
-        <section id="how-it-works" className="py-16 md:py-24 bg-muted/30">
-          <div className="container mx-auto px-4 md:px-6 text-center">
-            <h2 className="text-3xl md:text-5xl font-black tracking-tight font-headline text-primary mb-16 uppercase">
-              {t('howItWorks')}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-16 max-w-6xl mx-auto">
-              {[
-                { icon: <ListOrdered className="h-8 w-8" />, title: t('step1Title'), desc: t('step1Desc') },
-                { icon: <Phone className="h-8 w-8" />, title: t('step2Title'), desc: t('step2Desc') },
-                { icon: <ShoppingBag className="h-8 w-8" />, title: t('step3Title'), desc: t('step3Desc') },
-              ].map((step, idx) => (
-                <div key={idx} className="flex flex-col items-center group">
-                  <div className="flex items-center justify-center h-20 w-20 rounded-3xl bg-primary text-primary-foreground mb-8 shadow-xl shadow-primary/30 group-hover:scale-110 transition-transform duration-300">
-                    {step.icon}
-                  </div>
-                  <h3 className="text-2xl md:text-3xl font-black font-headline mb-4 uppercase">
-                    {step.title}
-                  </h3>
-                  <p className="text-foreground/90 leading-relaxed text-base md:text-lg font-medium">
-                    {step.desc}
-                  </p>
-                </div>
-              ))}
             </div>
           </div>
         </section>
