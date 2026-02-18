@@ -234,7 +234,7 @@ export default function Home() {
                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-8">
                     <div className="bg-primary p-6 rounded-2xl shadow-2xl">
                         <p className="text-primary-foreground font-black text-3xl uppercase leading-none italic">
-                            {"Buy -> Rear -> Sell -> Profit"}
+                            Buy {"->"} Rear {"->"} Sell {"->"} Profit
                         </p>
                     </div>
                  </div>
