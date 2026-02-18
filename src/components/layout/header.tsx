@@ -34,9 +34,12 @@ export default function Header() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="flex items-center gap-2 px-3 md:px-6 h-14 hover:bg-primary/10 rounded-2xl transition-all border-2 border-transparent hover:border-primary/30">
                 <Languages className="h-8 w-8 text-primary" />
-                <span className="font-black text-lg md:text-xl uppercase tracking-tight hidden sm:inline-block">
-                  {t('language')}
-                </span>
+                <div className="flex flex-col items-start leading-none">
+                  <span className="font-black text-lg md:text-xl uppercase tracking-tight hidden sm:inline-block">
+                    {t('language')}
+                  </span>
+                  <span className="text-[10px] uppercase font-bold opacity-70 hidden sm:inline-block">Language</span>
+                </div>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 p-3 border-4 shadow-2xl rounded-2xl">
