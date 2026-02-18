@@ -226,11 +226,11 @@ export default function Home() {
               </div>
               <div className="relative h-[500px] md:h-[700px] rounded-3xl overflow-hidden border-8 border-primary/20 shadow-2xl">
                  <Image
-                    src="https://picsum.photos/seed/rearing/800/1200"
-                    alt="Chicken Rearing"
+                    src="https://picsum.photos/seed/chicken-chicks/800/1200"
+                    alt="Chicken and Chicks"
                     fill
                     className="object-cover"
-                    data-ai-hint="chicken farm"
+                    data-ai-hint="chicken chicks"
                  />
                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-8">
                     <div className="bg-primary p-6 rounded-2xl shadow-2xl">
