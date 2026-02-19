@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -24,22 +23,20 @@ export default function Header() {
         <div className="flex items-center flex-1">
           <Link href="/" className="flex items-center gap-3">
             <Logo width={48} height={48} />
-            <span className="font-headline font-black text-3xl md:text-4xl tracking-tighter text-primary uppercase italic">
+            <span className="font-headline font-black text-3xl md:text-5xl tracking-tighter text-primary uppercase italic">
               AFDEC
             </span>
           </Link>
         </div>
 
-        <div className="flex items-center gap-2 md:gap-6">
+        <div className="flex items-center gap-2 md:gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="flex items-center gap-2 px-3 md:px-4 h-12 hover:bg-primary/10 rounded-xl transition-all border-2 border-transparent hover:border-primary/30">
                 <Languages className="h-6 w-6 text-primary" />
-                <div className="flex flex-col items-start leading-none">
-                  <span className="font-black text-sm md:text-base uppercase tracking-tight hidden sm:inline-block">
-                    {t('language')}
-                  </span>
-                </div>
+                <span className="font-black text-sm md:text-base uppercase tracking-tight">
+                  {t('language')}
+                </span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48 p-2 border-4 shadow-2xl rounded-2xl">
