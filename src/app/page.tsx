@@ -65,9 +65,6 @@ export default function Home() {
       {/* 1. HERO SECTION */}
       <section className="relative py-16 md:py-32 overflow-hidden border-b-8 border-primary/10">
         <div className="container mx-auto px-4 text-center relative z-10">
-          <Badge className="mb-6 bg-primary/20 text-primary border-primary/30 px-6 py-2 text-base uppercase font-black tracking-widest">
-            AFDEC: Real Poultry Business
-          </Badge>
           <h1 className="text-6xl md:text-9xl font-black font-headline text-primary uppercase tracking-tighter leading-none mb-8 drop-shadow-lg italic">
             {t('heroTitle')}
           </h1>
@@ -237,7 +234,7 @@ export default function Home() {
                     {t('sellToUsTitle')}
                 </Badge>
                 <h2 className="text-6xl md:text-9xl font-black font-headline text-accent uppercase tracking-tighter leading-none">
-                    {t('struggleToSell')}
+                    {t('sellToUsTitle')}
                 </h2>
                 <p className="text-3xl md:text-4xl font-bold leading-tight italic opacity-90 text-foreground/80">
                     {t('sellToUsDesc')}
