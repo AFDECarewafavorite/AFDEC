@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -34,56 +33,56 @@ export default function Home() {
       href: '/booking',
       title: t('bookNow'),
       subtitle: 'Start small. Grow fast.',
-      icon: <ShoppingBag className="h-10 w-10" />,
+      icon: <ShoppingBag className="h-12 w-12" />,
       color: 'bg-primary text-primary-foreground',
     },
     {
       href: '#sell-to-us',
       title: t('sellYourChicken'),
       subtitle: 'Fast cash for mature birds',
-      icon: <TrendingUp className="h-10 w-10" />,
+      icon: <TrendingUp className="h-12 w-12" />,
       color: 'bg-accent text-accent-foreground',
     },
     {
       href: '/check-status',
       title: t('checkBookingStatus'),
       subtitle: 'Search by phone or ID',
-      icon: <Search className="h-10 w-10" />,
-      color: 'bg-muted text-foreground border-4 border-primary/20',
+      icon: <Search className="h-12 w-12" />,
+      color: 'bg-card text-foreground border-2 border-primary/20',
     },
     {
       href: '/signup',
       title: 'BECOME AGENT',
       subtitle: 'Earn ₦50-₦100 per chick',
-      icon: <Users className="h-10 w-10" />,
+      icon: <Users className="h-12 w-12" />,
       color: 'bg-blue-600 text-white',
     },
   ];
 
   return (
-    <div className="flex flex-col min-h-screen font-body bg-background">
+    <div className="flex flex-col min-h-screen font-body bg-background text-foreground">
       {/* 1. HERO SECTION */}
-      <section className="relative py-16 md:py-32 overflow-hidden border-b-8 border-primary/10">
+      <section className="relative py-16 md:py-24 overflow-hidden bg-primary/5">
         <div className="container mx-auto px-4 text-center relative z-10">
-          <h1 className="text-6xl md:text-9xl font-black font-headline text-primary uppercase tracking-tighter leading-none mb-8 drop-shadow-lg italic">
+          <h1 className="text-5xl md:text-8xl font-black font-headline text-primary uppercase tracking-tighter leading-none mb-6 drop-shadow-sm">
             {t('heroTitle')}
           </h1>
-          <p className="text-2xl md:text-4xl font-bold text-foreground/90 max-w-3xl mx-auto mb-16 leading-tight bg-background/50 backdrop-blur-sm p-4 rounded-2xl">
+          <p className="text-xl md:text-3xl font-bold text-foreground/80 max-w-2xl mx-auto mb-12 leading-tight">
             {t('heroSubtitle')}
           </p>
 
           {/* 4-GRIP NAVIGATION (2 Columns on Mobile) */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-5xl mx-auto">
             {navCards.map((card, i) => (
               <Link href={card.href} key={i}>
-                <Card className={`${card.color} h-full transition-all hover:scale-105 active:scale-95 border-none shadow-2xl rounded-3xl overflow-hidden group`}>
-                  <CardContent className="p-8 flex flex-col items-center justify-center text-center gap-4">
-                    <div className="p-4 bg-white/20 rounded-2xl group-hover:bg-white/30 transition-colors">
+                <Card className={`${card.color} h-full transition-all hover:scale-[1.03] active:scale-95 border-none shadow-lg rounded-2xl overflow-hidden group`}>
+                  <CardContent className="p-6 md:p-8 flex flex-col items-center justify-center text-center gap-4">
+                    <div className="p-3 bg-white/10 rounded-xl group-hover:bg-white/20 transition-colors">
                       {card.icon}
                     </div>
                     <div>
-                      <h3 className="text-xl md:text-2xl font-black uppercase tracking-tighter leading-none">{card.title}</h3>
-                      <p className="text-xs md:text-sm font-bold opacity-90 uppercase mt-1">{card.subtitle}</p>
+                      <h3 className="text-lg md:text-xl font-black uppercase tracking-tighter leading-none">{card.title}</h3>
+                      <p className="text-[10px] md:text-xs font-bold opacity-80 uppercase mt-1">{card.subtitle}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -91,134 +90,131 @@ export default function Home() {
             ))}
           </div>
         </div>
-        {/* Background Accent */}
-        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px] -z-0"></div>
       </section>
 
       {/* 2. HOW BOOKING WORKS */}
-      <section className="py-24 bg-muted/20">
+      <section className="py-20 border-y border-border/50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-20">
-            <h2 className="text-5xl md:text-8xl font-black font-headline text-primary uppercase tracking-tighter mb-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl font-black font-headline text-primary uppercase tracking-tighter mb-2">
               {t('howBookingWorks')}
             </h2>
-            <p className="text-2xl md:text-3xl font-bold opacity-70 uppercase tracking-widest italic">{t('easy5Steps')}</p>
+            <p className="text-lg md:text-xl font-bold opacity-60 uppercase tracking-widest italic">{t('easy5Steps')}</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
             {[1, 2, 3, 4, 5].map((num) => (
-              <div key={num} className="relative">
-                <Card className="border-4 border-primary/10 hover:border-primary/30 transition-all rounded-[2.5rem] h-full shadow-xl bg-card">
-                  <CardContent className="p-10 text-center flex flex-col items-center gap-6">
-                    <div className="h-20 w-20 bg-primary text-primary-foreground rounded-3xl flex items-center justify-center text-4xl font-black shadow-xl">
+              <div key={num} className="relative group">
+                <Card className="border-2 border-primary/10 group-hover:border-primary/30 transition-all rounded-3xl h-full shadow-sm bg-card overflow-hidden">
+                  <CardContent className="p-8 text-center flex flex-col items-center gap-4">
+                    <div className="h-16 w-16 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center text-2xl font-black shadow-md mb-2">
                       {num}
                     </div>
-                    <h3 className="text-2xl font-black uppercase text-primary tracking-tight leading-none">
+                    <h3 className="text-xl font-black uppercase text-primary tracking-tight leading-none">
                       {t(`step${num}Title`)}
                     </h3>
-                    <p className="text-xl font-bold opacity-90 leading-tight">
+                    <p className="text-base font-bold opacity-80 leading-tight">
                       {t(`step${num}Desc`)}
                     </p>
                   </CardContent>
                 </Card>
                 {num < 5 && (
-                  <div className="hidden md:block absolute -right-6 top-1/2 -translate-y-1/2 z-10">
-                    <ChevronRight className="h-12 w-12 text-primary/40" />
+                  <div className="hidden md:block absolute -right-4 top-1/2 -translate-y-1/2 z-10">
+                    <ChevronRight className="h-8 w-8 text-primary/30" />
                   </div>
                 )}
               </div>
             ))}
           </div>
 
-          <div className="mt-20 bg-primary p-10 rounded-[3rem] shadow-2xl text-center transform -rotate-1">
-            <p className="text-3xl md:text-4xl font-black text-primary-foreground uppercase tracking-tight flex items-center justify-center gap-6">
-              <BadgeCheck className="h-12 w-12" />
+          <div className="mt-16 bg-primary/10 p-8 rounded-3xl border-2 border-primary/20 text-center flex items-center justify-center gap-4">
+            <BadgeCheck className="h-10 w-10 text-primary" />
+            <p className="text-xl md:text-2xl font-black text-primary uppercase tracking-tight">
               Allocation is fast. We call you immediately!
             </p>
           </div>
         </div>
       </section>
 
-      {/* 3. WHY AFDEC & PROBLEM SECTION */}
-      <section className="py-24 border-t-8 border-primary/5">
+      {/* 3. WHY AFDEC */}
+      <section className="py-20">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
-            <div className="space-y-10">
-              <Badge className="bg-primary text-primary-foreground text-2xl font-black px-8 py-3 uppercase rounded-2xl">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8">
+              <Badge className="bg-primary text-primary-foreground text-lg font-black px-6 py-2 uppercase rounded-xl">
                 {t('whyAfdec')}
               </Badge>
-              <h2 className="text-5xl md:text-8xl font-black font-headline text-primary uppercase tracking-tighter leading-none">
+              <h2 className="text-4xl md:text-7xl font-black font-headline text-primary uppercase tracking-tighter leading-none">
                 {t('problemTitle')}
               </h2>
-              <p className="text-2xl md:text-3xl font-bold leading-snug opacity-90 text-foreground/80">
+              <p className="text-xl md:text-2xl font-bold leading-snug opacity-80">
                 {t('problemDesc')}
               </p>
               
-              <div className="bg-accent/10 p-10 rounded-[3rem] border-l-[16px] border-accent shadow-lg">
-                <h3 className="text-3xl font-black uppercase text-accent mb-6 italic">{t('solutionTitle')}</h3>
-                <p className="text-xl md:text-2xl font-bold leading-tight text-foreground/90">
+              <div className="bg-accent/10 p-8 rounded-3xl border-l-[12px] border-accent shadow-sm">
+                <h3 className="text-2xl font-black uppercase text-accent mb-4 italic">{t('solutionTitle')}</h3>
+                <p className="text-lg md:text-xl font-bold leading-tight opacity-90">
                   {t('solutionDesc')}
                 </p>
               </div>
             </div>
 
             <div className="relative">
-               <div className="relative h-[500px] md:h-[700px] rounded-[4rem] overflow-hidden border-[12px] border-primary/5 shadow-2xl z-10">
+               <div className="relative h-[400px] md:h-[600px] rounded-[3rem] overflow-hidden border-8 border-primary/5 shadow-xl z-10">
                 <Image
                   src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?q=80&w=800"
                   alt="Healthy chickens"
                   fill
-                  className="object-cover transition-transform duration-1000 hover:scale-110"
+                  className="object-cover"
                   data-ai-hint="healthy chicken"
                 />
-                <div className="absolute bottom-10 left-10 right-10 bg-primary/95 backdrop-blur-md p-10 rounded-[3rem] text-primary-foreground shadow-2xl">
-                  <p className="font-black text-4xl uppercase italic tracking-tighter leading-none">
+                <div className="absolute bottom-6 left-6 right-6 bg-primary/90 backdrop-blur-sm p-8 rounded-3xl text-primary-foreground shadow-lg">
+                  <p className="font-black text-2xl uppercase italic tracking-tighter leading-none">
                     No Market Struggle. We Buy Back.
                   </p>
                 </div>
               </div>
-              <div className="absolute -bottom-16 -left-16 w-80 h-80 bg-primary/20 rounded-full blur-[80px] -z-0"></div>
             </div>
           </div>
         </div>
       </section>
 
       {/* 4. CHALLENGES & SOLUTIONS */}
-      <section className="py-24 bg-card/50">
+      <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-24">
-            <h2 className="text-5xl md:text-8xl font-black font-headline text-primary uppercase tracking-tighter mb-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl font-black font-headline text-primary uppercase tracking-tighter mb-4">
               {t('challengesTitle')}
             </h2>
-            <p className="text-2xl md:text-3xl font-bold opacity-60 italic">{t('challengesSubtitle')}</p>
+            <p className="text-xl md:text-2xl font-bold opacity-60 italic">{t('challengesSubtitle')}</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { prob: 'probFeed', sol: 'solFeed', icon: <Package className="h-10 w-10 text-red-500" />, color: "border-red-500/20" },
-              { prob: 'probSickness', sol: 'solSickness', icon: <AlertTriangle className="h-10 w-10 text-yellow-500" />, color: "border-yellow-500/20" },
-              { prob: 'probMarket', sol: 'solMarket', icon: <TrendingUp className="h-10 w-10 text-green-500" />, color: "border-green-500/20" },
-              { prob: 'probTools', sol: 'solTools', icon: <ShoppingBag className="h-10 w-10 text-blue-500" />, color: "border-blue-500/20" },
-              { prob: 'probCare', sol: 'solCare', icon: <BadgeCheck className="h-10 w-10 text-purple-500" />, color: "border-purple-500/20" },
+              { prob: 'probFeed', sol: 'solFeed', icon: <Package className="h-8 w-8 text-red-500" /> },
+              { prob: 'probSickness', sol: 'solSickness', icon: <AlertTriangle className="h-8 w-8 text-yellow-500" /> },
+              { prob: 'probMarket', sol: 'solMarket', icon: <TrendingUp className="h-8 w-8 text-green-500" /> },
+              { prob: 'probTools', sol: 'solTools', icon: <ShoppingBag className="h-8 w-8 text-blue-500" /> },
+              { prob: 'probCare', sol: 'solCare', icon: <BadgeCheck className="h-8 w-8 text-purple-500" /> },
             ].map((item, i) => (
-              <Card key={i} className={`border-4 ${item.color} rounded-[3rem] overflow-hidden hover:shadow-2xl transition-all h-full flex flex-col group bg-background`}>
-                <div className="bg-muted/30 p-10 flex items-center gap-6 border-b-4">
-                  <div className="h-20 w-20 bg-white rounded-3xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <Card key={i} className="border-2 border-border/50 rounded-3xl overflow-hidden hover:shadow-md transition-all flex flex-col bg-background">
+                <div className="bg-muted/50 p-6 flex items-center gap-4 border-b">
+                  <div className="h-14 w-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
                     {item.icon}
                   </div>
-                  <h3 className="text-3xl font-black uppercase tracking-tighter leading-none">{t(item.prob)}</h3>
+                  <h3 className="text-xl font-black uppercase tracking-tighter leading-none">{t(item.prob)}</h3>
                 </div>
-                <CardContent className="p-12 flex-1 flex items-center">
-                  <p className="text-2xl font-bold opacity-90 leading-tight text-foreground/80 italic">{t(item.sol)}</p>
+                <CardContent className="p-8 flex-1 flex items-center">
+                  <p className="text-lg font-bold opacity-80 italic leading-tight">{t(item.sol)}</p>
                 </CardContent>
               </Card>
             ))}
-            <Card className="border-[8px] border-primary bg-primary/10 rounded-[3rem] p-12 text-center flex flex-col items-center justify-center gap-8 shadow-2xl relative overflow-hidden group">
-              <Bird className="h-24 w-24 text-primary opacity-20 absolute -top-4 -right-4 group-hover:rotate-12 transition-transform" />
-              <h3 className="text-4xl font-black uppercase text-primary italic leading-none">You Are Not Alone</h3>
-              <p className="text-2xl font-bold leading-tight">We guide you from Day 1 until you sell back to us!</p>
-              <Button asChild size="lg" className="rounded-2xl font-black uppercase h-20 px-12 text-2xl shadow-xl transition-all hover:scale-105 active:scale-95 bg-primary text-primary-foreground">
-                <Link href="/booking">{t('bookNow')} <ArrowRight className="ml-3 h-8 w-8" /></Link>
+            <Card className="border-4 border-primary bg-primary/5 rounded-3xl p-8 text-center flex flex-col items-center justify-center gap-6 shadow-md relative overflow-hidden group">
+              <Bird className="h-16 w-16 text-primary opacity-10 absolute -top-2 -right-2 transition-transform group-hover:rotate-12" />
+              <h3 className="text-2xl font-black uppercase text-primary italic leading-none">You Are Not Alone</h3>
+              <p className="text-lg font-bold leading-tight">We guide you from Day 1 until you sell back to us!</p>
+              <Button asChild size="lg" className="rounded-xl font-black uppercase h-16 px-8 text-xl shadow-md transition-all hover:scale-105 active:scale-95 bg-primary text-primary-foreground">
+                <Link href="/booking">{t('bookNow')} <ArrowRight className="ml-2 h-6 w-6" /></Link>
               </Button>
             </Card>
           </div>
@@ -226,59 +222,59 @@ export default function Home() {
       </section>
 
       {/* 5. SELL TO US SECTION */}
-      <section id="sell-to-us" className="py-24 bg-accent/5 relative">
+      <section id="sell-to-us" className="py-20">
         <div className="container mx-auto px-4">
-          <div className="bg-card p-12 md:p-24 rounded-[4rem] border-[12px] border-accent/10 shadow-2xl relative overflow-hidden">
-             <div className="max-w-4xl space-y-10 relative z-10">
-                <Badge className="bg-accent text-white text-2xl font-black px-8 py-3 uppercase rounded-2xl">
+          <div className="bg-card p-10 md:p-16 rounded-[3rem] border-8 border-accent/10 shadow-lg relative overflow-hidden">
+             <div className="max-w-3xl space-y-8 relative z-10">
+                <Badge className="bg-accent text-white text-xl font-black px-6 py-2 uppercase rounded-xl">
                     {t('sellToUsTitle')}
                 </Badge>
-                <h2 className="text-6xl md:text-9xl font-black font-headline text-accent uppercase tracking-tighter leading-none">
+                <h2 className="text-5xl md:text-7xl font-black font-headline text-accent uppercase tracking-tighter leading-none">
                     {t('sellToUsTitle')}
                 </h2>
-                <p className="text-3xl md:text-4xl font-bold leading-tight italic opacity-90 text-foreground/80">
+                <p className="text-2xl md:text-3xl font-bold leading-tight italic opacity-80">
                     {t('sellToUsDesc')}
                 </p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6">
                    {[
                     { label: 'WhatsApp', icon: <MessageCircle />, color: 'bg-green-600', href: 'https://wa.me/2341234567890' },
                     { label: 'Call Us', icon: <Phone />, color: 'bg-blue-600', href: 'tel:+2341234567890' },
                    ].map((social, i) => (
-                    <Button key={i} asChild size="lg" className={`${social.color} h-24 text-2xl font-black rounded-3xl shadow-2xl hover:scale-105 transition-all`}>
+                    <Button key={i} asChild size="lg" className={`${social.color} h-20 text-xl font-black rounded-2xl shadow-md hover:scale-[1.03] transition-all`}>
                       <a href={social.href} target="_blank" rel="noopener noreferrer">
-                        {social.icon} <span className="ml-3">{social.label}</span>
+                        {social.icon} <span className="ml-2">{social.label}</span>
                       </a>
                     </Button>
                    ))}
                 </div>
              </div>
-             <div className="absolute -bottom-20 -right-20 opacity-5">
-                <Bird className="h-[400px] w-[400px]" />
+             <div className="absolute -bottom-10 -right-10 opacity-5 hidden md:block">
+                <Bird className="h-64 w-64" />
              </div>
           </div>
         </div>
       </section>
 
       {/* 6. AGENT PROGRAM */}
-      <section className="py-24 bg-primary/5 overflow-hidden">
+      <section className="py-20 bg-primary/5">
         <div className="container mx-auto px-4 text-center">
-          <div className="max-w-5xl mx-auto space-y-12">
-            <h2 className="text-6xl md:text-9xl font-black font-headline text-primary uppercase tracking-tighter leading-none">
+          <div className="max-w-4xl mx-auto space-y-10">
+            <h2 className="text-5xl md:text-8xl font-black font-headline text-primary uppercase tracking-tighter leading-none">
               {t('agentTitle')}
             </h2>
-            <p className="text-3xl md:text-4xl font-bold opacity-90 leading-tight text-foreground/80">
+            <p className="text-2xl md:text-3xl font-bold opacity-80 leading-tight">
               {t('agentDesc')}
             </p>
-            <div className="bg-white p-12 md:p-20 rounded-[4rem] border-[12px] border-primary shadow-3xl inline-block transform rotate-1 hover:rotate-0 transition-transform duration-700">
-              <p className="text-5xl md:text-8xl font-black text-primary uppercase tracking-tighter leading-none">
+            <div className="bg-white p-10 md:p-14 rounded-3xl border-8 border-primary shadow-xl inline-block transform rotate-1 hover:rotate-0 transition-transform">
+              <p className="text-4xl md:text-6xl font-black text-primary uppercase tracking-tighter leading-none">
                 Earn ₦50 – ₦100 Per Chick!
               </p>
             </div>
-            <div className="pt-10">
-              <Button asChild size="lg" className="h-24 px-16 text-3xl font-black uppercase rounded-[2.5rem] shadow-3xl transition-all hover:scale-110 active:scale-95 bg-primary text-primary-foreground">
+            <div className="pt-8">
+              <Button asChild size="lg" className="h-20 px-12 text-2xl font-black uppercase rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 bg-primary text-primary-foreground">
                 <Link href="/signup">
-                  Register as Agent <Users className="ml-4 h-10 w-10" />
+                  Register as Agent <Users className="ml-3 h-8 w-8" />
                 </Link>
               </Button>
             </div>
@@ -287,28 +283,23 @@ export default function Home() {
       </section>
 
       {/* 7. TRUST SECTION */}
-      <section className="py-24 border-t-8 border-primary/10">
-        <div className="container mx-auto px-4">
-          <div className="bg-card p-16 md:p-32 rounded-[5rem] border-[16px] border-primary/5 shadow-3xl text-center space-y-12">
-              <h2 className="text-6xl md:text-9xl font-black font-headline text-primary uppercase tracking-tighter leading-none">
+      <section className="py-20 border-t border-border/50">
+        <div className="container mx-auto px-4 text-center">
+          <div className="bg-card p-12 md:p-20 rounded-[4rem] border-8 border-primary/5 shadow-md">
+              <h2 className="text-5xl md:text-7xl font-black font-headline text-primary uppercase tracking-tighter leading-none mb-8">
                 {t('trustTitle')}
               </h2>
-              <p className="text-3xl md:text-5xl font-bold leading-tight italic opacity-90 text-foreground/80 max-w-4xl mx-auto">
+              <p className="text-2xl md:text-4xl font-bold leading-tight italic opacity-70 max-w-3xl mx-auto">
                 {t('trustDesc')}
               </p>
-              <div className="flex justify-center gap-6">
-                 <div className="h-4 w-32 bg-primary rounded-full"></div>
-                 <div className="h-4 w-16 bg-primary/30 rounded-full"></div>
-                 <div className="h-4 w-8 bg-primary/10 rounded-full"></div>
-              </div>
           </div>
         </div>
       </section>
 
-      {/* SOCIAL LINKS (CONTACT) */}
-      <section className="py-20 bg-card border-t-8 border-primary/10">
+      {/* CONTACT LINKS */}
+      <section className="py-12 bg-muted/20 border-t border-border/50">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {[
               { label: 'WhatsApp', icon: <MessageCircle />, color: 'bg-green-600', href: 'https://wa.me/2341234567890' },
               { label: 'Call Us', icon: <Phone />, color: 'bg-blue-600', href: 'tel:+2341234567890' },
@@ -319,11 +310,9 @@ export default function Home() {
               <a 
                 key={i} 
                 href={social.href}
-                className={`${social.color} text-white p-10 rounded-[2.5rem] flex flex-col items-center justify-center gap-4 hover:scale-105 hover:shadow-2xl transition-all shadow-xl font-black uppercase tracking-tighter text-lg text-center group`}
+                className={`${social.color} text-white p-6 rounded-2xl flex flex-col items-center justify-center gap-2 hover:scale-[1.05] transition-all shadow-sm font-black uppercase tracking-tighter text-sm text-center`}
               >
-                <div className="group-hover:rotate-12 transition-transform scale-125 mb-2">
-                  {social.icon}
-                </div>
+                {social.icon}
                 {social.label}
               </a>
             ))}

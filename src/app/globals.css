@@ -4,31 +4,48 @@
 
 @layer base {
   :root {
-    --background: 200 14% 26%; /* Dark Slate Gray */
-    --foreground: 0 0% 98%;
-    --card: 200 14% 22%;
-    --card-foreground: 0 0% 98%;
-    --popover: 200 14% 22%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 45 100% 50%; /* Gold */
-    --primary-foreground: 45 100% 10%;
-    --secondary: 200 14% 35%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 200 14% 35%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 120 61% 34%; /* Forest Green */
-    --accent-foreground: 120 60% 95%;
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 221 83% 53%; /* Strong Blue */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 142 76% 36%; /* Strong Green */
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 200 14% 35%;
-    --input: 200 14% 35%;
-    --ring: 45 100% 50%; /* Gold */
-    --radius: 0.5rem;
-    --chart-1: 45 100% 50%;
-    --chart-2: 120 61% 34%;
-    --chart-3: 45 80% 60%;
-    --chart-4: 120 40% 45%;
-    --chart-5: 45 60% 70%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221 83% 53%;
+    --radius: 1rem;
+  }
+
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 142 70% 45%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
   }
 }
 
@@ -39,6 +56,10 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.animate-logo {
+  animation: logoAnimation 0.7s ease-in-out;
 }
 
 @keyframes logoAnimation {
@@ -54,8 +75,4 @@
     opacity: 1;
     transform: scale(1);
   }
-}
-
-.animate-logo {
-  animation: logoAnimation 0.7s ease-in-out;
 }
