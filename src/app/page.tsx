@@ -64,6 +64,9 @@ export default function Home() {
       {/* 1. HERO SECTION */}
       <section className="relative py-16 md:py-24 overflow-hidden bg-primary/5">
         <div className="container mx-auto px-4 text-center relative z-10">
+          <Badge className="mb-6 bg-accent text-white font-black uppercase px-4 py-1 animate-pulse">
+            🔥 Limited Slots Available
+          </Badge>
           <h1 className="text-5xl md:text-8xl font-black font-headline text-primary uppercase tracking-tighter leading-none mb-6 drop-shadow-sm">
             {t('heroTitle')}
           </h1>
@@ -319,6 +322,16 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Floating WhatsApp Button */}
+      <a 
+        href="https://wa.me/2341234567890" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="fixed bottom-8 right-8 z-[99] bg-green-600 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform animate-bounce"
+      >
+        <MessageCircle className="h-8 w-8" />
+      </a>
     </div>
   );
 }
