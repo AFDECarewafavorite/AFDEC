@@ -1,12 +1,11 @@
+
 'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-  ShoppingBag,
   TrendingUp,
   Search,
-  CheckCircle2,
   Phone,
   MessageCircle,
   Facebook,
@@ -212,7 +211,7 @@ export default function Home() {
               { prob: 'probFeed', sol: 'solFeed', icon: <Package className="h-8 w-8 text-red-500" /> },
               { prob: 'probSickness', sol: 'solSickness', icon: <AlertTriangle className="h-8 w-8 text-yellow-500" /> },
               { prob: 'probMarket', sol: 'solMarket', icon: <TrendingUp className="h-8 w-8 text-green-500" /> },
-              { prob: 'probTools', sol: 'solTools', icon: <ShoppingBag className="h-8 w-8 text-blue-500" /> },
+              { prob: 'probTools', sol: 'solTools', icon: <Package className="h-8 w-8 text-blue-500" /> },
               { prob: 'probCare', sol: 'solCare', icon: <BadgeCheck className="h-8 w-8 text-purple-500" /> },
             ].map((item, i) => (
               <Card key={i} className="border-2 border-border/50 rounded-3xl overflow-hidden hover:shadow-md transition-all flex flex-col bg-background">
@@ -274,7 +273,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 6. AGENT PROGRAM */}
+      {/* 6. PARTNER PROGRAM */}
       <section className="py-20 bg-primary/5">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-4xl mx-auto space-y-10">

@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -25,9 +26,14 @@ export default function Header() {
             <div className="transition-transform group-hover:scale-110">
               <Logo width={64} height={64} />
             </div>
-            <span className="font-headline font-black text-4xl md:text-6xl tracking-tighter text-primary uppercase italic drop-shadow-sm">
-              AFDEC
-            </span>
+            <div className="flex flex-col">
+              <span className="font-headline font-black text-4xl md:text-6xl tracking-tighter text-primary uppercase italic drop-shadow-sm leading-none">
+                AFDEC
+              </span>
+              <span className="hidden md:block text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                ArewaFavorite Domestic Earning Corp
+              </span>
+            </div>
           </Link>
         </div>
 
