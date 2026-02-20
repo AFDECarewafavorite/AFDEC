@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Phone, Mail, MessageCircle, Facebook, Instagram } from 'lucide-react';
@@ -14,7 +13,10 @@ export default function Footer() {
                 <div className='flex flex-col items-center md:items-start space-y-8'>
                    <div className="flex items-center gap-4">
                         <Logo width={80} height={80} />
-                        <span className="font-headline font-black text-5xl text-primary italic">AFDEC</span>
+                        <div>
+                            <span className="font-headline font-black text-5xl text-primary italic block leading-none">AFDEC</span>
+                            <span className="text-xs font-bold opacity-50 uppercase tracking-tighter">ArewaFavorite Domestic Earning Corp</span>
+                        </div>
                    </div>
                    <p className="text-xl font-bold text-foreground/80 max-w-sm italic">
                         {t('footerSlogan')}
@@ -44,7 +46,7 @@ export default function Footer() {
                     <div className="flex flex-col items-center md:items-start gap-6">
                         <Link href="/booking" className="text-2xl font-bold text-muted-foreground hover:text-primary">{t('bookNow')}</Link>
                         <Link href="/check-status" className="text-2xl font-bold text-muted-foreground hover:text-primary">{t('checkBookingStatus')}</Link>
-                        <Link href="/signup" className="text-2xl font-bold text-muted-foreground hover:text-primary">{t('registerAsAgent')}</Link>
+                        <Link href="/signup" className="text-2xl font-bold text-muted-foreground hover:text-primary">Become Partner</Link>
                     </div>
                 </div>
             </div>
@@ -52,6 +54,7 @@ export default function Footer() {
                 <p className="text-lg font-bold text-foreground/50 text-center uppercase tracking-widest">
                     {t('copyright').replace('{year}', '2026')}
                 </p>
+                <p className="text-center text-xs opacity-30 mt-4 uppercase tracking-[0.5em]">ArewaFavorite Domestic Earning Corporation</p>
             </div>
         </footer>
     );

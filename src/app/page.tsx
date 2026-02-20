@@ -19,6 +19,8 @@ import {
   ChevronRight,
   ArrowRight,
   Bird,
+  ShieldCheck,
+  Zap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -33,7 +35,7 @@ export default function Home() {
       href: '/booking',
       title: t('bookNow'),
       subtitle: 'Start small. Grow fast.',
-      icon: <ShoppingBag className="h-12 w-12" />,
+      icon: <Bird className="h-12 w-12" />,
       color: 'bg-primary text-primary-foreground',
     },
     {
@@ -52,8 +54,8 @@ export default function Home() {
     },
     {
       href: '/signup',
-      title: 'BECOME AGENT',
-      subtitle: 'Earn ₦50-₦100 per chick',
+      title: 'BECOME PARTNER',
+      subtitle: 'Earn attractive rewards',
       icon: <Users className="h-12 w-12" />,
       color: 'bg-blue-600 text-white',
     },
@@ -65,7 +67,7 @@ export default function Home() {
       <section className="relative py-16 md:py-24 overflow-hidden bg-primary/5">
         <div className="container mx-auto px-4 text-center relative z-10">
           <Badge className="mb-6 bg-accent text-white font-black uppercase px-4 py-1 animate-pulse">
-            🔥 Limited Slots Available
+            🔥 {t('limitedSlots')}
           </Badge>
           <h1 className="text-5xl md:text-8xl font-black font-headline text-primary uppercase tracking-tighter leading-none mb-6 drop-shadow-sm">
             {t('heroTitle')}
@@ -73,6 +75,16 @@ export default function Home() {
           <p className="text-xl md:text-3xl font-bold text-foreground/80 max-w-2xl mx-auto mb-12 leading-tight">
             {t('heroSubtitle')}
           </p>
+
+          <div className="flex flex-col items-center gap-6 mb-12">
+             <div className="bg-accent/20 border-2 border-accent text-accent p-6 rounded-[2rem] max-w-2xl w-full flex flex-col md:flex-row items-center justify-center gap-4">
+                <ShieldCheck className="h-12 w-12" />
+                <div className="text-left md:text-center">
+                    <h3 className="text-2xl font-black uppercase tracking-tight leading-none">{t('freeBookingPayOnDelivery')}</h3>
+                    <p className="text-lg font-bold opacity-80 uppercase mt-1">{t('noBookingFee')}</p>
+                </div>
+             </div>
+          </div>
 
           {/* 4-GRIP NAVIGATION (2 Columns on Mobile) */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-5xl mx-auto">
@@ -130,11 +142,14 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="mt-16 bg-primary/10 p-8 rounded-3xl border-2 border-primary/20 text-center flex items-center justify-center gap-4">
-            <BadgeCheck className="h-10 w-10 text-primary" />
-            <p className="text-xl md:text-2xl font-black text-primary uppercase tracking-tight">
-              Allocation is fast. We call you immediately!
-            </p>
+          <div className="mt-16 bg-primary/10 p-8 rounded-3xl border-2 border-primary/20 text-center flex flex-col md:flex-row items-center justify-center gap-6">
+            <Zap className="h-12 w-12 text-primary animate-bounce" />
+            <div className="text-left">
+                <p className="text-xl md:text-2xl font-black text-primary uppercase tracking-tight">
+                Allocation is fast. We call you immediately!
+                </p>
+                <p className="text-lg font-bold opacity-70 italic">Choose your confirmation: Phone, WhatsApp, or Facebook.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -264,20 +279,21 @@ export default function Home() {
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-4xl mx-auto space-y-10">
             <h2 className="text-5xl md:text-8xl font-black font-headline text-primary uppercase tracking-tighter leading-none">
-              {t('agentTitle')}
+              {t('agentProgram')}
             </h2>
             <p className="text-2xl md:text-3xl font-bold opacity-80 leading-tight">
-              {t('agentDesc')}
+              {t('agentTitle')}
             </p>
             <div className="bg-white p-10 md:p-14 rounded-3xl border-8 border-primary shadow-xl inline-block transform rotate-1 hover:rotate-0 transition-transform">
-              <p className="text-4xl md:text-6xl font-black text-primary uppercase tracking-tighter leading-none">
-                Earn ₦50 – ₦100 Per Chick!
+              <p className="text-2xl md:text-4xl font-black text-primary uppercase tracking-tighter leading-none p-4">
+                {t('noFarmNeeded')}
               </p>
+              <p className="text-xl md:text-2xl font-bold text-muted-foreground mt-2">{t('shareReferralCode')}</p>
             </div>
             <div className="pt-8">
               <Button asChild size="lg" className="h-20 px-12 text-2xl font-black uppercase rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 bg-primary text-primary-foreground">
                 <Link href="/signup">
-                  Register as Agent <Users className="ml-3 h-8 w-8" />
+                  Register as Partner <Users className="ml-3 h-8 w-8" />
                 </Link>
               </Button>
             </div>
@@ -295,6 +311,7 @@ export default function Home() {
               <p className="text-2xl md:text-4xl font-bold leading-tight italic opacity-70 max-w-3xl mx-auto">
                 {t('trustDesc')}
               </p>
+              <p className="mt-8 text-xl font-black uppercase text-accent tracking-widest">{t('noHiddenStory')}</p>
           </div>
         </div>
       </section>
