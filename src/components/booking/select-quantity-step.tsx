@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Minus, Plus, Bird, Info } from 'lucide-react';
 import type { BookingData, Product } from '@/lib/types';
 import { Card } from '@/components/ui/card';
-import { calculateTotalPrice, formatCurrency } from '@/lib/utils';
+import { formatCurrency, PROFIT_PER_UNIT, DELIVERY_FEE_PER_UNIT } from '@/lib/utils';
 import { useLanguage } from '@/context/language-provider';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
@@ -33,11 +33,9 @@ export default function SelectQuantityStep({
   };
 
   const basePrice = product ? product.pricePerUnit : 0;
-  // Note: These calculations mirror the logic in utils.ts for UI consistency
-  const profitPerUnit = 80;
-  const deliveryFeePerUnit = 40;
-  const finalPricePerUnit = basePrice + profitPerUnit + deliveryFeePerUnit;
-  const totalPrice = finalPricePerUnit * quantity;
+  const profitTotal = PROFIT_PER_UNIT * quantity;
+  const deliveryTotal = DELIVERY_FEE_PER_UNIT * quantity;
+  const totalPrice = (basePrice * quantity) + profitTotal + deliveryTotal;
 
   return (
     <div className="text-center">
@@ -53,7 +51,7 @@ export default function SelectQuantityStep({
           <Button
             variant="outline"
             size="icon"
-            className="h-16 w-16 rounded-2xl border-2"
+            className="h-16 w-16 rounded-2xl border-2 hover:bg-primary/5"
             onClick={() => handleQuantityChange(quantity - 50)}
             disabled={quantity <= 50}
           >
@@ -68,7 +66,7 @@ export default function SelectQuantityStep({
           <Button
             variant="outline"
             size="icon"
-            className="h-16 w-16 rounded-2xl border-2"
+            className="h-16 w-16 rounded-2xl border-2 hover:bg-primary/5"
             onClick={() => handleQuantityChange(quantity + 50)}
             disabled={quantity >= MAX_QUANTITY}
           >
@@ -78,43 +76,46 @@ export default function SelectQuantityStep({
 
         {product && (
             <div className="w-full space-y-4">
-                <Card className="w-full bg-card p-6 rounded-3xl border-4 shadow-xl text-left">
-                    <div className="space-y-3">
+                <Card className="w-full bg-card p-6 rounded-[2rem] border-4 shadow-xl text-left border-primary/10">
+                    <div className="space-y-4">
                         <div className="flex justify-between items-center text-lg">
-                            <span className="font-bold opacity-60">Base Price (Market)</span>
-                            <span className="font-mono">{formatCurrency(basePrice * quantity)}</span>
+                            <span className="font-bold opacity-60 uppercase text-sm tracking-tighter">Hatchery Base Cost</span>
+                            <span className="font-mono font-bold">{formatCurrency(basePrice * quantity)}</span>
                         </div>
                         <div className="flex justify-between items-center text-lg">
-                            <span className="font-bold opacity-60">AFDEC Service & Profit</span>
-                            <span className="font-mono">{formatCurrency(profitPerUnit * quantity)}</span>
+                            <span className="font-bold opacity-60 uppercase text-sm tracking-tighter">AFDEC Profit (₦4k/carton)</span>
+                            <span className="font-mono font-bold text-accent">+{formatCurrency(profitTotal)}</span>
                         </div>
                         <div className="flex justify-between items-center text-lg">
-                            <span className="font-bold opacity-60">Delivery Fee (All States)</span>
-                            <span className="font-mono text-accent">{formatCurrency(deliveryFeePerUnit * quantity)}</span>
+                            <span className="font-bold opacity-60 uppercase text-sm tracking-tighter">Delivery Fee (To all States)</span>
+                            <span className="font-mono font-bold text-blue-500">+{formatCurrency(deliveryTotal)}</span>
                         </div>
-                        <div className="pt-4 border-t-2 border-dashed flex justify-between items-center">
-                            <span className="text-2xl font-black uppercase">Total to Pay</span>
-                            <span className="text-3xl font-black text-primary">{formatCurrency(totalPrice)}</span>
+                        <div className="pt-6 border-t-4 border-primary/5 flex justify-between items-center">
+                            <div className="flex flex-col">
+                                <span className="text-2xl font-black uppercase leading-none">Total to Pay</span>
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase mt-1 italic">Payment on Delivery</span>
+                            </div>
+                            <span className="text-4xl font-black text-primary">{formatCurrency(totalPrice)}</span>
                         </div>
                     </div>
                 </Card>
-                <Alert className="bg-primary/5 border-primary/20 rounded-2xl text-left">
-                    <Info className="h-5 w-5 text-primary" />
-                    <AlertDescription className="font-bold italic">
-                        Price includes ₦2,000 delivery fee per carton (50 chicks). 
-                        Pick up from Gombe office to save on delivery!
+                <Alert className="bg-accent/5 border-accent/20 rounded-2xl text-left">
+                    <Info className="h-5 w-5 text-accent" />
+                    <AlertDescription className="font-bold italic text-accent">
+                        Picking up from Gombe? Tell the manager to remove delivery fee for you! 
+                        Free Booking. No pressure.
                     </AlertDescription>
                 </Alert>
             </div>
         )}
         
-        <div className="w-full bg-muted/30 p-6 rounded-3xl border-2 border-dashed">
-          <p className="text-sm font-bold uppercase opacity-50 mb-4">{t('livePreview')}</p>
-          <div className="flex flex-wrap gap-2 justify-center max-h-32 overflow-y-auto">
-            {Array.from({ length: Math.min(100, quantity) }).map((_, i) => (
-              <Bird key={i} className="w-5 h-5 text-primary/40" />
+        <div className="w-full bg-muted/20 p-8 rounded-3xl border-4 border-dashed border-primary/10">
+          <p className="text-xs font-black uppercase opacity-40 mb-6 tracking-widest">{t('livePreview')}</p>
+          <div className="flex flex-wrap gap-3 justify-center max-h-40 overflow-y-auto">
+            {Array.from({ length: Math.min(50, Math.ceil(quantity / 10)) }).map((_, i) => (
+              <Bird key={i} className="w-6 h-6 text-primary/30" />
             ))}
-             {quantity > 100 && <span className="self-center text-primary font-bold text-sm uppercase">...and {{quantity - 100}} more</span>}
+             {quantity > 500 && <span className="self-center text-primary font-black text-sm uppercase bg-primary/10 px-3 py-1 rounded-lg">...and many more</span>}
           </div>
         </div>
       </div>

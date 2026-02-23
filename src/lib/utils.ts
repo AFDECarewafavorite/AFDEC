@@ -7,13 +7,13 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Profit Calculation Logic:
+ * Profit Calculation Logic for AFDEC:
  * - Each carton has 50 chicks.
- * - Minimum Profit: ₦4,000 per carton -> ₦80 per chick.
+ * - Profit: ₦4,000 per carton -> ₦80 per chick.
  * - Delivery Fee: ₦2,000 per carton -> ₦40 per chick.
  */
-const PROFIT_PER_UNIT = 80; 
-const DELIVERY_FEE_PER_UNIT = 40;
+export const PROFIT_PER_UNIT = 80; 
+export const DELIVERY_FEE_PER_UNIT = 40;
 
 export function calculateBookingFee(product: Product | undefined, quantity: number): number {
   if (!product) return 0;
@@ -31,7 +31,7 @@ export function calculateTotalPrice(product: Product | undefined, quantity: numb
   return baseTotal + profitTotal + deliveryTotal;
 }
 
-// Commission logic: Partner earns ₦50 per chick successfully sold/delivered
+// Partner earns ₦50 per chick (₦2,500 per carton)
 export const calculateCommission = (bookingFee: number, quantity: number = 1) => {
   return quantity * 50;
 };
