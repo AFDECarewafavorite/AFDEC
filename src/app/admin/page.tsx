@@ -1,24 +1,28 @@
 'use client';
 
 import BookingsTable from './components/bookings-table';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { DollarSign, ShoppingBag, Users, ShieldAlert, Package, UserCog } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { DollarSign, ShoppingBag, Users, ShieldAlert, Package, UserCog, RefreshCw, Loader } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useUser, useDoc } from '@/firebase';
 import { collectionGroup, query, orderBy, doc, collection } from 'firebase/firestore';
 import type { Agent, Booking, User as UserType } from '@/lib/types';
 import { BookingsTableSkeleton } from './components/bookings-table-skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/context/language-provider';
+import { scanAndUpdateMarketPrices } from '@/ai/flows/market-scanner-flow';
+import { useToast } from '@/hooks/use-toast';
 
 export default function AdminDashboard() {
   const firestore = useFirestore();
   const { user, isUserLoading: isAuthLoading } = useUser();
   const router = useRouter();
   const { t } = useLanguage();
+  const { toast } = useToast();
+  const [isScanning, setIsScanning] = useState(false);
 
   const managerRoleRef = useMemoFirebase(
     () => (firestore && user ? doc(firestore, 'roles_manager', user.uid) : null),
@@ -41,6 +45,25 @@ export default function AdminDashboard() {
       router.push('/login');
     }
   }, [user, isAuthLoading, router]);
+
+  const handleManualSync = async () => {
+    setIsScanning(true);
+    try {
+      const result = await scanAndUpdateMarketPrices();
+      toast({
+        title: "Market Sync Complete",
+        description: `Updated ${result.updates.length} product prices from ${result.updates[0]?.source || 'hatcheries'}.`,
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Sync Failed",
+        description: error.message,
+      });
+    } finally {
+      setIsScanning(false);
+    }
+  };
 
   const bookingsQuery = useMemoFirebase(
     () =>
@@ -73,24 +96,6 @@ export default function AdminDashboard() {
     )
   }
 
-  if (bookingsError) {
-    return (
-        <div className="container mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-            <ShieldAlert className="h-16 w-16 text-destructive" />
-            <h1 className="mt-6 text-3xl font-bold font-headline">{t('errorFetchingData')}</h1>
-            <p className="mt-2 text-lg text-muted-foreground">
-                {t('errorFetchingBookings')}
-            </p>
-             <p className="text-sm text-muted-foreground max-w-md">
-                <code>{bookingsError.message}</code>
-            </p>
-            <Button asChild variant="outline" className="mt-8">
-                <Link href="/">{t('returnToHomepage')}</Link>
-            </Button>
-        </div>
-    )
-  }
-
   const showLoading = isAuthorizing || (isUserPrivileged && (areBookingsLoading || areAgentsLoading));
 
   const totalRevenue = bookings
@@ -100,13 +105,25 @@ export default function AdminDashboard() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold font-headline text-primary">
-          {isUserCEO ? t('ceoDashboard') : t('managerDashboard')}
-        </h1>
-        <p className="text-muted-foreground">
-          {isUserCEO ? t('ceoDashboardSubtitle') : t('managerDashboardSubtitle')}
-        </p>
+      <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold font-headline text-primary">
+            {isUserCEO ? t('ceoDashboard') : t('managerDashboard')}
+          </h1>
+          <p className="text-muted-foreground">
+            {isUserCEO ? t('ceoDashboardSubtitle') : t('managerDashboardSubtitle')}
+          </p>
+        </div>
+        {isUserCEO && (
+          <Button 
+            onClick={handleManualSync} 
+            disabled={isScanning}
+            className="bg-accent hover:bg-accent/90 text-accent-foreground font-bold rounded-xl h-12"
+          >
+            {isScanning ? <Loader className="animate-spin mr-2" /> : <RefreshCw className="mr-2 h-4 w-4" />}
+            Scan Market Prices
+          </Button>
+        )}
       </header>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">

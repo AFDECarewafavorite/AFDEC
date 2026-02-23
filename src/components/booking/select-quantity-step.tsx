@@ -2,11 +2,12 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Minus, Plus, Bird } from 'lucide-react';
+import { Minus, Plus, Bird, Info } from 'lucide-react';
 import type { BookingData, Product } from '@/lib/types';
 import { Card } from '@/components/ui/card';
-import { calculateBookingFee } from '@/lib/utils';
+import { calculateTotalPrice, formatCurrency } from '@/lib/utils';
 import { useLanguage } from '@/context/language-provider';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface SelectQuantityStepProps {
   bookingData: BookingData;
@@ -14,16 +15,8 @@ interface SelectQuantityStepProps {
   product: Product | undefined;
 }
 
-const MAX_QUANTITY = 200;
+const MAX_QUANTITY = 2000;
 const MIN_QUANTITY = 1;
-
-const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-NG', {
-      style: 'currency',
-      currency: 'NGN',
-      minimumFractionDigits: 0,
-    }).format(amount);
-};
 
 export default function SelectQuantityStep({
   bookingData,
@@ -39,64 +32,89 @@ export default function SelectQuantityStep({
     }
   };
 
-  const bookingFee = calculateBookingFee(product, quantity);
-  const totalPrice = product ? product.pricePerUnit * quantity : 0;
+  const basePrice = product ? product.pricePerUnit : 0;
+  // Note: These calculations mirror the logic in utils.ts for UI consistency
+  const profitPerUnit = 80;
+  const deliveryFeePerUnit = 40;
+  const finalPricePerUnit = basePrice + profitPerUnit + deliveryFeePerUnit;
+  const totalPrice = finalPricePerUnit * quantity;
 
   return (
     <div className="text-center">
-      <h2 className="text-3xl font-bold font-headline text-primary">
+      <h2 className="text-3xl font-bold font-headline text-primary uppercase">
         {t('bookingStep2Title')}
       </h2>
-      <p className="mt-2 text-lg text-foreground/80">
+      <p className="mt-2 text-lg text-foreground/80 italic">
         {t('bookingStep2Subtitle')}
       </p>
+      
       <div className="mt-8 flex flex-col items-center gap-8">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           <Button
             variant="outline"
             size="icon"
-            className="h-12 w-12 rounded-full"
-            onClick={() => handleQuantityChange(quantity - 1)}
-            disabled={quantity <= MIN_QUANTITY}
-            aria-label={t('decreaseQuantity')}
+            className="h-16 w-16 rounded-2xl border-2"
+            onClick={() => handleQuantityChange(quantity - 50)}
+            disabled={quantity <= 50}
           >
-            <Minus className="h-6 w-6" />
+            <Minus className="h-8 w-8" />
           </Button>
-          <span className="text-5xl font-bold font-headline w-24 text-center">
-            {quantity}
-          </span>
+          <div className="flex flex-col items-center">
+             <span className="text-6xl font-black font-headline text-primary">
+                {quantity}
+            </span>
+            <span className="text-xs font-bold uppercase opacity-50">Chicks</span>
+          </div>
           <Button
             variant="outline"
             size="icon"
-            className="h-12 w-12 rounded-full"
-            onClick={() => handleQuantityChange(quantity + 1)}
+            className="h-16 w-16 rounded-2xl border-2"
+            onClick={() => handleQuantityChange(quantity + 50)}
             disabled={quantity >= MAX_QUANTITY}
-            aria-label={t('increaseQuantity')}
           >
-            <Plus className="h-6 w-6" />
+            <Plus className="h-8 w-8" />
           </Button>
         </div>
 
         {product && (
-            <Card className="w-full bg-transparent p-4 rounded-lg border border-border text-left">
-                <div className="flex justify-between items-center mb-2">
-                    <p className="text-muted-foreground">{t('bookingFeePayableNow')}</p>
-                    <p className="font-bold text-lg text-primary">{formatCurrency(bookingFee)}</p>
-                </div>
-                <div className="flex justify-between items-center">
-                    <p className="text-muted-foreground">{t('estimatedTotalPrice')}</p>
-                    <p className="font-bold text-lg">{formatCurrency(totalPrice)}</p>
-                </div>
-            </Card>
+            <div className="w-full space-y-4">
+                <Card className="w-full bg-card p-6 rounded-3xl border-4 shadow-xl text-left">
+                    <div className="space-y-3">
+                        <div className="flex justify-between items-center text-lg">
+                            <span className="font-bold opacity-60">Base Price (Market)</span>
+                            <span className="font-mono">{formatCurrency(basePrice * quantity)}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-lg">
+                            <span className="font-bold opacity-60">AFDEC Service & Profit</span>
+                            <span className="font-mono">{formatCurrency(profitPerUnit * quantity)}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-lg">
+                            <span className="font-bold opacity-60">Delivery Fee (All States)</span>
+                            <span className="font-mono text-accent">{formatCurrency(deliveryFeePerUnit * quantity)}</span>
+                        </div>
+                        <div className="pt-4 border-t-2 border-dashed flex justify-between items-center">
+                            <span className="text-2xl font-black uppercase">Total to Pay</span>
+                            <span className="text-3xl font-black text-primary">{formatCurrency(totalPrice)}</span>
+                        </div>
+                    </div>
+                </Card>
+                <Alert className="bg-primary/5 border-primary/20 rounded-2xl text-left">
+                    <Info className="h-5 w-5 text-primary" />
+                    <AlertDescription className="font-bold italic">
+                        Price includes ₦2,000 delivery fee per carton (50 chicks). 
+                        Pick up from Gombe office to save on delivery!
+                    </AlertDescription>
+                </Alert>
+            </div>
         )}
         
-        <div className="w-full bg-card p-4 rounded-lg border border-border">
-          <p className="text-sm font-medium text-foreground/70 mb-4">{t('livePreview')}</p>
-          <div className="flex flex-wrap gap-2 justify-center max-h-48 overflow-y-auto p-2 rounded-md bg-background">
-            {Array.from({ length: quantity > 50 ? 50 : quantity }).map((_, i) => (
-              <Bird key={i} className="w-6 h-6 text-primary/70" />
+        <div className="w-full bg-muted/30 p-6 rounded-3xl border-2 border-dashed">
+          <p className="text-sm font-bold uppercase opacity-50 mb-4">{t('livePreview')}</p>
+          <div className="flex flex-wrap gap-2 justify-center max-h-32 overflow-y-auto">
+            {Array.from({ length: Math.min(100, quantity) }).map((_, i) => (
+              <Bird key={i} className="w-5 h-5 text-primary/40" />
             ))}
-             {quantity > 50 && <span className="self-center text-primary font-bold">& more...</span>}
+             {quantity > 100 && <span className="self-center text-primary font-bold text-sm uppercase">...and {{quantity - 100}} more</span>}
           </div>
         </div>
       </div>
