@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useCollection, useFirestore, useMemoFirebase, useUser, useDoc, setDocumentNonBlocking } from '@/firebase';
@@ -28,56 +29,44 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ProductDialog } from './components/product-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-provider';
+import { formatCurrency } from '@/lib/utils';
 
 const demoProducts: Omit<Product, 'id'>[] = [
     {
-        name: 'Agrited Broiler (Day-old)',
-        description: 'High-quality day-old broiler chicks from Agrited hatcheries. Known for fast growth.',
+        name: 'Amo White Cockerel (Day-old)',
+        description: 'Cheapest legit Amo chicks. Very strong and easy to rear for maximum profit.',
         category: 'chick',
-        pricePerUnit: 1850,
-        bookingFeePerUnit: 50,
-        maturity: '5-6 weeks',
-        imageUrl: 'https://picsum.photos/seed/agrited/600/400',
-        imageHint: 'day-old chick',
+        pricePerUnit: 400,
+        bookingFeePerUnit: 0,
+        maturity: '20-24 weeks',
+        imageUrl: 'https://picsum.photos/seed/amo-cockerel/600/400',
+        imageHint: 'white chick',
         imageWidth: 600,
         imageHeight: 400,
         isActive: true,
     },
     {
-        name: 'Zartech Broiler (Day-old)',
-        description: 'Hardy and reliable day-old broiler chicks from Zartech farms.',
+        name: 'Amo Noiler (Day-old)',
+        description: 'The famous dual-purpose bird. High growth and high egg production.',
         category: 'chick',
-        pricePerUnit: 1800,
-        bookingFeePerUnit: 50,
-        maturity: '6-7 weeks',
-        imageUrl: 'https://picsum.photos/seed/zartech/600/400',
-        imageHint: 'yellow chick',
+        pricePerUnit: 800,
+        bookingFeePerUnit: 0,
+        maturity: '14-16 weeks',
+        imageUrl: 'https://picsum.photos/seed/noiler/600/400',
+        imageHint: 'spotted chick',
         imageWidth: 600,
         imageHeight: 400,
         isActive: true,
     },
     {
-        name: 'Point of Lay (Grower)',
-        description: 'Young hens approaching the age of laying eggs. Great for starting your own egg production.',
-        category: 'grower',
-        pricePerUnit: 4500,
-        bookingFeePerUnit: 500,
-        maturity: '16-18 weeks',
-        imageUrl: 'https://picsum.photos/seed/pol/600/400',
-        imageHint: 'young chicken',
-        imageWidth: 600,
-        imageHeight: 400,
-        isActive: true,
-    },
-    {
-        name: 'Mature Broiler (Live)',
-        description: 'Fully grown broiler, ready for market. Average weight of 2.5kg.',
-        category: 'mature',
-        pricePerUnit: 8000,
-        bookingFeePerUnit: 1000,
-        maturity: 'Ready',
-        imageUrl: 'https://picsum.photos/seed/broiler/600/400',
-        imageHint: 'white chicken',
+        name: 'Amo Broiler (Day-old)',
+        description: 'Fastest growing broiler. Ready for market in just 6 weeks.',
+        category: 'chick',
+        pricePerUnit: 1200,
+        bookingFeePerUnit: 0,
+        maturity: '6-8 weeks',
+        imageUrl: 'https://picsum.photos/seed/amo-broiler/600/400',
+        imageHint: 'broiler chick',
         imageWidth: 600,
         imageHeight: 400,
         isActive: true,
@@ -204,7 +193,6 @@ export default function AdminProductsPage() {
                             <TableHead>{t('tableColProduct')}</TableHead>
                             <TableHead>{t('tableColCategory')}</TableHead>
                             <TableHead>{t('tableColPrice')}</TableHead>
-                            <TableHead>{t('bookingFee')}</TableHead>
                             <TableHead>{t('status')}</TableHead>
                             <TableHead className="text-right">{t('tableColActions')}</TableHead>
                         </TableRow>
@@ -214,7 +202,6 @@ export default function AdminProductsPage() {
                             <TableRow key={i}>
                                 <TableCell><Skeleton className="h-5 w-32" /></TableCell>
                                 <TableCell><Skeleton className="h-5 w-20" /></TableCell>
-                                <TableCell><Skeleton className="h-5 w-16" /></TableCell>
                                 <TableCell><Skeleton className="h-5 w-16" /></TableCell>
                                 <TableCell><Skeleton className="h-6 w-20" /></TableCell>
                                 <TableCell className="text-right"><Skeleton className="h-8 w-8 ml-auto" /></TableCell>
@@ -244,8 +231,7 @@ export default function AdminProductsPage() {
                                     </div>
                                 </TableCell>
                                 <TableCell className="capitalize">{product.category}</TableCell>
-                                <TableCell>{product.pricePerUnit}</TableCell>
-                                <TableCell>{product.bookingFeePerUnit}</TableCell>
+                                <TableCell>{formatCurrency(product.pricePerUnit)}</TableCell>
                                 <TableCell>
                                     <Badge variant={product.isActive ? 'default' : 'secondary'} className={product.isActive ? 'bg-green-500/20 text-green-400 border-green-500/30' : ''}>
                                         {product.isActive ? t('active') : t('inactive')}

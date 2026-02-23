@@ -1,6 +1,7 @@
+
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import type { Product } from "@/lib/types";
+import type { Product, Booking } from "@/lib/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -10,23 +11,15 @@ export function calculateBookingFee(product: Product | undefined, quantity: numb
   if (!product) {
     return 0;
   }
-
-  const isChick = product.category === 'chick';
-
-  if (isChick && quantity > 0 && quantity <= 8) {
-    // Flat fee of 300 for up to 8 chicks
-    return 300;
-  }
-  
-  // Per-unit fee for more than 8 chicks or for other bird types
-  return product.bookingFeePerUnit * quantity;
+  // All Amo chicks in this model have 0 booking fee (Free Booking)
+  return 0;
 }
 
-// Commission logic based on proposal
-export const calculateCommission = (bookingFee: number) => {
-  if (bookingFee <= 500) return 200;
-  if (bookingFee > 500 && bookingFee <= 1000) return 350;
-  return bookingFee * 0.1; // 10% for higher value bookings as an example
+// Commission logic: Partner earns ₦50 per chick successfully sold/delivered
+export const calculateCommission = (bookingFee: number, quantity: number = 1) => {
+  // If we are passing quantity, use the ₦50 per chick rule. 
+  // If only bookingFee is passed (old logic), we fallback to ₦50 per estimated bird.
+  return quantity * 50;
 };
 
 export const formatCurrency = (amount: number) => {
@@ -36,5 +29,3 @@ export const formatCurrency = (amount: number) => {
     minimumFractionDigits: 0,
   }).format(amount);
 };
-
-    

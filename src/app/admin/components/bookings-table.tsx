@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -67,7 +68,7 @@ export default function BookingsTable({ bookings, agents }: BookingsTableProps) 
 
     // If the booking is being marked as 'completed' and has an agent, process commission
     if (newStatus === 'completed' && booking.agentId) {
-        const commissionAmount = calculateCommission(booking.bookingFee);
+        const commissionAmount = calculateCommission(booking.bookingFee, booking.quantity);
         const agentRef = doc(firestore, 'agents', booking.agentId);
         
         // 1. Update the agent's balances using increment
